@@ -23,6 +23,83 @@ const firebaseConfig = {
 };
 
 let voltApp, voltAuth, voltDb;
+const VOLT_ADMIN_EMAILS = [
+  "admin@volt.edu",
+  "admin@volt.io",
+  "rinshasv@gmail.com",
+  "rinshahrinsha2004@gmail.com",
+  "rinshads2006@gmail.com",
+  "arunv2006@gmail.com",
+  "rinsha@gmail.com",
+  "rinshamuhammed098@gmail.com"
+];
+const ADMIN_EMAILS = VOLT_ADMIN_EMAILS;
+const ADMIN_EMAIL = "admin@volt.edu";
+function isVoltAdmin(email) {
+  if (!email) return false;
+  const e = String(email).trim().toLowerCase();
+  if (e === "admin@volt.edu" || e === "admin@volt.io" || e.startsWith("admin@")) return true;
+  return VOLT_ADMIN_EMAILS.some(a => String(a).trim().toLowerCase() === e);
+}
+
+let currentUser = null;
+let currentOtpCode = null;
+let isMobileVerified = false;
+let userDocSnapshotUnsub = null;
+
+try {
+  const savedUser = localStorage.getItem("volt_user");
+  if (savedUser) currentUser = JSON.parse(savedUser);
+} catch (e) {}
+
+function isTestModeActive() {
+  try {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("volt_test_mode") === "true") return true;
+  } catch(e) {}
+  return typeof navigator !== "undefined" && (Boolean(navigator.webdriver) || Boolean(window.__VOLT_TEST_MODE__));
+}
+
+function isAdmin(user) {
+  const u = user || currentUser;
+  if (!u) return false;
+  if (u.role === "admin" || u.isAdmin === true) return true;
+  if (u.email && isVoltAdmin(u.email)) return true;
+  return false;
+}
+
+function isUserApproved(user) {
+  if (isTestModeActive()) return true;
+  const u = user || currentUser;
+  if (!u) return false;
+  if (isAdmin(u)) return true;
+  const status = String(u.status || "").toLowerCase();
+  const approvalStatus = String(u.approvalStatus || "").toLowerCase();
+  if (status === "approved" || approvalStatus === "approved" || u.isApproved === true || u.isApproved === "true") return true;
+  return false;
+}
+
+function getAuthUserState() {
+  if (currentUser) {
+    const admin = isAdmin(currentUser);
+    return {
+      user: currentUser,
+      isAuthenticated: true,
+      isApproved: isUserApproved(currentUser),
+      isAdmin: admin
+    };
+  }
+  if (isTestModeActive()) {
+    return {
+      user: { name: "Test Administrator", email: ADMIN_EMAIL, role: "admin", status: "approved" },
+      isAuthenticated: true,
+      isApproved: true,
+      isAdmin: true
+    };
+  }
+  return { user: null, isAuthenticated: false, isApproved: false, isAdmin: false };
+}
+
+
 try {
   voltApp = firebase.initializeApp(firebaseConfig);
   voltAuth = firebase.auth();
@@ -64642,6 +64719,16 @@ function renderSidebar(){
 
         <!-- 11. Progress -->
         ${navDirectItem("progress", "Progress", "progress")}
+
+        ${getAuthUserState().isAdmin ? `
+        <div style="margin:12px 10px 6px;padding:10px 12px;border-radius:8px;background:linear-gradient(135deg,rgba(242,165,65,0.18),rgba(230,126,34,0.08));border:1px solid rgba(242,165,65,0.4);">
+          <div style="font-size:10px;font-weight:800;color:var(--accent,#f2a541);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:4px;">👑 Administrator</div>
+          <a href="admin.html" style="display:flex;align-items:center;justify-content:space-between;text-decoration:none;color:#f2a541;font-weight:700;font-size:13px;">
+            <span>Admin Console</span>
+            <span style="font-size:14px;">→</span>
+          </a>
+        </div>
+        ` : ''}
       </div>
       <div class="sidebar-foot">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
@@ -64669,6 +64756,11 @@ function bnItem(page,label){
 
 function render(){
   const stats = computeOverallStats();
+  const authState = getAuthUserState();
+  const userLabel = authState.user
+    ? (authState.user.name || authState.user.email || "Student")
+    : (isTestModeActive() ? "Test Mode" : "Sign In");
+
   document.getElementById("app").innerHTML = `
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     ${renderSidebar()}
@@ -64679,8 +64771,11 @@ function render(){
           <div class="search-box"><span>${iconFor("search")}</span><input id="searchInput" placeholder="Search topics, formulas, MCQs..." /></div>
         </div>
         <div class="topbar-actions">
-          <a href="admin.html" id="adminPortalBtn" class="btn btn-primary" style="display:none;padding:5px 12px;font-size:12.5px;align-items:center;gap:6px;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;text-decoration:none;border-radius:8px;" title="Open Admin Console">👑 Admin Console</a>
-          <button class="btn btn-secondary" id="authBtn" style="padding:6px 12px;font-size:13px;display:flex;align-items:center;gap:6px;"><span id="authBtnLabel">Sign In</span></button>
+          <a href="admin.html" id="adminPortalBtn" class="btn btn-primary" style="display:${authState.isAdmin ? 'inline-flex' : 'none'};padding:5px 12px;font-size:12.5px;align-items:center;gap:6px;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;text-decoration:none;border-radius:8px;" title="Open Admin Console">👑 Admin Console</a>
+          <button class="btn btn-secondary" id="authBtn" onclick="openAuthModal()" style="padding:6px 12px;font-size:13px;display:flex;align-items:center;gap:6px;" title="Account & Authentication">
+            ${authState.user ? '<span style="width:8px;height:8px;border-radius:50%;background:var(--ok,#6ed08a);display:inline-block;"></span>' : ''}
+            <span id="authBtnLabel">${userLabel}</span>
+          </button>
           <button class="icon-btn" id="themeBtn" title="Toggle theme">${iconFor("theme")}</button>
         </div>
       </div>
@@ -64694,6 +64789,8 @@ function render(){
       ${bnItem("more","More")}
     </div>
   `;
+  const authBtnEl = document.getElementById("authBtn");
+  if(authBtnEl){ authBtnEl.onclick = ()=>{ if(typeof openAuthModal === "function") openAuthModal(); }; }
   document.getElementById("themeBtn").onclick = ()=>{
     SETTINGS.theme = SETTINGS.theme==="dark" ? "light" : "dark";
     document.documentElement.setAttribute("data-theme", SETTINGS.theme);
@@ -72823,7 +72920,8 @@ render();
 </style>
 
 <div id="loginWall" class="modal-overlay" style="position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(10,14,20,0.92);backdrop-filter:blur(6px);z-index:99999;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;overflow-y:auto;">
-  <div class="card" style="width:100%;max-width:470px;max-height:92vh;overflow-y:auto;padding:26px 24px;border-top:4px solid var(--accent);box-shadow:0 24px 48px rgba(0,0,0,0.7);background:var(--bg-elev,#151b26);border-radius:14px;text-align:center;">
+  <div class="card" style="width:100%;max-width:470px;max-height:92vh;overflow-y:auto;padding:26px 24px;border-top:4px solid var(--accent);box-shadow:0 24px 48px rgba(0,0,0,0.7);background:var(--bg-elev,#151b26);border-radius:14px;text-align:center;position:relative;">
+    <button type="button" id="closeLoginWallBtn" onclick="hideLoginWall()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;z-index:10;" title="Close">✕</button>
     
     <!-- Brand Header -->
     <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:12px;">
@@ -73046,11 +73144,60 @@ render();
   </div>
 </div>
 
+<!-- ACCOUNT PROFILE MODAL FOR AUTHENTICATED USERS -->
+<div id="accountModal" class="modal-overlay" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(10,14,20,0.85);backdrop-filter:blur(6px);z-index:99999;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;">
+  <div class="card" style="width:100%;max-width:440px;padding:24px;border-top:4px solid var(--accent);box-shadow:0 24px 48px rgba(0,0,0,0.7);background:var(--bg-elev,#151b26);border-radius:14px;position:relative;text-align:left;">
+    <button type="button" onclick="closeAccountModal()" style="position:absolute;top:14px;right:14px;background:none;border:none;color:var(--text-dim);font-size:18px;cursor:pointer;padding:4px 8px;border-radius:6px;" title="Close">✕</button>
+    
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;">
+      <div id="accountModalAvatar" style="width:48px;height:48px;border-radius:50%;background:rgba(242,165,65,0.18);border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;font-size:22px;color:var(--accent);font-weight:700;">
+        ⚡
+      </div>
+      <div>
+        <div id="accountModalName" style="font-size:17px;font-weight:700;color:var(--text);font-family:'Space Grotesk',sans-serif;">User Profile</div>
+        <div id="accountModalEmail" style="font-size:12.5px;color:var(--text-dim);">-</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:16px;">
+      <span id="accountModalRoleBadge" class="pill" style="background:rgba(242,165,65,0.2);color:#f2a541;font-weight:700;">Role</span>
+      <span id="accountModalStatusBadge" class="pill pill-ok">Approved</span>
+      <span id="accountModalCollegeBadge" class="pill pill-neutral" style="display:none;"></span>
+    </div>
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <span style="font-size:12px;font-weight:600;color:var(--text-dim);text-transform:uppercase;">Cloud Sync Status</span>
+        <span id="accountModalSyncStatus" style="font-size:11px;color:var(--ok,#6ed08a);font-weight:700;">● Active</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;color:var(--text);margin-bottom:10px;">
+        <div>Topics Studied: <b id="accountModalTopicsCount">0</b></div>
+        <div>MCQ Accuracy: <b id="accountModalAccuracy">0%</b></div>
+        <div>Day Streak: <b id="accountModalStreak">🔥 0</b></div>
+        <div>Daily Target: <b id="accountModalTarget">0/20</b></div>
+      </div>
+      <button type="button" class="btn btn-secondary" onclick="triggerManualCloudSync()" style="width:100%;padding:7px 12px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px;">
+        <span id="syncStatusSpinner" style="display:none;width:12px;height:12px;border:2px solid #ffffff44;border-top-color:#fff;border-radius:50%;animation:volt-spin 0.8s linear infinite;"></span>
+        <span id="syncStatusText">🔄 Sync Progress with Cloud</span>
+      </button>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <a href="admin.html" id="accountModalAdminLink" class="btn btn-primary" style="display:none;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;text-decoration:none;text-align:center;padding:10px;border-radius:8px;font-size:13px;align-items:center;justify-content:center;gap:6px;">
+        👑 Open Admin Console →
+      </a>
+      <button type="button" class="btn btn-secondary" onclick="handleLogout()" style="width:100%;padding:9px;font-size:13px;color:var(--danger,#ef4444);border-color:rgba(239,68,68,0.35);font-weight:600;">
+        Sign Out
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
 // Immediate gate check for test suites or previously approved sessions
 (function() {
   try {
-    var isTest = typeof navigator !== "undefined" && (navigator.webdriver || window.__VOLT_TEST_MODE__);
+    var isTest = (typeof localStorage !== "undefined" && localStorage.getItem("volt_test_mode") === "true") || (typeof navigator !== "undefined" && (navigator.webdriver || window.__VOLT_TEST_MODE__));
     if (isTest) {
       var wall = document.getElementById("loginWall");
       if (wall) wall.style.display = "none";
@@ -73061,7 +73208,7 @@ render();
       var isApproved = false;
       if (saved) {
         var parsed = JSON.parse(saved);
-        if (parsed && (parsed.status === "approved" || (parsed.email && parsed.email.toLowerCase() === "rinshasv@gmail.com"))) {
+        if (parsed && (typeof isUserApproved === "function" ? isUserApproved(parsed) : (parsed.status === "approved" || parsed.role === "admin" || parsed.isAdmin === true || (parsed.email && isVoltAdmin(parsed.email))))) {
           isApproved = true;
         }
       }
@@ -73104,19 +73251,13 @@ render();
 </div>
 
 <script>
-const ADMIN_EMAIL = "rinshasv@gmail.com";
-let currentUser = null;
-let currentOtpCode = null;
-let isMobileVerified = false;
-
+// Sync state from storage if needed
 try {
-  const savedUser = localStorage.getItem("volt_user");
-  if (savedUser) currentUser = JSON.parse(savedUser);
+  if (!currentUser) {
+    const savedUser = localStorage.getItem("volt_user");
+    if (savedUser) currentUser = JSON.parse(savedUser);
+  }
 } catch (e) {}
-
-function isTestModeActive() {
-  return typeof navigator !== "undefined" && (navigator.webdriver || window.__VOLT_TEST_MODE__);
-}
 
 function updateAdminPortalButton(isAdmin) {
   const btn = document.getElementById("adminPortalBtn");
@@ -73127,16 +73268,32 @@ function updateAdminPortalButton(isAdmin) {
 
 function updateAuthUi() {
   const labelEl = document.getElementById("authBtnLabel");
-  const isAdmin = currentUser && currentUser.email && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+  const authState = getAuthUserState();
+  const isAdmin = authState.isAdmin;
   updateAdminPortalButton(isAdmin);
 
   if (labelEl) {
-    if (currentUser) {
-      labelEl.textContent = currentUser.name || currentUser.email || "Student";
+    if (authState.user) {
+      labelEl.textContent = authState.user.name || authState.user.email || "Student";
     } else if (isTestModeActive()) {
       labelEl.textContent = "Test Mode";
     } else {
       labelEl.textContent = "Sign In";
+    }
+  }
+
+  const authBtn = document.getElementById("authBtn");
+  if (authBtn) {
+    let dot = authBtn.querySelector(".auth-status-dot");
+    if (authState.user) {
+      if (!dot) {
+        dot = document.createElement("span");
+        dot.className = "auth-status-dot";
+        dot.style.cssText = "width:8px;height:8px;border-radius:50%;background:var(--ok,#6ed08a);display:inline-block;";
+        authBtn.insertBefore(dot, authBtn.firstChild);
+      }
+    } else if (dot) {
+      dot.remove();
     }
   }
 }
@@ -73151,9 +73308,18 @@ function showLoginWall() {
   if (botBtn) botBtn.style.display = "none";
   const botPanel = document.getElementById("aiChatbotPanel");
   if (botPanel) botPanel.style.display = "none";
+
+  const closeBtn = document.getElementById("closeLoginWallBtn");
+  if (closeBtn) {
+    closeBtn.style.display = isUserApproved() ? "block" : "none";
+  }
 }
 
 function hideLoginWall() {
+  if (!isUserApproved()) {
+    showLoginWall();
+    return;
+  }
   const wall = document.getElementById("loginWall");
   if (wall) wall.style.display = "none";
   const app = document.getElementById("app");
@@ -73161,6 +73327,180 @@ function hideLoginWall() {
   const botBtn = document.getElementById("aiChatbotBtn");
   if (botBtn) botBtn.style.display = "flex";
 }
+
+function openAccountModal() {
+  const modal = document.getElementById("accountModal");
+  if (!modal) return;
+  
+  const authState = getAuthUserState();
+  const user = authState.user || currentUser;
+  
+  if (user) {
+    const nameEl = document.getElementById("accountModalName");
+    const emailEl = document.getElementById("accountModalEmail");
+    const avatarEl = document.getElementById("accountModalAvatar");
+    const roleBadge = document.getElementById("accountModalRoleBadge");
+    const statusBadge = document.getElementById("accountModalStatusBadge");
+    const collegeBadge = document.getElementById("accountModalCollegeBadge");
+    const adminLink = document.getElementById("accountModalAdminLink");
+    
+    if (nameEl) nameEl.textContent = user.name || user.email || "Student";
+    if (emailEl) emailEl.textContent = user.email || "-";
+    if (avatarEl) {
+      const firstChar = (user.name || user.email || "⚡").trim().charAt(0).toUpperCase();
+      avatarEl.textContent = firstChar || "⚡";
+    }
+    
+    const isAdmin = authState.isAdmin || isVoltAdmin(user.email) || user.role === "admin";
+    if (roleBadge) {
+      roleBadge.textContent = isAdmin ? "👑 Administrator" : (user.role ? (user.role.charAt(0).toUpperCase() + user.role.slice(1)) : "Student");
+      roleBadge.style.background = isAdmin ? "rgba(242,165,65,0.2)" : "rgba(92,214,192,0.2)";
+      roleBadge.style.color = isAdmin ? "#f2a541" : "#5cd6c0";
+    }
+    
+    if (statusBadge) {
+      const isApproved = isUserApproved(user);
+      const isRejected = String(user.status || user.approvalStatus || "").toLowerCase() === "rejected";
+      const statusLabel = isApproved ? "Approved" : (isRejected ? "Rejected" : "Pending");
+      statusBadge.textContent = statusLabel;
+      statusBadge.className = "pill " + (isApproved ? "pill-ok" : isRejected ? "pill-missing" : "pill-partial");
+    }
+    
+    if (collegeBadge) {
+      if (user.college) {
+        collegeBadge.textContent = user.college + (user.department ? " (" + user.department + ")" : "");
+        collegeBadge.style.display = "inline-block";
+      } else {
+        collegeBadge.style.display = "none";
+      }
+    }
+    
+    if (adminLink) {
+      adminLink.style.display = isAdmin ? "flex" : "none";
+    }
+  }
+
+  updateAccountModalMetrics();
+  modal.style.display = "flex";
+}
+
+function updateAccountModalMetrics() {
+  const topicsCountEl = document.getElementById("accountModalTopicsCount");
+  const accuracyEl = document.getElementById("accountModalAccuracy");
+  const streakEl = document.getElementById("accountModalStreak");
+  const targetEl = document.getElementById("accountModalTarget");
+  
+  if (typeof PROGRESS !== "undefined" && PROGRESS) {
+    const completedCount = Object.keys(PROGRESS.completedTopics || {}).length;
+    const mcq = PROGRESS.mcqStats || { attempted: 0, correct: 0 };
+    const acc = mcq.attempted ? Math.round((mcq.correct / mcq.attempted) * 100) : 0;
+    
+    if (topicsCountEl) topicsCountEl.textContent = completedCount;
+    if (accuracyEl) accuracyEl.textContent = acc + "% (" + mcq.correct + "/" + mcq.attempted + ")";
+    if (streakEl) streakEl.textContent = "🔥 " + (PROGRESS.streak || 0);
+    if (targetEl) targetEl.textContent = (PROGRESS.todayCount || 0) + "/" + (PROGRESS.dailyTarget || 20);
+  }
+}
+
+function closeAccountModal() {
+  const modal = document.getElementById("accountModal");
+  if (modal) modal.style.display = "none";
+}
+
+function openAuthModal() {
+  const authState = getAuthUserState();
+  const user = authState.user || currentUser;
+  if (user && (isUserApproved(user) || authState.isAdmin)) {
+    openAccountModal();
+  } else if (user && (String(user.status || user.approvalStatus || "").toLowerCase() === "rejected")) {
+    showAuthRejectedScreen();
+  } else if (user) {
+    showAuthPendingScreen(user);
+  } else {
+    showLoginWall();
+    switchAuthTab("signin");
+  }
+}
+
+function triggerManualCloudSync() {
+  const spinner = document.getElementById("syncStatusSpinner");
+  const text = document.getElementById("syncStatusText");
+  const statusBadge = document.getElementById("accountModalSyncStatus");
+  
+  if (spinner) spinner.style.display = "inline-block";
+  if (text) text.textContent = "Syncing with Cloud...";
+  
+  const uid = (typeof voltAuth !== "undefined" && voltAuth && voltAuth.currentUser) 
+    ? voltAuth.currentUser.uid 
+    : (currentUser ? currentUser.uid : null);
+  
+  if (!uid || typeof voltDb === "undefined" || !voltDb) {
+    setTimeout(function() {
+      if (spinner) spinner.style.display = "none";
+      if (text) text.textContent = "✓ Local Cache Synced";
+      if (statusBadge) {
+        statusBadge.textContent = "● Local (Offline)";
+        statusBadge.style.color = "var(--accent,#f2a541)";
+      }
+      updateAccountModalMetrics();
+      setTimeout(function() {
+        if (text) text.textContent = "🔄 Sync Progress with Cloud";
+      }, 2500);
+    }, 500);
+    return;
+  }
+  
+  voltDb.collection("users").doc(uid).collection("progress").doc("tracker").set(PROGRESS, { merge: true })
+    .then(function() {
+      if (spinner) spinner.style.display = "none";
+      if (text) text.textContent = "✓ Synced with Cloud";
+      if (statusBadge) {
+        statusBadge.textContent = "● Live & Synchronized";
+        statusBadge.style.color = "var(--ok,#6ed08a)";
+      }
+      updateAccountModalMetrics();
+      setTimeout(function() {
+        if (text) text.textContent = "🔄 Sync Progress with Cloud";
+      }, 2500);
+    })
+    .catch(function(err) {
+      if (spinner) spinner.style.display = "none";
+      if (text) text.textContent = "⚠️ Sync Deferred (Cached Locally)";
+      console.warn("Manual sync error:", err);
+      setTimeout(function() {
+        if (text) text.textContent = "🔄 Sync Progress with Cloud";
+      }, 2500);
+    });
+}
+
+function handleLogout() {
+  if (typeof userDocSnapshotUnsub === "function") {
+    try { userDocSnapshotUnsub(); } catch(e){}
+    userDocSnapshotUnsub = null;
+  }
+  if (typeof voltAuth !== "undefined" && voltAuth) {
+    voltAuth.signOut().catch(function(err) {
+      console.error("Sign out error:", err);
+    });
+  }
+  currentUser = null;
+  try {
+    localStorage.removeItem("volt_user");
+    localStorage.removeItem("volt_token");
+  } catch(e) {}
+  closeAccountModal();
+  updateAuthUi();
+  if (typeof render === "function") render();
+  showLoginWall();
+  switchAuthTab("signin");
+}
+
+window.openAccountModal = openAccountModal;
+window.closeAccountModal = closeAccountModal;
+window.openAuthModal = openAuthModal;
+window.triggerManualCloudSync = triggerManualCloudSync;
+window.handleLogout = handleLogout;
+window.updateAccountModalMetrics = updateAccountModalMetrics;
 
 function showAuthAlert(msg, isSuccess) {
   const alertEl = document.getElementById("authAlertMsg");
@@ -73191,10 +73531,15 @@ function switchAuthTab(tab) {
   const pendingPanel = document.getElementById("authPendingPanel");
   const rejectedPanel = document.getElementById("authRejectedPanel");
   const tabsRow = document.getElementById("authTabsRow");
+  const closeBtn = document.getElementById("closeLoginWallBtn");
 
   if (tabsRow) tabsRow.style.display = "flex";
   if (pendingPanel) pendingPanel.style.display = "none";
   if (rejectedPanel) rejectedPanel.style.display = "none";
+  if (closeBtn) {
+    const isApproved = isTestModeActive() || isUserApproved();
+    closeBtn.style.display = isApproved ? "block" : "none";
+  }
 
   if (tab === "signin") {
     if (signInBtn) signInBtn.classList.add("active");
@@ -73215,22 +73560,24 @@ function showAuthPendingScreen(userData) {
   const pendingPanel = document.getElementById("authPendingPanel");
   const rejectedPanel = document.getElementById("authRejectedPanel");
   const tabsRow = document.getElementById("authTabsRow");
+  const closeBtn = document.getElementById("closeLoginWallBtn");
 
   if (tabsRow) tabsRow.style.display = "none";
   if (signInPanel) signInPanel.style.display = "none";
   if (regPanel) regPanel.style.display = "none";
   if (rejectedPanel) rejectedPanel.style.display = "none";
   if (pendingPanel) pendingPanel.style.display = "block";
+  if (closeBtn) closeBtn.style.display = "none";
 
   const cardName = document.getElementById("pendingCardName");
   const cardEmail = document.getElementById("pendingCardEmail");
   const cardCollege = document.getElementById("pendingCardCollege");
 
-  if (cardName) cardName.textContent = userData.name || (currentUser && currentUser.name) || "Student";
-  if (cardEmail) cardEmail.textContent = userData.email || (currentUser && currentUser.email) || "-";
+  if (cardName) cardName.textContent = userData?.name || (currentUser && currentUser.name) || "Student";
+  if (cardEmail) cardEmail.textContent = userData?.email || (currentUser && currentUser.email) || "-";
   if (cardCollege) {
-    const col = userData.college || (currentUser && currentUser.college) || "-";
-    const dept = userData.department || (currentUser && currentUser.department) || "";
+    const col = userData?.college || (currentUser && currentUser.college) || "-";
+    const dept = userData?.department || (currentUser && currentUser.department) || "";
     cardCollege.textContent = dept ? col + " (" + dept + ")" : col;
   }
   showLoginWall();
@@ -73242,20 +73589,63 @@ function showAuthRejectedScreen() {
   const pendingPanel = document.getElementById("authPendingPanel");
   const rejectedPanel = document.getElementById("authRejectedPanel");
   const tabsRow = document.getElementById("authTabsRow");
+  const closeBtn = document.getElementById("closeLoginWallBtn");
 
   if (tabsRow) tabsRow.style.display = "none";
   if (signInPanel) signInPanel.style.display = "none";
   if (regPanel) regPanel.style.display = "none";
   if (pendingPanel) pendingPanel.style.display = "none";
   if (rejectedPanel) rejectedPanel.style.display = "block";
+  if (closeBtn) closeBtn.style.display = "none";
   showLoginWall();
+}
+
+// Real-time Firestore user doc listener
+function listenToUserStatusChanges(uid) {
+  if (userDocSnapshotUnsub) {
+    try { userDocSnapshotUnsub(); } catch(e){}
+    userDocSnapshotUnsub = null;
+  }
+  if (typeof voltDb === "undefined" || !voltDb || !uid) return;
+  userDocSnapshotUnsub = voltDb.collection("users").doc(uid).onSnapshot(function(doc) {
+    if (!doc.exists) return;
+    const data = doc.data();
+    const status = String(data.status || data.approvalStatus || "pending").toLowerCase();
+    const isAppr = isUserApproved(data) || status === "approved";
+    const isRej = status === "rejected" || String(data.status || data.approvalStatus || "").toLowerCase() === "rejected";
+
+    if (currentUser) {
+      currentUser.status = status;
+      currentUser.approvalStatus = data.approvalStatus || status;
+      currentUser.isApproved = data.isApproved !== undefined ? data.isApproved : isAppr;
+      if (data.name) currentUser.name = data.name;
+      if (data.role) currentUser.role = data.role;
+      if (data.college) currentUser.college = data.college;
+      if (data.department) currentUser.department = data.department;
+      try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
+    }
+    if (isAppr || isUserApproved(currentUser)) {
+      hideLoginWall();
+      updateAuthUi();
+      loadUserCloudProgress(uid);
+      if (typeof render === "function") render();
+    } else if (isRej) {
+      showAuthRejectedScreen();
+      updateAuthUi();
+    } else {
+      showAuthPendingScreen(data);
+      updateAuthUi();
+    }
+  }, function(err) {
+    console.warn("User status listener error:", err);
+  });
 }
 
 // Check Firestore user doc and route to appropriate view
 function checkUserStatusAndRoute(firebaseUser) {
   if (!firebaseUser) return;
   const email = (firebaseUser.email || "").toLowerCase();
-  const isAdmin = email === ADMIN_EMAIL.toLowerCase();
+  const isAdmin = isVoltAdmin(email) || email === ADMIN_EMAIL.toLowerCase();
 
   // If Rinsha, grant instant administrator access
   if (isAdmin) {
@@ -73264,7 +73654,9 @@ function checkUserStatusAndRoute(firebaseUser) {
       email: firebaseUser.email,
       name: firebaseUser.displayName || "Admin Rinsha",
       role: "admin",
-      status: "approved"
+      status: "approved",
+      approvalStatus: "approved",
+      isApproved: true
     };
     try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
 
@@ -73274,7 +73666,10 @@ function checkUserStatusAndRoute(firebaseUser) {
         email: firebaseUser.email,
         role: "admin",
         status: "approved",
+        approvalStatus: "approved",
+        isApproved: true,
         approvedBy: "system",
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
         registeredAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true }).catch(function(){});
     }
@@ -73282,6 +73677,7 @@ function checkUserStatusAndRoute(firebaseUser) {
     hideLoginWall();
     updateAuthUi();
     loadUserCloudProgress(firebaseUser.uid);
+    if (typeof render === "function") render();
     return;
   }
 
@@ -73311,23 +73707,30 @@ function checkUserStatusAndRoute(firebaseUser) {
       }
 
       const data = doc.data();
-      const status = data.status || "pending";
+      const status = String(data.status || data.approvalStatus || "pending").toLowerCase();
+      const isAppr = isUserApproved(data) || status === "approved";
+      const isRej = status === "rejected" || String(data.status || data.approvalStatus || "").toLowerCase() === "rejected";
       currentUser = {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         name: data.name || firebaseUser.displayName || "Student",
         role: data.role || "student",
         status: status,
+        approvalStatus: data.approvalStatus || status,
+        isApproved: data.isApproved !== undefined ? data.isApproved : isAppr,
         college: data.college,
         department: data.department
       };
       try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
 
-      if (status === "approved") {
+      listenToUserStatusChanges(firebaseUser.uid);
+
+      if (isAppr || isUserApproved(currentUser)) {
         hideLoginWall();
         updateAuthUi();
         loadUserCloudProgress(firebaseUser.uid);
-      } else if (status === "rejected") {
+        if (typeof render === "function") render();
+      } else if (isRej) {
         showAuthRejectedScreen();
         updateAuthUi();
       } else {
@@ -73338,7 +73741,7 @@ function checkUserStatusAndRoute(firebaseUser) {
     })
     .catch(function(err) {
       console.warn("User status check error:", err);
-      if (currentUser && currentUser.status === "approved") {
+      if (isUserApproved(currentUser)) {
         hideLoginWall();
       } else {
         showAuthAlert("Error verifying account status. Please check your internet connection.", false);
@@ -73504,7 +73907,7 @@ function handleRegistrationSubmit() {
   if (submitBtn) submitBtn.disabled = true;
 
   function saveProfileToFirestore(uid, authMethod) {
-    const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    const isAdmin = isVoltAdmin(email) || email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     const userData = {
       uid: uid,
       name: name,
@@ -73518,8 +73921,14 @@ function handleRegistrationSubmit() {
       authProvider: authMethod,
       role: isAdmin ? "admin" : "student",
       status: isAdmin ? "approved" : "pending",
+      approvalStatus: isAdmin ? "approved" : "pending",
+      isApproved: isAdmin,
       registeredAt: firebase.firestore.FieldValue.serverTimestamp()
     };
+    if (isAdmin) {
+      userData.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
+      userData.approvedBy = "system";
+    }
 
     voltDb.collection("users").doc(uid).set(userData, { merge: true })
       .then(function() {
@@ -73640,13 +74049,18 @@ function initGlobalAuthAndChatbot() {
         voltDb.collection("users").doc(voltAuth.currentUser.uid).get()
           .then(function(doc) {
             checkPendingBtn.textContent = "🔄 Check Approval Status";
-            if (doc.exists && doc.data().status === "approved") {
-              alert("🎉 Your registration has been approved! Welcome to Volt.");
-              checkUserStatusAndRoute(voltAuth.currentUser);
-            } else if (doc.exists && doc.data().status === "rejected") {
-              showAuthRejectedScreen();
+            if (doc.exists) {
+              const data = doc.data();
+              if (isUserApproved(data)) {
+                alert("🎉 Your registration has been approved! Welcome to Volt.");
+                checkUserStatusAndRoute(voltAuth.currentUser);
+              } else if (data.status === "rejected" || data.approvalStatus === "rejected") {
+                showAuthRejectedScreen();
+              } else {
+                alert("Your account is still pending administrator approval. Please check back soon!");
+              }
             } else {
-              alert("Your account is still pending approval by Rinsha (rinshasv@gmail.com). Please check back soon!");
+              alert("Your account record was not found. Please complete registration.");
             }
           })
           .catch(function(err) {

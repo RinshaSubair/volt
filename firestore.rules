@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: Check if authenticated user is a Volt Administrator
+    function isAdmin() {
+      return request.auth != null && (
+        request.auth.token.email.lower() in [
+          'rinshasv@gmail.com',
+          'admin@volt.edu',
+          'admin@volt.io',
+          'rinshahrinsha2004@gmail.com',
+          'rinshads2006@gmail.com',
+          'arunv2006@gmail.com',
+          'rinsha@gmail.com',
+          'rinshamuhammed098@gmail.com'
+        ] ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // Helper: Check if user is approved
+    function isApprovedUser() {
+      return request.auth != null && (
+        isAdmin() ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approvalStatus == 'approved' ||
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isApproved == true
+        ))
+      );
+    }
+
+    // ===============================================================
+    // USERS COLLECTION (Registrations, Profiles, Approval Status)
+    // ===============================================================
+    match /users/{userId} {
+      // Allow reading user document: user themselves or any Volt admin
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+
+      // Allow creating user document on registration:
+      // Admins can create with any status; students must create with status 'pending' and role 'student'
+      allow create: if request.auth != null && request.auth.uid == userId && (
+        isAdmin() ||
+        (
+          request.resource.data.role == 'student' &&
+          request.resource.data.status == 'pending' &&
+          (!('isApproved' in request.resource.data) || request.resource.data.isApproved == false)
+        )
+      );
+
+      // Allow updating user document:
+      // Admins can approve/reject and edit all fields;
+      // Normal students cannot escalate privileges or self-approve.
+      allow update: if request.auth != null && (
+        isAdmin() ||
+        (
+          request.auth.uid == userId &&
+          // Prevent students from altering administrative fields
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+            'role', 'status', 'approvalStatus', 'isApproved', 'approvedAt', 'approvedBy'
+          ])
+        )
+      );
+
+      // Allow deletion only by administrator
+      allow delete: if isAdmin();
+    }
+
+    // ===============================================================
+    // QUESTIONS COLLECTION (MCQ Bank & Question Management)
+    // ===============================================================
+    match /questions/{questionId} {
+      // Questions can be read by approved users or admins
+      allow read: if isApprovedUser();
+
+      // Only administrators can create, update, or delete questions
+      allow write: if isAdmin();
+    }
+
+    // ===============================================================
+    // PROGRESS COLLECTION (Student Scores, Completed Topics, Streaks)
+    // ===============================================================
+    match /progress/{userId} {
+      // Students can read their own progress; admins can review any student's progress
+      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+
+      // Students can update their own study progress
+      allow write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    }
+
+    // ===============================================================
+    // DEFAULT DENY ALL OTHER COLLECTIONS
+    // ===============================================================
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

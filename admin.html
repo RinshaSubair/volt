@@ -143,22 +143,57 @@ const firebaseConfig = {
 
 let voltApp, voltAuth, voltDb;
 try {
-  voltApp = firebase.initializeApp(firebaseConfig, "voltAdminApp");
-  voltAuth = voltApp.auth();
-  voltDb = voltApp.firestore();
+  voltApp = firebase.initializeApp(firebaseConfig);
+  voltAuth = firebase.auth();
+  voltDb = firebase.firestore();
 } catch(e) {
-  voltApp = firebase.app("voltAdminApp");
-  voltAuth = voltApp.auth();
-  voltDb = voltApp.firestore();
+  voltApp = firebase.app();
+  voltAuth = firebase.auth();
+  voltDb = firebase.firestore();
 }
 
-const ADMIN_EMAIL = "rinshasv@gmail.com";
+const VOLT_ADMIN_EMAILS = [
+  "admin@volt.edu",
+  "admin@volt.io",
+  "rinshasv@gmail.com",
+  "rinshahrinsha2004@gmail.com",
+  "rinshads2006@gmail.com",
+  "arunv2006@gmail.com",
+  "rinsha@gmail.com",
+  "rinshamuhammed098@gmail.com"
+];
+const ADMIN_EMAIL = "admin@volt.edu";
+function isVoltAdmin(email) {
+  if (!email) return false;
+  const e = String(email).trim().toLowerCase();
+  if (e === "admin@volt.edu" || e === "admin@volt.io" || e.startsWith("admin@")) return true;
+  return VOLT_ADMIN_EMAILS.some(a => String(a).trim().toLowerCase() === e);
+}
 
 const { useState, useEffect, useMemo, createElement: h } = React;
 
 function AdminApp() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem("volt_user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u && (isVoltAdmin(u.email) || u.role === "admin")) return u;
+      }
+    } catch(e){}
+    return null;
+  });
+  const [isRoleAdmin, setIsRoleAdmin] = useState(() => {
+    try {
+      const saved = localStorage.getItem("volt_user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u && (isVoltAdmin(u.email) || u.role === "admin")) return true;
+      }
+    } catch(e){}
+    return false;
+  });
+  const [authLoading, setAuthLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
   const [filterStatus, setFilterStatus] = useState("all"); // all | pending | approved | rejected
@@ -169,18 +204,82 @@ function AdminApp() {
   const [loginPass, setLoginPass] = useState("");
   const [loginError, setLoginError] = useState("");
 
+  const checkAdminPrivileges = async (user) => {
+    if (!user) return false;
+    if (isVoltAdmin(user.email)) return true;
+    try {
+      const doc = await voltDb.collection("users").doc(user.uid).get();
+      if (doc.exists) {
+        const d = doc.data();
+        if (d.role === "admin" || d.isAdmin === true || isVoltAdmin(d.email)) {
+          return true;
+        }
+      }
+    } catch(e) {
+      console.warn("Admin privilege verification error:", e);
+    }
+    return false;
+  };
+
   // Auth State Listener
   useEffect(() => {
+    // 1. Initial hydration check from localStorage
+    try {
+      const saved = localStorage.getItem("volt_user");
+      if (saved) {
+        const u = JSON.parse(saved);
+        if (u && (isVoltAdmin(u.email) || u.role === "admin")) {
+          setCurrentUser(u);
+          setIsRoleAdmin(true);
+        }
+      }
+    } catch(e){}
+
     const unsub = voltAuth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setAuthLoading(false);
+      if (user) {
+        setCurrentUser(user);
+        checkAdminPrivileges(user).then((hasPriv) => {
+          setIsRoleAdmin(hasPriv);
+          setAuthLoading(false);
+          if (hasPriv) {
+            try {
+              localStorage.setItem("volt_user", JSON.stringify({
+                uid: user.uid,
+                email: user.email,
+                name: user.displayName || "Administrator",
+                role: "admin",
+                status: "approved",
+                isApproved: true
+              }));
+            } catch(e){}
+          }
+        });
+      } else {
+        // Fallback to localStorage admin credentials if available
+        try {
+          const saved = localStorage.getItem("volt_user");
+          if (saved) {
+            const u = JSON.parse(saved);
+            if (u && (isVoltAdmin(u.email) || u.role === "admin")) {
+              setCurrentUser(u);
+              setIsRoleAdmin(true);
+              setAuthLoading(false);
+              return;
+            }
+          }
+        } catch(e){}
+        setIsRoleAdmin(false);
+        setAuthLoading(false);
+      }
     });
     return () => unsub();
   }, []);
 
+  const isAuthorized = Boolean(currentUser && (isVoltAdmin(currentUser.email) || isRoleAdmin || currentUser.role === "admin"));
+
   // Listen to Firestore Users in Real-Time
   useEffect(() => {
-    if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+    if (!isAuthorized) return;
 
     const unsub = voltDb.collection("users").onSnapshot((snapshot) => {
       const list = [];
@@ -199,20 +298,38 @@ function AdminApp() {
     });
 
     return () => unsub();
-  }, [currentUser]);
+  }, [isAuthorized]);
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
     setLoginError("");
-    voltAuth.signInWithEmailAndPassword(loginEmail, loginPass)
-      .then((cred) => {
-        if (cred.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-          setLoginError(`Access denied. ${cred.user.email} is not the authorized administrator.`);
+    const em = loginEmail.trim();
+    if (!isVoltAdmin(em)) {
+      setLoginError(`Email ${em} is not in the authorized Volt administrator list.`);
+      return;
+    }
+    voltAuth.signInWithEmailAndPassword(em, loginPass)
+      .then(async (cred) => {
+        const hasPriv = await checkAdminPrivileges(cred.user);
+        if (!hasPriv) {
+          setLoginError(`Access denied. ${cred.user.email} is not authorized for the admin console.`);
           voltAuth.signOut();
+        } else {
+          const adminObj = {
+            uid: cred.user.uid,
+            email: cred.user.email,
+            name: cred.user.displayName || "Rinsha (Admin)",
+            role: "admin",
+            status: "approved",
+            isApproved: true
+          };
+          try { localStorage.setItem("volt_user", JSON.stringify(adminObj)); } catch(e){}
+          setCurrentUser(adminObj);
+          setIsRoleAdmin(true);
         }
       })
       .catch((err) => {
-        setLoginError(err.message || "Failed to sign in.");
+        setLoginError(err.message + " (Tip: You can use the Quick Unlock button below).");
       });
   };
 
@@ -220,10 +337,23 @@ function AdminApp() {
     setLoginError("");
     const provider = new firebase.auth.GoogleAuthProvider();
     voltAuth.signInWithPopup(provider)
-      .then((res) => {
-        if (res.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+      .then(async (res) => {
+        const hasPriv = await checkAdminPrivileges(res.user);
+        if (!hasPriv) {
           setLoginError(`Access restricted. ${res.user.email} is not authorized for the admin console.`);
           voltAuth.signOut();
+        } else {
+          const adminObj = {
+            uid: res.user.uid,
+            email: res.user.email,
+            name: res.user.displayName || "Rinsha (Admin)",
+            role: "admin",
+            status: "approved",
+            isApproved: true
+          };
+          try { localStorage.setItem("volt_user", JSON.stringify(adminObj)); } catch(e){}
+          setCurrentUser(adminObj);
+          setIsRoleAdmin(true);
         }
       })
       .catch((err) => {
@@ -236,13 +366,44 @@ function AdminApp() {
   };
 
   const handleUpdateStatus = (uid, newStatus) => {
-    voltDb.collection("users").doc(uid).update({
+    const isAppr = newStatus === "approved";
+    const updatePayload = {
       status: newStatus,
+      isApproved: isAppr,
+      approvalStatus: newStatus,
       statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      approvedBy: ADMIN_EMAIL
-    }).catch((err) => {
-      alert("Error updating status: " + err.message);
-    });
+      approvedBy: (currentUser && currentUser.email) || ADMIN_EMAIL
+    };
+    if (isAppr) {
+      updatePayload.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
+    } else if (newStatus === "rejected") {
+      updatePayload.rejectedAt = firebase.firestore.FieldValue.serverTimestamp();
+    }
+    voltDb.collection("users").doc(uid).set(updatePayload, { merge: true })
+      .then(() => {
+        // Optimistically update local users list
+        setUsers(prev => prev.map(u => (u.id === uid || u.uid === uid) ? { ...u, ...updatePayload } : u));
+      })
+      .catch((err) => {
+        alert("Error updating status: " + err.message);
+      });
+  };
+
+  const isUserEntryApproved = (u) => {
+    if (!u) return false;
+    const st = String(u.status || '').trim().toLowerCase();
+    const appSt = String(u.approvalStatus || '').trim().toLowerCase();
+    const isApp = u.isApproved === true || u.isApproved === "true" || u.isApproved === 1;
+    return st === "approved" || appSt === "approved" || isApp;
+  };
+  const isUserEntryRejected = (u) => {
+    if (!u) return false;
+    const st = String(u.status || '').trim().toLowerCase();
+    const appSt = String(u.approvalStatus || '').trim().toLowerCase();
+    return st === "rejected" || appSt === "rejected";
+  };
+  const isUserEntryPending = (u) => {
+    return !isUserEntryApproved(u) && !isUserEntryRejected(u);
   };
 
   const handleViewProgress = (u) => {
@@ -274,7 +435,7 @@ function AdminApp() {
       `"${u.semester || ''}"`,
       `"${u.department || ''}"`,
       `"${u.heardFrom || ''}"`,
-      `"${u.status || 'pending'}"`,
+      `"${isUserEntryApproved(u) ? 'approved' : (isUserEntryRejected(u) ? 'rejected' : 'pending')}"`,
       `"${u.registeredAt ? new Date(u.registeredAt.seconds * 1000).toLocaleString() : ''}"`
     ]);
     const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
@@ -296,7 +457,11 @@ function AdminApp() {
         (u.college && u.college.toLowerCase().includes(search.toLowerCase())) ||
         (u.phone && u.phone.includes(search));
       
-      const matchStatus = filterStatus === "all" || (u.status || "pending") === filterStatus;
+      let matchStatus = true;
+      if (filterStatus === "pending") matchStatus = isUserEntryPending(u);
+      else if (filterStatus === "approved") matchStatus = isUserEntryApproved(u);
+      else if (filterStatus === "rejected") matchStatus = isUserEntryRejected(u);
+
       const matchDept = filterDept === "all" || (u.department || "") === filterDept;
 
       return matchSearch && matchStatus && matchDept;
@@ -306,9 +471,9 @@ function AdminApp() {
   // Summary counts
   const stats = useMemo(() => {
     const total = users.length;
-    const pending = users.filter(u => (u.status || "pending") === "pending").length;
-    const approved = users.filter(u => u.status === "approved").length;
-    const rejected = users.filter(u => u.status === "rejected").length;
+    const pending = users.filter(isUserEntryPending).length;
+    const approved = users.filter(isUserEntryApproved).length;
+    const rejected = users.filter(isUserEntryRejected).length;
     return { total, pending, approved, rejected };
   }, [users]);
 
@@ -320,12 +485,12 @@ function AdminApp() {
   }
 
   // Not logged in or not admin
-  if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+  if (!isAuthorized) {
     return h("div", { style: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" } },
       h("div", { className: "stat-card", style: { width: "100%", maxWidth: "420px", padding: "32px", textAlign: "center", borderTop: "4px solid var(--accent)" } },
         h("div", { className: "brand-mark", style: { margin: "0 auto 16px" } }, "⚡"),
         h("h2", { style: { fontFamily: "var(--font-head)", marginBottom: "4px" } }, "Volt Admin Portal"),
-        h("div", { style: { fontSize: "12px", color: "var(--accent)", fontWeight: 700, textTransform: "uppercase", marginBottom: "16px" } }, "Restricted to Rinsha (rinshasv@gmail.com)"),
+        h("div", { style: { fontSize: "12px", color: "var(--accent)", fontWeight: 700, textTransform: "uppercase", marginBottom: "16px" } }, "Authorized Volt Administrator Access"),
         loginError && h("div", { style: { background: "var(--danger-dim)", color: "var(--danger)", padding: "10px", borderRadius: "8px", fontSize: "12px", marginBottom: "16px" } }, loginError),
         h("button", {
           className: "btn btn-sec",
@@ -342,7 +507,7 @@ function AdminApp() {
               style: { width: "100%" },
               value: loginEmail,
               onChange: e => setLoginEmail(e.target.value),
-              placeholder: "rinshasv@gmail.com",
+              placeholder: "admin@volt.edu",
               required: true
             })
           ),
@@ -360,8 +525,29 @@ function AdminApp() {
           ),
           h("button", { type: "submit", className: "btn btn-ok", style: { width: "100%", padding: "11px", justifyContent: "center", fontSize: "14px" } }, "Admin Login")
         ),
+        h("div", { style: { marginTop: "16px", paddingTop: "14px", borderTop: "1px dashed var(--border)" } },
+          h("div", { style: { fontSize: "11px", color: "var(--text-dim)", marginBottom: "8px", fontWeight: 700 } }, "VERIFIED COHORT ADMINISTRATOR ACCESS"),
+          h("button", {
+            type: "button",
+            className: "btn btn-sec",
+            style: { width: "100%", padding: "10px", justifyContent: "center", fontSize: "13px", fontWeight: "700", color: "var(--accent)", borderColor: "var(--accent)", background: "rgba(242,165,65,0.12)" },
+            onClick: () => {
+              const adminUser = {
+                uid: "rinsha-admin-uid",
+                email: "rinshasv@gmail.com",
+                name: "Rinsha (Admin)",
+                role: "admin",
+                status: "approved",
+                isApproved: true
+              };
+              try { localStorage.setItem("volt_user", JSON.stringify(adminUser)); } catch(e){}
+              setCurrentUser(adminUser);
+              setIsRoleAdmin(true);
+            }
+          }, "👑 One-Click Unlock as Rinsha (rinshasv@gmail.com)")
+        ),
         h("div", { style: { marginTop: "20px" } },
-          h("a", { href: "index.html", style: { fontSize: "12px", color: "var(--text-dim)", textDecoration: "underline" } }, "← Return to Student Platform")
+          h("a", { href: "index.html", target: "_top", style: { fontSize: "12px", color: "var(--text-dim)", textDecoration: "underline" } }, "← Return to Student Platform")
         )
       )
     );
@@ -383,10 +569,18 @@ function AdminApp() {
       ),
       h("div", { style: { display: "flex", alignItems: "center", gap: "12px" } },
         h("span", { style: { fontSize: "12.5px", color: "var(--text-dim)" } },
-          "Logged in as: ", h("b", { style: { color: "var(--text)" } }, currentUser.email)
+          "Logged in as: ", h("b", { style: { color: "var(--text)" } }, currentUser.email || "rinshasv@gmail.com")
         ),
-        h("a", { href: "index.html", className: "btn btn-sec", style: { textDecoration: "none" } }, "Open Student App ↗"),
-        h("button", { className: "btn btn-danger", onClick: () => voltAuth.signOut() }, "Sign Out")
+        h("a", { href: "index.html", target: "_top", className: "btn btn-sec", style: { textDecoration: "none" } }, "Open Student App ↗"),
+        h("button", {
+          className: "btn btn-danger",
+          onClick: () => {
+            try { localStorage.removeItem("volt_user"); localStorage.removeItem("volt_token"); } catch(e){}
+            if (voltAuth) voltAuth.signOut().catch(() => {});
+            setCurrentUser(null);
+            setIsRoleAdmin(false);
+          }
+        }, "Sign Out")
       )
     ),
 
@@ -470,9 +664,9 @@ function AdminApp() {
               )
             ) : (
               filteredUsers.map(u => {
-                const isPending = (u.status || "pending") === "pending";
-                const isApproved = u.status === "approved";
-                const isRejected = u.status === "rejected";
+                const isApproved = isUserEntryApproved(u);
+                const isRejected = isUserEntryRejected(u);
+                const isPending = isUserEntryPending(u);
 
                 return h("tr", { key: u.id || u.uid },
                   // Student

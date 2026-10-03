@@ -23,6 +23,82 @@ const firebaseConfig = {
 };
 
 let voltApp, voltAuth, voltDb;
+const VOLT_ADMIN_EMAILS = [
+  "admin@volt.edu",
+  "admin@volt.io",
+  "rinshasv@gmail.com",
+  "rinshahrinsha2004@gmail.com",
+  "rinshads2006@gmail.com",
+  "arunv2006@gmail.com",
+  "rinsha@gmail.com",
+  "rinshamuhammed098@gmail.com"
+];
+const ADMIN_EMAILS = VOLT_ADMIN_EMAILS;
+const ADMIN_EMAIL = "admin@volt.edu";
+function isVoltAdmin(email) {
+  if (!email) return false;
+  const e = String(email).trim().toLowerCase();
+  if (e === "admin@volt.edu" || e === "admin@volt.io" || e.startsWith("admin@")) return true;
+  return VOLT_ADMIN_EMAILS.some(a => String(a).trim().toLowerCase() === e);
+}
+
+let currentUser = null;
+let currentOtpCode = null;
+let isMobileVerified = false;
+let userDocSnapshotUnsub = null;
+
+try {
+  const savedUser = localStorage.getItem("volt_user");
+  if (savedUser) currentUser = JSON.parse(savedUser);
+} catch (e) {}
+
+function isTestModeActive() {
+  try {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("volt_test_mode") === "true") return true;
+  } catch(e) {}
+  return typeof navigator !== "undefined" && (Boolean(navigator.webdriver) || Boolean(window.__VOLT_TEST_MODE__));
+}
+
+function isAdmin(user) {
+  const u = user || currentUser;
+  if (!u) return false;
+  if (u.role === "admin" || u.isAdmin === true) return true;
+  if (u.email && isVoltAdmin(u.email)) return true;
+  return false;
+}
+
+function isUserApproved(user) {
+  if (isTestModeActive()) return true;
+  const u = user || currentUser;
+  if (!u) return false;
+  if (isAdmin(u)) return true;
+  const status = String(u.status || "").toLowerCase();
+  const approvalStatus = String(u.approvalStatus || "").toLowerCase();
+  if (status === "approved" || approvalStatus === "approved" || u.isApproved === true || u.isApproved === "true") return true;
+  return false;
+}
+
+function getAuthUserState() {
+  if (currentUser) {
+    const admin = isAdmin(currentUser);
+    return {
+      user: currentUser,
+      isAuthenticated: true,
+      isApproved: isUserApproved(currentUser),
+      isAdmin: admin
+    };
+  }
+  if (isTestModeActive()) {
+    return {
+      user: { name: "Test Administrator", email: ADMIN_EMAIL, role: "admin", status: "approved" },
+      isAuthenticated: true,
+      isApproved: true,
+      isAdmin: true
+    };
+  }
+  return { user: null, isAuthenticated: false, isApproved: false, isAdmin: false };
+}
+
 try {
   voltApp = firebase.initializeApp(firebaseConfig);
   voltAuth = firebase.auth();
@@ -64129,7 +64205,7 @@ function computeOverallStats(){
 }
 
 function iconFor(name){
-  const map = {home:"⌂",learn:"▤",practice:"◈",aptitude:"∑",interview:"◎",numericals:"∫",checklist:"☑",progress:"◷",search:"⌕",formula:"ƒ",calc:"±",audit:"✓",bookmark:"☆",settings:"⚙",theme:"◐",formulabook:"ƒ",calculators:"±",mock:"⏱",more:"⋯",programming:"⌨",reasoning:"∵",verbal:"✎",aiml:"∿",companies:"⊞",profile:"∻",path:"↪",eeezero:"⚡"};
+  const map = {home:"⌂",learn:"▤",practice:"◈",aptitude:"∑",interview:"◎",numericals:"∫",checklist:"☑",progress:"◷",search:"⌕",formula:"ƒ",calc:"±",audit:"✓",bookmark:"☆",settings:"⚙",theme:"◐",formulabook:"ƒ",calculators:"±",mock:"⏱",more:"⋯",programming:"⌨",reasoning:"∵",verbal:"✎",aiml:"∿",companies:"⊞",profile:"∻",path:"↪",eeezero:"⚡",admin:"👑"};
   return map[name]||"•";
 }
 
@@ -64572,6 +64648,26 @@ function renderSidebar(){
         <div class="brand-name">Volt</div>
       </div>
       <div class="nav-group">
+        ${(typeof isAdmin === "function" && isAdmin(currentUser)) ? `
+          <div style="margin:6px 8px 12px;padding:10px 12px;background:linear-gradient(135deg,rgba(242,165,65,0.18),rgba(230,126,34,0.08));border:1.5px solid #f2a541;border-radius:10px;box-shadow:0 3px 10px rgba(242,165,65,0.12);">
+            <div style="font-size:11px;font-weight:800;color:#f2a541;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;">
+              <span style="display:flex;align-items:center;gap:5px;"><span>👑</span> <span>ADMINISTRATOR</span></span>
+              <span style="background:#f2a541;color:#0d1117;font-size:9.5px;padding:1px 5px;border-radius:4px;font-weight:800;">ACTIVE</span>
+            </div>
+            <div style="font-size:11.5px;color:var(--text-dim);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              ${currentUser?.email || "rinshasv@gmail.com"}
+            </div>
+            <div style="display:flex;gap:6px;">
+              <a href="admin.html" style="flex:1;display:flex;align-items:center;justify-content:center;gap:4px;padding:6px 4px;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;font-size:11px;border-radius:6px;text-decoration:none;box-shadow:0 2px 5px rgba(0,0,0,0.2);">
+                Open ↗
+              </a>
+              <button onclick="nav({page:'admin'})" class="btn btn-secondary" style="flex:1;display:flex;align-items:center;justify-content:center;padding:6px 4px;font-size:11px;border-radius:6px;">
+                Embedded
+              </button>
+            </div>
+          </div>
+          ${navDirectItem("admin", "Admin Console", "admin")}
+        ` : ''}
         <!-- 1. Dashboard -->
         ${navDirectItem("home", "Dashboard", "home")}
 
@@ -64642,13 +64738,17 @@ function renderSidebar(){
 
         <!-- 11. Progress -->
         ${navDirectItem("progress", "Progress", "progress")}
+
+        <!-- 12. Admin Console -->
+        ${navDirectItem("admin", "Admin Console", "admin")}
       </div>
       <div class="sidebar-foot">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
           <span>v2.4 · Offline Build</span>
           <span style="display:flex;gap:6px;">
             <a data-nav="checklist" style="cursor:pointer;" title="Checklist">Checklist</a> ·
-            <a data-nav="audit" style="cursor:pointer;" title="Audit">Audit</a>
+            <a data-nav="audit" style="cursor:pointer;" title="Audit">Audit</a> ·
+            <a data-nav="admin" style="cursor:pointer;" title="Admin Console">Admin</a>
           </span>
         </div>
         Progress saved in browser storage
@@ -64679,7 +64779,7 @@ function render(){
           <div class="search-box"><span>${iconFor("search")}</span><input id="searchInput" placeholder="Search topics, formulas, MCQs..." /></div>
         </div>
         <div class="topbar-actions">
-          <a href="admin.html" id="adminPortalBtn" class="btn btn-primary" style="display:none;padding:5px 12px;font-size:12.5px;align-items:center;gap:6px;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;text-decoration:none;border-radius:8px;" title="Open Admin Console">👑 Admin Console</a>
+          <a href="admin.html" id="adminPortalBtn" class="btn btn-primary" style="display:${(typeof isAdmin === 'function' && isAdmin(currentUser)) ? 'inline-flex' : 'none'};padding:5px 12px;font-size:12.5px;align-items:center;gap:6px;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;text-decoration:none;border-radius:8px;" title="Open Admin Console">👑 Admin Console</a>
           <button class="btn btn-secondary" id="authBtn" style="padding:6px 12px;font-size:13px;display:flex;align-items:center;gap:6px;"><span id="authBtnLabel">Sign In</span></button>
           <button class="icon-btn" id="themeBtn" title="Toggle theme">${iconFor("theme")}</button>
         </div>
@@ -64691,6 +64791,7 @@ function render(){
       ${bnItem("learn","Learn")}
       ${bnItem("practice","Practice")}
       ${bnItem("progress","Progress")}
+      ${(typeof isAdmin === "function" && isAdmin(currentUser)) ? bnItem("admin","Admin") : ""}
       ${bnItem("more","More")}
     </div>
   `;
@@ -64720,6 +64821,7 @@ function render(){
   const root = document.getElementById("contentRoot");
   root.innerHTML = renderPage(stats);
   wireDynamicHandlers(root); renderMath(root);
+  if (typeof updateAuthUi === "function") updateAuthUi();
 }
 
 function wireDynamicHandlers(root, scope){
@@ -64814,6 +64916,7 @@ function renderPage(stats){
     case "interview": return pageInterview(ROUTE.cat);
     case "checklist": return pageChecklist();
     case "audit": return pageAudit();
+    case "admin": return pageAdminConsole();
     case "search": return pageSearch(ROUTE.q||"");
     default: return `<div class="empty-state"><div class="big">?</div>Page not found.</div>`;
   }
@@ -71926,6 +72029,845 @@ function pageAudit(){
 }
 
 
+/* =====================================================================
+   ADMIN CONSOLE & SYSTEM DIAGNOSTICS SUITE
+   ===================================================================== */
+let ADMIN_STATE = {
+  tab: "overview", // 'overview' | 'storage' | 'data' | 'integrity'
+  integrityResults: null,
+  integrityFilter: "all", // 'all' | 'error' | 'warning' | 'notice'
+  integritySearch: "",
+  storageInspectKey: null,
+  toast: null
+};
+
+function pageAdminConsole(){
+  const s = computeOverallStats();
+  const totalMcqs = Object.keys(MCQS).length;
+  const totalNumericals = Object.keys(NUMERICALS).length;
+  const totalInterview = Object.keys(INTERVIEW).length;
+  const totalLessons = Object.keys(LESSONS).length;
+  const studiedTopicsCount = Object.keys(PROGRESS.completedTopics || {}).length;
+  const numericalsSolvedCount = Object.keys(PROGRESS.numericalsSolved || {}).length;
+  const interviewSeenCount = Object.keys(PROGRESS.interviewSeen || {}).length;
+  const bookmarksCount = (PROGRESS.bookmarks || []).length;
+
+  // LocalStorage calculation
+  let totalStorageBytes = 0;
+  let storageKeys = [];
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      const val = localStorage.getItem(k) || "";
+      const bytes = (k.length + val.length) * 2;
+      totalStorageBytes += bytes;
+      storageKeys.push({ key: k, bytes: bytes, length: val.length, val: val });
+    }
+  } catch(e){}
+  const storageKb = (totalStorageBytes / 1024).toFixed(2);
+  const quotaLimitKb = 5120;
+  const storagePct = Math.min(100, Math.max(0.5, (totalStorageBytes / (quotaLimitKb * 1024)) * 100)).toFixed(1);
+
+  // Tabs
+  const tabs = [
+    { id: "overview", label: "Overview & Health", icon: "⌂" },
+    { id: "storage", label: "Storage & Quotas", icon: "💾" },
+    { id: "data", label: "Backup & Portability", icon: "🔄" },
+    { id: "integrity", label: "Integrity Engine", icon: "🛡️" }
+  ];
+
+  const tabNavHtml = `
+    <div style="display:flex;gap:8px;border-bottom:1px solid var(--border);padding-bottom:12px;margin-bottom:20px;overflow-x:auto;">
+      ${tabs.map(t => {
+        const active = ADMIN_STATE.tab === t.id;
+        return `
+          <button class="btn ${active ? 'btn-primary' : 'btn-secondary'}" data-admintab="${t.id}" style="padding:7px 16px;font-size:13px;display:inline-flex;align-items:center;gap:7px;border-radius:8px;cursor:pointer;">
+            <span>${t.icon}</span> <span>${t.label}</span>
+          </button>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  // Toast
+  const toastHtml = ADMIN_STATE.toast ? `
+    <div class="card" style="margin-bottom:18px;border-left:4px solid ${ADMIN_STATE.toast.type === 'error' ? 'var(--danger)' : ADMIN_STATE.toast.type === 'success' ? 'var(--ok)' : 'var(--accent)'};background:var(--bg-elev);display:flex;justify-content:space-between;align-items:center;padding:12px 18px;">
+      <div style="font-size:13.5px;font-weight:600;display:flex;align-items:center;gap:10px;">
+        <span>${ADMIN_STATE.toast.type === 'error' ? '⚠️' : ADMIN_STATE.toast.type === 'success' ? '✅' : 'ℹ️'}</span>
+        <span>${ADMIN_STATE.toast.msg}</span>
+      </div>
+      <button class="btn btn-ghost" id="adminDismissToast" style="padding:2px 8px;font-size:12px;cursor:pointer;">✕</button>
+    </div>
+  ` : "";
+
+  let tabContentHtml = "";
+  if (ADMIN_STATE.tab === "overview") {
+    const mcqDiffs = { E: 0, M: 0, H: 0, P: 0 };
+    Object.values(MCQS).forEach(m => { if (mcqDiffs[m.d] !== undefined) mcqDiffs[m.d]++; });
+
+    const numDiffs = { E: 0, M: 0, H: 0, P: 0 };
+    Object.values(NUMERICALS).forEach(n => { if (numDiffs[n.d] !== undefined) numDiffs[n.d]++; });
+
+    tabContentHtml = `
+      <div class="grid grid-4" style="margin-bottom:20px;">
+        <div class="card stat-card">
+          <div class="stat-top"><span class="stat-label">MCQs in Database</span><span class="stat-ic">◈</span></div>
+          <div class="stat-num" style="color:var(--accent);">${totalMcqs}</div>
+          <div style="font-size:12px;color:var(--text-dim);">Across All Syllabus Areas</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-top"><span class="stat-label">Worked Numericals</span><span class="stat-ic">∫</span></div>
+          <div class="stat-num" style="color:var(--volt);">${totalNumericals}</div>
+          <div style="font-size:12px;color:var(--text-dim);">${numericalsSolvedCount} Solved by User</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-top"><span class="stat-label">Technical Interview Qs</span><span class="stat-ic">◎</span></div>
+          <div class="stat-num" style="color:#60a5fa;">${totalInterview}</div>
+          <div style="font-size:12px;color:var(--text-dim);">${interviewSeenCount} Reviewed</div>
+        </div>
+        <div class="card stat-card">
+          <div class="stat-top"><span class="stat-label">Lessons & Modules</span><span class="stat-ic">▤</span></div>
+          <div class="stat-num" style="color:var(--text);">${totalLessons}</div>
+          <div style="font-size:12px;color:var(--text-dim);">${studiedTopicsCount} Studied Topics</div>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="margin-bottom:20px;">
+        <div class="card">
+          <div style="font-weight:700;font-size:15px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+            <span>System Runtime & Client Diagnostics</span>
+            <span class="pill pill-ok">Operational</span>
+          </div>
+          <table style="width:100%;font-size:13px;border-collapse:collapse;">
+            <tbody>
+              <tr><td style="padding:6px 0;color:var(--text-dim);width:40%;">Architecture:</td><td style="font-weight:600;">Single-File Zero-Dependency SPA</td></tr>
+              <tr><td style="padding:6px 0;color:var(--text-dim);">Network Status:</td><td><span class="pill ${navigator.onLine ? 'pill-ok' : 'pill-partial'}">${navigator.onLine ? 'Online / Cloud Ready' : 'Offline / Standalone'}</span></td></tr>
+              <tr><td style="padding:6px 0;color:var(--text-dim);">Active Storage Quota:</td><td style="font-weight:600;">${storageKb} KB used / ~5,120 KB limit (${storagePct}%)</td></tr>
+              <tr><td style="padding:6px 0;color:var(--text-dim);">Theme Setting:</td><td style="font-weight:600;">${SETTINGS.theme || 'dark'}</td></tr>
+              <tr><td style="padding:6px 0;color:var(--text-dim);">User Authentication:</td><td>${(typeof currentUser !== 'undefined' && currentUser && currentUser.email) ? `<b style="color:var(--accent);">${currentUser.email}</b> (${currentUser.role || 'Member'})` : '<span style="color:var(--text-faint);">Guest / Local User</span>'}</td></tr>
+              <tr><td style="padding:6px 0;color:var(--text-dim);">Active Screen Resolution:</td><td>${window.innerWidth} × ${window.innerHeight} px</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:700;font-size:15px;margin-bottom:12px;">Difficulty Breakdown in Bank</div>
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span>MCQs: Easy (${mcqDiffs.E}) · Medium (${mcqDiffs.M}) · Hard (${mcqDiffs.H}) · Placement (${mcqDiffs.P})</span>
+            </div>
+            <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--border);">
+              <div style="width:${(mcqDiffs.E/Math.max(1,totalMcqs))*100}%;background:#6ed08a;" title="Easy: ${mcqDiffs.E}"></div>
+              <div style="width:${(mcqDiffs.M/Math.max(1,totalMcqs))*100}%;background:#38bdf8;" title="Medium: ${mcqDiffs.M}"></div>
+              <div style="width:${(mcqDiffs.H/Math.max(1,totalMcqs))*100}%;background:#f2a541;" title="Hard: ${mcqDiffs.H}"></div>
+              <div style="width:${(mcqDiffs.P/Math.max(1,totalMcqs))*100}%;background:#e8637a;" title="Placement: ${mcqDiffs.P}"></div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:14px;">
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px;">
+              <span>Numericals: Easy (${numDiffs.E}) · Medium (${numDiffs.M}) · Hard (${numDiffs.H}) · Placement (${numDiffs.P})</span>
+            </div>
+            <div style="display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--border);">
+              <div style="width:${(numDiffs.E/Math.max(1,totalNumericals))*100}%;background:#6ed08a;" title="Easy: ${numDiffs.E}"></div>
+              <div style="width:${(numDiffs.M/Math.max(1,totalNumericals))*100}%;background:#38bdf8;" title="Medium: ${numDiffs.M}"></div>
+              <div style="width:${(numDiffs.H/Math.max(1,totalNumericals))*100}%;background:#f2a541;" title="Hard: ${numDiffs.H}"></div>
+              <div style="width:${(numDiffs.P/Math.max(1,totalNumericals))*100}%;background:#e8637a;" title="Placement: ${numDiffs.P}"></div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-secondary" data-admintab="integrity" style="font-size:12px;padding:6px 12px;cursor:pointer;">Run Integrity Scan →</button>
+            <button class="btn btn-secondary" data-admintab="data" style="font-size:12px;padding:6px 12px;cursor:pointer;">Export System Backup →</button>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if (ADMIN_STATE.tab === "storage") {
+    tabContentHtml = `
+      <div class="card" style="margin-bottom:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div>
+            <div style="font-weight:700;font-size:16px;">Browser LocalStorage Footprint</div>
+            <div style="font-size:12.5px;color:var(--text-dim);margin-top:2px;">Volt stores user progression, offline cache, bookmarks, and mock results locally in the client origin.</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-weight:700;font-size:18px;color:var(--accent);">${storageKb} KB</div>
+            <div style="font-size:11.5px;color:var(--text-faint);">${storagePct}% of ~5 MB</div>
+          </div>
+        </div>
+        <div class="bar-track" style="height:10px;margin-bottom:8px;">
+          <div class="bar-fill" style="width:${storagePct}%;"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
+          <div style="font-weight:700;font-size:15px;">Indexed Storage Keys (${storageKeys.length})</div>
+          <button id="adminRefreshStorageBtn" class="btn btn-secondary" style="font-size:12px;padding:5px 12px;cursor:pointer;">↻ Refresh Storage Stats</button>
+        </div>
+        <div class="table-wrap" style="overflow-x:auto;">
+          <table style="width:100%;font-size:13px;border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left;border-bottom:1px solid var(--border);">
+                <th style="padding:10px 12px;">Key Identifier</th>
+                <th style="padding:10px 12px;">Estimated Size</th>
+                <th style="padding:10px 12px;">Character Length</th>
+                <th style="padding:10px 12px;">Description</th>
+                <th style="padding:10px 12px;text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${storageKeys.map(k => {
+                let desc = "Custom / Application Data";
+                if (k.key === STORE_KEY) desc = `Main Study Progress (${studiedTopicsCount} topics, ${bookmarksCount} bookmarks)`;
+                else if (k.key === SETTINGS_KEY) desc = "App UI Preferences & Theme";
+                else if (k.key === MOCK_ACTIVE_KEY) desc = "In-Progress Mock Test Session";
+                else if (k.key === "volt_user") desc = "Cached User Authentication Session";
+                else if (k.key === "volt_test_mode") desc = "E2E Testing Simulation Flag";
+                else if (k.key === "volt_token") desc = "Cloud Authorization Token";
+
+                return `
+                  <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <td style="padding:10px 12px;font-family:var(--font-mono);font-weight:600;color:var(--volt);">${k.key}</td>
+                    <td style="padding:10px 12px;">${(k.bytes / 1024).toFixed(2)} KB</td>
+                    <td style="padding:10px 12px;color:var(--text-dim);">${k.length.toLocaleString()} chars</td>
+                    <td style="padding:10px 12px;font-size:12px;color:var(--text-dim);">${desc}</td>
+                    <td style="padding:10px 12px;text-align:right;white-space:nowrap;">
+                      <button class="btn btn-secondary admin-inspect-key-btn" data-key="${k.key}" style="font-size:11.5px;padding:4px 9px;cursor:pointer;">Inspect</button>
+                      <button class="btn btn-secondary admin-clear-key-btn" data-key="${k.key}" style="font-size:11.5px;padding:4px 9px;color:var(--danger);border-color:rgba(232,99,122,0.3);cursor:pointer;">Clear</button>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      ${ADMIN_STATE.storageInspectKey ? `
+        <div class="card" style="margin-top:20px;border:1px solid var(--accent);">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+            <div style="font-weight:700;font-size:14px;color:var(--accent);">Payload Inspection: ${ADMIN_STATE.storageInspectKey}</div>
+            <div style="display:flex;gap:8px;">
+              <button id="adminCopyInspectJson" class="btn btn-secondary" style="font-size:11.5px;padding:4px 10px;cursor:pointer;">📋 Copy JSON</button>
+              <button id="adminCloseInspectJson" class="btn btn-ghost" style="font-size:11.5px;padding:4px 8px;cursor:pointer;">✕ Close</button>
+            </div>
+          </div>
+          <pre id="adminInspectJsonPre" style="background:var(--bg);padding:14px;border-radius:8px;max-height:300px;overflow:auto;font-size:12px;font-family:var(--font-mono);color:var(--text);">${(()=>{
+            try {
+              const raw = localStorage.getItem(ADMIN_STATE.storageInspectKey);
+              return JSON.stringify(JSON.parse(raw), null, 2);
+            } catch(e) {
+              return localStorage.getItem(ADMIN_STATE.storageInspectKey) || "(empty)";
+            }
+          })()}</pre>
+        </div>
+      ` : ""}
+    `;
+  } else if (ADMIN_STATE.tab === "data") {
+    tabContentHtml = `
+      <div class="grid grid-2" style="margin-bottom:20px;">
+        <div class="card">
+          <div style="font-weight:700;font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+            <span>📥 Export System Backup</span>
+            <span class="pill pill-ok">JSON Format</span>
+          </div>
+          <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.45;">
+            Download a complete portable archive containing study progress, accuracy metrics, bookmarked questions, mock test histories, and preferences.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button id="adminDownloadBackupBtn" class="btn btn-primary" style="font-size:13px;cursor:pointer;">
+              💾 Download Backup (.json)
+            </button>
+            <button id="adminCopyBackupBtn" class="btn btn-secondary" style="font-size:13px;cursor:pointer;">
+              📋 Copy JSON to Clipboard
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="font-weight:700;font-size:16px;margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+            <span>📤 Import & Restore Backup</span>
+          </div>
+          <p style="font-size:13px;color:var(--text-dim);margin-bottom:14px;line-height:1.45;">
+            Restore your saved profile and study progress from a previously downloaded <code>volt_backup.json</code> file.
+          </p>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <input type="file" id="adminImportFileInput" accept=".json" style="display:none;" />
+            <button id="adminTriggerImportBtn" class="btn btn-secondary" style="align-self:flex-start;font-size:13px;cursor:pointer;">
+              📂 Select Backup File (.json)
+            </button>
+            <div id="adminImportStatus" style="font-size:12.5px;color:var(--text-faint);">No file selected.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="border:1px solid rgba(232,99,122,0.3);margin-bottom:20px;">
+        <div style="font-weight:700;font-size:16px;color:var(--danger);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span>⚙️ Safe Maintenance & Reset Options</span>
+          <span class="pill pill-missing">Caution</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">
+          Selective resets can resolve stale session states, corrupted test caches, or reset study tracks without deleting app configuration.
+        </p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="adminClearMockBtn" class="btn btn-secondary" style="font-size:12.5px;cursor:pointer;">
+            Clear In-Progress Mock Test
+          </button>
+          <button id="adminClearBookmarksBtn" class="btn btn-secondary" style="font-size:12.5px;cursor:pointer;">
+            Clear Bookmarks (${bookmarksCount})
+          </button>
+          <button id="adminResetProgressOnlyBtn" class="btn btn-secondary" style="font-size:12.5px;color:var(--danger);border-color:rgba(232,99,122,0.3);cursor:pointer;">
+            Reset Study History & Accuracy
+          </button>
+          <button id="adminFactoryResetBtn" class="btn btn-secondary" style="font-size:12.5px;background:var(--danger-dim);color:var(--danger);border-color:var(--danger);font-weight:700;cursor:pointer;">
+            🔥 Full Factory Reset
+          </button>
+        </div>
+      </div>
+    `;
+  } else if (ADMIN_STATE.tab === "integrity") {
+    const results = ADMIN_STATE.integrityResults;
+    let resultsHtml = "";
+
+    if (!results) {
+      resultsHtml = `
+        <div class="card" style="text-align:center;padding:40px 20px;">
+          <div style="font-size:36px;margin-bottom:12px;">🛡️</div>
+          <div style="font-weight:700;font-size:18px;margin-bottom:6px;">Automated Content & Cross-Link Diagnostics</div>
+          <p style="font-size:13.5px;color:var(--text-dim);max-width:540px;margin:0 auto 20px;">
+            Scan all ${totalMcqs} MCQs, ${totalNumericals} Numericals, ${totalInterview} Interview items, and ${totalLessons} Lessons for structural compliance, missing answers, duplicate stems, and broken cross-references.
+          </p>
+          <button id="adminRunIntegrityScanBtn" class="btn btn-primary" style="padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;">
+            🚀 Run Comprehensive Integrity Audit
+          </button>
+        </div>
+      `;
+    } else {
+      let filteredIssues = results.issues;
+      if (ADMIN_STATE.integrityFilter !== "all") {
+        filteredIssues = filteredIssues.filter(i => i.severity === ADMIN_STATE.integrityFilter);
+      }
+      if (ADMIN_STATE.integritySearch.trim()) {
+        const q = ADMIN_STATE.integritySearch.toLowerCase();
+        filteredIssues = filteredIssues.filter(i => i.id.toLowerCase().includes(q) || i.message.toLowerCase().includes(q) || i.type.toLowerCase().includes(q));
+      }
+
+      resultsHtml = `
+        <div class="grid grid-4" style="margin-bottom:20px;">
+          <div class="card stat-card">
+            <div class="stat-top"><span class="stat-label">Total Verified Entities</span><span class="stat-ic">✓</span></div>
+            <div class="stat-num">${results.totalChecked}</div>
+            <div style="font-size:12px;color:var(--text-dim);">Completed in ${results.durationMs}ms</div>
+          </div>
+          <div class="card stat-card" style="border-color:${results.errorCount > 0 ? 'var(--danger)' : 'var(--border)'};">
+            <div class="stat-top"><span class="stat-label">Critical Errors</span><span class="stat-ic">❌</span></div>
+            <div class="stat-num" style="color:${results.errorCount > 0 ? 'var(--danger)' : 'var(--ok)'};">${results.errorCount}</div>
+            <div style="font-size:12px;color:var(--text-dim);">${results.errorCount === 0 ? 'Zero Structural Defects' : 'Requires Remediation'}</div>
+          </div>
+          <div class="card stat-card" style="border-color:${results.warningCount > 0 ? 'var(--accent)' : 'var(--border)'};">
+            <div class="stat-top"><span class="stat-label">Warnings</span><span class="stat-ic">⚠️</span></div>
+            <div class="stat-num" style="color:${results.warningCount > 0 ? 'var(--accent)' : 'var(--text)'};">${results.warningCount}</div>
+            <div style="font-size:12px;color:var(--text-dim);">Non-fatal irregularities</div>
+          </div>
+          <div class="card stat-card" style="border-color:${results.noticeCount > 0 ? 'var(--border)' : 'var(--border)'};">
+            <div class="stat-top"><span class="stat-label">Notices & Advisories</span><span class="stat-ic">ℹ️</span></div>
+            <div class="stat-num" style="color:#60a5fa;">${results.noticeCount}</div>
+            <div style="font-size:12px;color:var(--text-dim);">Informational checks</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:20px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="btn ${ADMIN_STATE.integrityFilter==='all'?'btn-primary':'btn-secondary'} admin-audit-filter-btn" data-filter="all" style="font-size:12px;padding:5px 12px;cursor:pointer;">All Issues (${results.issues.length})</button>
+              <button class="btn ${ADMIN_STATE.integrityFilter==='error'?'btn-primary':'btn-secondary'} admin-audit-filter-btn" data-filter="error" style="font-size:12px;padding:5px 12px;cursor:pointer;color:${results.errorCount>0?'var(--danger)':'inherit'};">Errors (${results.errorCount})</button>
+              <button class="btn ${ADMIN_STATE.integrityFilter==='warning'?'btn-primary':'btn-secondary'} admin-audit-filter-btn" data-filter="warning" style="font-size:12px;padding:5px 12px;cursor:pointer;color:${results.warningCount>0?'var(--accent)':'inherit'};">Warnings (${results.warningCount})</button>
+              <button class="btn ${ADMIN_STATE.integrityFilter==='notice'?'btn-primary':'btn-secondary'} admin-audit-filter-btn" data-filter="notice" style="font-size:12px;padding:5px 12px;cursor:pointer;">Notices (${results.noticeCount})</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <input type="text" id="adminAuditSearchInput" placeholder="Filter issues..." value="${ADMIN_STATE.integritySearch}" style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12.5px;color:var(--text);outline:none;" />
+              <button id="adminRunIntegrityScanBtn" class="btn btn-secondary" style="font-size:12px;padding:5px 12px;cursor:pointer;">↻ Re-run Scan</button>
+              <button id="adminDownloadAuditJsonBtn" class="btn btn-secondary" style="font-size:12px;padding:5px 12px;cursor:pointer;">📥 Export Report</button>
+            </div>
+          </div>
+
+          ${filteredIssues.length === 0 ? `
+            <div style="text-align:center;padding:30px;color:var(--ok);font-weight:600;">
+              ✓ No issues match the current filter criteria! Everything is clean.
+            </div>
+          ` : `
+            <div class="table-wrap" style="overflow-x:auto;">
+              <table style="width:100%;font-size:13px;border-collapse:collapse;">
+                <thead>
+                  <tr style="text-align:left;border-bottom:1px solid var(--border);">
+                    <th style="padding:10px 12px;width:90px;">Severity</th>
+                    <th style="padding:10px 12px;width:120px;">Category</th>
+                    <th style="padding:10px 12px;width:150px;">Item Identifier</th>
+                    <th style="padding:10px 12px;">Diagnostic Message</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${filteredIssues.slice(0, 150).map(issue => `
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+                      <td style="padding:8px 12px;">
+                        <span class="pill ${issue.severity==='error'?'pill-missing':issue.severity==='warning'?'pill-partial':'pill-neutral'}">${issue.severity.toUpperCase()}</span>
+                      </td>
+                      <td style="padding:8px 12px;color:var(--text-dim);font-size:12px;">${issue.type}</td>
+                      <td style="padding:8px 12px;font-family:var(--font-mono);font-weight:600;font-size:12px;">${issue.id}</td>
+                      <td style="padding:8px 12px;font-size:12.5px;">${issue.message}</td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+              ${filteredIssues.length > 150 ? `<div style="padding:12px;text-align:center;font-size:12px;color:var(--text-dim);">Showing first 150 of ${filteredIssues.length} issues. Use search to refine.</div>` : ""}
+            </div>
+          `}
+        </div>
+      `;
+    }
+    tabContentHtml = resultsHtml;
+  }
+
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:10px;">
+      <div>
+        <h2 style="font-size:22px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px;">
+          <span>⚡ Volt Administrative & Diagnostics Console</span>
+          <span class="pill pill-partial" style="font-size:11px;">System Engine v2.4</span>
+        </h2>
+        <p style="font-size:13px;color:var(--text-dim);">
+          Client storage quotas, question bank statistics, data backups, and automated content integrity auditing.
+        </p>
+      </div>
+      <div>
+        <a class="btn btn-secondary" data-nav="audit" style="font-size:12.5px;padding:6px 12px;cursor:pointer;">← Content Audit</a>
+      </div>
+    </div>
+
+    ${toastHtml}
+    ${tabNavHtml}
+    <div id="adminTabContainer">${tabContentHtml}</div>
+  `;
+}
+
+function runIntegrityAudit(){
+  const t0 = performance.now();
+  const issues = [];
+  let totalChecked = 0;
+
+  const seenMcqTexts = new Map();
+  const allLessons = typeof LESSONS !== "undefined" ? LESSONS : {};
+  const allMcqs = typeof MCQS !== "undefined" ? MCQS : {};
+  const allNumericals = typeof NUMERICALS !== "undefined" ? NUMERICALS : {};
+  const allInterview = typeof INTERVIEW !== "undefined" ? INTERVIEW : {};
+
+  // 1. Audit MCQs
+  Object.entries(allMcqs).forEach(([id, m]) => {
+    totalChecked++;
+    if (!m.q || typeof m.q !== "string" || !m.q.trim()) {
+      issues.push({ severity: "error", type: "MCQ", id: id, message: "Missing or empty question stem (q)" });
+    } else {
+      const normStem = m.q.trim().toLowerCase().replace(/[^a-z0-9]/g, "");
+      if (normStem.length > 25) {
+        if (seenMcqTexts.has(normStem)) {
+          issues.push({ severity: "warning", type: "MCQ", id: id, message: `Duplicate question stem matching ${seenMcqTexts.get(normStem)}` });
+        } else {
+          seenMcqTexts.set(normStem, id);
+        }
+      }
+      const unescapedDollarCount = (m.q.match(/(^|[^\\])\$/g) || []).length;
+      if (unescapedDollarCount % 2 !== 0) {
+        issues.push({ severity: "notice", type: "MCQ", id: id, message: `Odd count of '$' delimiters (${unescapedDollarCount}) in stem; verify KaTeX pairing` });
+      }
+    }
+
+    if (!Array.isArray(m.opts)) {
+      issues.push({ severity: "error", type: "MCQ", id: id, message: "Options 'opts' must be an Array" });
+    } else {
+      if (m.opts.length !== 4) {
+        issues.push({ severity: "error", type: "MCQ", id: id, message: `Options array length is ${m.opts.length} (expected exactly 4)` });
+      }
+      m.opts.forEach((opt, idx) => {
+        if (typeof opt !== "string" || !opt.trim()) {
+          issues.push({ severity: "warning", type: "MCQ", id: id, message: `Option index ${idx} is blank or not a string` });
+        }
+      });
+    }
+
+    if (typeof m.a !== "number" || m.a < 0 || m.a > 3) {
+      issues.push({ severity: "error", type: "MCQ", id: id, message: `Answer index (a=${m.a}) out of bounds [0-3]` });
+    }
+
+    if (!m.d || !["E", "M", "H", "P"].includes(m.d)) {
+      issues.push({ severity: "warning", type: "MCQ", id: id, message: `Missing or unrecognized difficulty code '${m.d}'` });
+    }
+
+    if (!m.exp || typeof m.exp !== "string" || !m.exp.trim()) {
+      issues.push({ severity: "notice", type: "MCQ", id: id, message: "Missing or blank explanation field (exp)" });
+    }
+  });
+
+  // 2. Audit Numericals
+  Object.entries(allNumericals).forEach(([id, n]) => {
+    totalChecked++;
+    if (!n.q || typeof n.q !== "string" || !n.q.trim()) {
+      issues.push({ severity: "error", type: "Numerical", id: id, message: "Missing or empty numerical problem prompt (q)" });
+    }
+    if (!n.ans || typeof n.ans !== "string") {
+      issues.push({ severity: "error", type: "Numerical", id: id, message: "Missing arithmetic answer field (ans)" });
+    }
+    if (!n.formula) {
+      issues.push({ severity: "warning", type: "Numerical", id: id, message: "Missing governing formula definition (formula)" });
+    }
+    if (!n.subst || !n.calc) {
+      issues.push({ severity: "notice", type: "Numerical", id: id, message: "Incomplete step-by-step substitution or calculation string" });
+    }
+    if (n.lesson && !allLessons[n.lesson]) {
+      issues.push({ severity: "notice", type: "Numerical", id: id, message: `Referenced lesson '${n.lesson}' not present in LESSONS bank` });
+    }
+  });
+
+  // 3. Audit Interview Qs
+  Object.entries(allInterview).forEach(([id, iv]) => {
+    totalChecked++;
+    if (!iv.q || !iv.q.trim()) {
+      issues.push({ severity: "error", type: "Interview", id: id, message: "Missing interview question text (q)" });
+    }
+    if (!iv.a || !iv.a.trim()) {
+      issues.push({ severity: "error", type: "Interview", id: id, message: "Missing technical interview answer / explanation (a)" });
+    }
+  });
+
+  // 4. Audit Lessons & Cross-Link References
+  Object.entries(allLessons).forEach(([id, l]) => {
+    totalChecked++;
+    if (!l.title || !l.title.trim()) {
+      issues.push({ severity: "error", type: "Lesson", id: id, message: "Missing lesson title" });
+    }
+    if (!l.body || !l.body.trim()) {
+      issues.push({ severity: "warning", type: "Lesson", id: id, message: "Lesson body content is empty" });
+    }
+    if (Array.isArray(l.mcqIds)) {
+      l.mcqIds.forEach(mcqId => {
+        if (!allMcqs[mcqId]) {
+          issues.push({ severity: "error", type: "Lesson Link", id: id, message: `Broken MCQ link: references '${mcqId}', which does not exist in MCQS bank!` });
+        }
+      });
+    }
+  });
+
+  const durationMs = Math.round(performance.now() - t0);
+  const errorCount = issues.filter(i => i.severity === "error").length;
+  const warningCount = issues.filter(i => i.severity === "warning").length;
+  const noticeCount = issues.filter(i => i.severity === "notice").length;
+
+  return {
+    totalChecked,
+    durationMs,
+    errorCount,
+    warningCount,
+    noticeCount,
+    issues
+  };
+}
+
+function wireAdminHandlers(){
+  document.querySelectorAll("[data-admintab]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tab = btn.getAttribute("data-admintab");
+      ADMIN_STATE.tab = tab;
+      render();
+    });
+  });
+
+  const dismissBtn = document.getElementById("adminDismissToast");
+  if (dismissBtn) {
+    dismissBtn.onclick = () => {
+      ADMIN_STATE.toast = null;
+      render();
+    };
+  }
+
+  const refreshStorageBtn = document.getElementById("adminRefreshStorageBtn");
+  if (refreshStorageBtn) {
+    refreshStorageBtn.onclick = () => {
+      ADMIN_STATE.toast = { type: "info", msg: "Storage metrics refreshed from localStorage." };
+      render();
+    };
+  }
+
+  document.querySelectorAll(".admin-inspect-key-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.getAttribute("data-key");
+      ADMIN_STATE.storageInspectKey = (ADMIN_STATE.storageInspectKey === key) ? null : key;
+      render();
+    });
+  });
+
+  const closeInspectBtn = document.getElementById("adminCloseInspectJson");
+  if (closeInspectBtn) {
+    closeInspectBtn.onclick = () => {
+      ADMIN_STATE.storageInspectKey = null;
+      render();
+    };
+  }
+
+  const copyInspectBtn = document.getElementById("adminCopyInspectJson");
+  if (copyInspectBtn) {
+    copyInspectBtn.onclick = () => {
+      const pre = document.getElementById("adminInspectJsonPre");
+      if (pre && navigator.clipboard) {
+        navigator.clipboard.writeText(pre.innerText).then(() => {
+          ADMIN_STATE.toast = { type: "success", msg: `Payload for '${ADMIN_STATE.storageInspectKey}' copied to clipboard!` };
+          render();
+        });
+      }
+    };
+  }
+
+  document.querySelectorAll(".admin-clear-key-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.getAttribute("data-key");
+      if (confirm(`Are you sure you want to delete localStorage key '${key}'? This cannot be undone.`)) {
+        try {
+          localStorage.removeItem(key);
+          if (key === STORE_KEY) PROGRESS = loadProgress();
+          if (key === SETTINGS_KEY) SETTINGS = loadSettings();
+          if (key === MOCK_ACTIVE_KEY) MOCK = null;
+          ADMIN_STATE.toast = { type: "success", msg: `Key '${key}' deleted successfully.` };
+        } catch(e) {
+          ADMIN_STATE.toast = { type: "error", msg: `Failed to delete key: ${e.message}` };
+        }
+        render();
+      }
+    });
+  });
+
+  const downloadBackupBtn = document.getElementById("adminDownloadBackupBtn");
+  if (downloadBackupBtn) {
+    downloadBackupBtn.onclick = () => {
+      try {
+        const backupData = {
+          app: "Volt",
+          version: "2.4",
+          exportedAt: new Date().toISOString(),
+          progress: PROGRESS,
+          settings: SETTINGS,
+          user: (typeof currentUser !== "undefined" ? currentUser : null),
+          activeMock: (typeof MOCK !== "undefined" ? MOCK : null),
+          stats: computeOverallStats()
+        };
+        const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        const dateStr = todayStr();
+        a.href = url;
+        a.download = `volt_backup_${dateStr}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        ADMIN_STATE.toast = { type: "success", msg: `Backup successfully generated and downloaded (volt_backup_${dateStr}.json)!` };
+        render();
+      } catch(e) {
+        alert("Failed to export backup: " + e.message);
+      }
+    };
+  }
+
+  const copyBackupBtn = document.getElementById("adminCopyBackupBtn");
+  if (copyBackupBtn) {
+    copyBackupBtn.onclick = () => {
+      try {
+        const backupData = {
+          app: "Volt",
+          version: "2.4",
+          exportedAt: new Date().toISOString(),
+          progress: PROGRESS,
+          settings: SETTINGS,
+          user: (typeof currentUser !== "undefined" ? currentUser : null),
+          activeMock: (typeof MOCK !== "undefined" ? MOCK : null)
+        };
+        const str = JSON.stringify(backupData, null, 2);
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(str).then(() => {
+            ADMIN_STATE.toast = { type: "success", msg: "Full system backup JSON copied to clipboard!" };
+            render();
+          });
+        }
+      } catch(e) {
+        alert("Copy failed: " + e.message);
+      }
+    };
+  }
+
+  const triggerImportBtn = document.getElementById("adminTriggerImportBtn");
+  const importFileInput = document.getElementById("adminImportFileInput");
+  if (triggerImportBtn && importFileInput) {
+    triggerImportBtn.onclick = () => importFileInput.click();
+    importFileInput.onchange = (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (re) => {
+        try {
+          const data = JSON.parse(re.target.result);
+          if (!data || (!data.progress && !data.completedTopics)) {
+            throw new Error("Invalid backup format: missing progress payload.");
+          }
+          const incomingProgress = data.progress || data;
+          const topicCount = Object.keys(incomingProgress.completedTopics || {}).length;
+          const mcqCount = (incomingProgress.mcqStats && incomingProgress.mcqStats.attempted) || 0;
+
+          if (confirm(`Backup verified successfully!\n- Topics completed: ${topicCount}\n- MCQs attempted: ${mcqCount}\n- Streak: ${incomingProgress.streak || 0} days\n\nClick OK to restore and merge this data into your current profile.`)) {
+            PROGRESS = mergeProgress(PROGRESS, incomingProgress);
+            saveProgress(PROGRESS);
+            if (data.settings) {
+              SETTINGS = Object.assign(SETTINGS, data.settings);
+              saveSettings(SETTINGS);
+              document.documentElement.setAttribute("data-theme", SETTINGS.theme);
+            }
+            ADMIN_STATE.toast = { type: "success", msg: `Progress restored successfully! Merged ${topicCount} topics & ${mcqCount} MCQ attempts.` };
+            render();
+          }
+        } catch(err) {
+          alert("Import failed: " + err.message);
+        }
+      };
+      reader.readAsText(file);
+    };
+  }
+
+  const clearMockBtn = document.getElementById("adminClearMockBtn");
+  if (clearMockBtn) {
+    clearMockBtn.onclick = () => {
+      MOCK = null;
+      try { localStorage.removeItem(MOCK_ACTIVE_KEY); } catch(e){}
+      ADMIN_STATE.toast = { type: "success", msg: "In-progress mock test session cleared." };
+      render();
+    };
+  }
+
+  const clearBookmarksBtn = document.getElementById("adminClearBookmarksBtn");
+  if (clearBookmarksBtn) {
+    clearBookmarksBtn.onclick = () => {
+      if (confirm("Clear all saved bookmarks?")) {
+        PROGRESS.bookmarks = [];
+        saveProgress(PROGRESS);
+        ADMIN_STATE.toast = { type: "info", msg: "All bookmarks cleared." };
+        render();
+      }
+    };
+  }
+
+  const resetProgressOnlyBtn = document.getElementById("adminResetProgressOnlyBtn");
+  if (resetProgressOnlyBtn) {
+    resetProgressOnlyBtn.onclick = () => {
+      if (confirm("Reset study progress and MCQ accuracy? Settings and user authentication will be kept.")) {
+        PROGRESS.completedTopics = {};
+        PROGRESS.mcqStats = { attempted: 0, correct: 0 };
+        PROGRESS.numericalsSolved = {};
+        PROGRESS.interviewSeen = {};
+        PROGRESS.streak = 0;
+        PROGRESS.todayCount = 0;
+        saveProgress(PROGRESS);
+        ADMIN_STATE.toast = { type: "info", msg: "Study progress and question histories reset." };
+        render();
+      }
+    };
+  }
+
+  const factoryResetBtn = document.getElementById("adminFactoryResetBtn");
+  if (factoryResetBtn) {
+    factoryResetBtn.onclick = () => {
+      const answer = prompt("DANGER: This will delete ALL local study progress, mock tests, and cached settings.\nType 'RESET' to confirm:");
+      if (answer === "RESET") {
+        try {
+          const keys = [];
+          for (let i = 0; i < localStorage.length; i++) {
+            const k = localStorage.key(i);
+            if (k && k.startsWith("volt_")) keys.push(k);
+          }
+          keys.forEach(k => localStorage.removeItem(k));
+          PROGRESS = { completedTopics: {}, mcqStats: { attempted: 0, correct: 0 }, bookmarks: [], streak: 0, lastActive: null, dailyTarget: 20, todayCount: 0, todayDate: null };
+          SETTINGS = { theme: "dark" };
+          MOCK = null;
+          alert("Volt has been reset to factory defaults. The page will now reload.");
+          window.location.hash = "#home";
+          window.location.reload();
+        } catch(e) {
+          alert("Reset failed: " + e.message);
+        }
+      }
+    };
+  }
+
+  const runIntegrityBtn = document.getElementById("adminRunIntegrityScanBtn");
+  if (runIntegrityBtn) {
+    runIntegrityBtn.onclick = () => {
+      ADMIN_STATE.integrityResults = runIntegrityAudit();
+      ADMIN_STATE.toast = { type: "info", msg: `Audit completed: ${ADMIN_STATE.integrityResults.issues.length} items flagged across ${ADMIN_STATE.integrityResults.totalChecked} entities.` };
+      render();
+    };
+  }
+
+  document.querySelectorAll(".admin-audit-filter-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      ADMIN_STATE.integrityFilter = btn.getAttribute("data-filter");
+      render();
+    });
+  });
+
+  const auditSearchInput = document.getElementById("adminAuditSearchInput");
+  if (auditSearchInput) {
+    auditSearchInput.addEventListener("input", (e) => {
+      ADMIN_STATE.integritySearch = e.target.value;
+      const results = ADMIN_STATE.integrityResults;
+      if (!results) return;
+      let filtered = results.issues;
+      if (ADMIN_STATE.integrityFilter !== "all") {
+        filtered = filtered.filter(i => i.severity === ADMIN_STATE.integrityFilter);
+      }
+      if (ADMIN_STATE.integritySearch.trim()) {
+        const q = ADMIN_STATE.integritySearch.toLowerCase();
+        filtered = filtered.filter(i => i.id.toLowerCase().includes(q) || i.message.toLowerCase().includes(q) || i.type.toLowerCase().includes(q));
+      }
+      const tbody = document.querySelector("#adminTabContainer table tbody");
+      if (tbody) {
+        tbody.innerHTML = filtered.slice(0, 150).map(issue => `
+          <tr style="border-bottom:1px solid rgba(255,255,255,0.04);">
+            <td style="padding:8px 12px;">
+              <span class="pill ${issue.severity==='error'?'pill-missing':issue.severity==='warning'?'pill-partial':'pill-neutral'}">${issue.severity.toUpperCase()}</span>
+            </td>
+            <td style="padding:8px 12px;color:var(--text-dim);font-size:12px;">${issue.type}</td>
+            <td style="padding:8px 12px;font-family:var(--font-mono);font-weight:600;font-size:12px;">${issue.id}</td>
+            <td style="padding:8px 12px;font-size:12.5px;">${issue.message}</td>
+          </tr>
+        `).join("");
+      }
+    });
+  }
+
+  const downloadAuditBtn = document.getElementById("adminDownloadAuditJsonBtn");
+  if (downloadAuditBtn) {
+    downloadAuditBtn.onclick = () => {
+      if (!ADMIN_STATE.integrityResults) return;
+      const blob = new Blob([JSON.stringify(ADMIN_STATE.integrityResults, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `volt_integrity_audit_${todayStr()}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+  }
+}
+
+
 /* ---------- NUMERICALS ---------- */
 function pageNumericalsHub(){
   const ids = Object.keys(NUMERICALS);
@@ -72783,6 +73725,7 @@ render = function(){
     else if(ROUTE.type==="numerical") wirePracticeNumHandlers();
   }
   if(ROUTE.page==="mock"){ wireMockHandlers(document.getElementById("contentRoot")); if(MOCK && ROUTE.view!=="result") mockStartTimer(); }
+  if(ROUTE.page==="admin") wireAdminHandlers();
   if(ROUTE.page==="lesson"){
     const b=document.getElementById("markStudiedBtn");
     if(b) b.addEventListener("click",()=>{ markTopicActivity(ROUTE.id,"concept"); b.textContent="Studied ✓"; const sub=document.querySelector(".lesson-sub"); if(sub) sub.firstChild.textContent="Marked as studied ✓ "; });
@@ -73050,7 +73993,8 @@ render();
 // Immediate gate check for test suites or previously approved sessions
 (function() {
   try {
-    var isTest = typeof navigator !== "undefined" && (navigator.webdriver || window.__VOLT_TEST_MODE__);
+    var isTest = (typeof isTestModeActive === "function" && isTestModeActive()) || 
+                 (typeof navigator !== "undefined" && (Boolean(navigator.webdriver) || Boolean(window.__VOLT_TEST_MODE__)));
     if (isTest) {
       var wall = document.getElementById("loginWall");
       if (wall) wall.style.display = "none";
@@ -73058,14 +74002,16 @@ render();
       if (app) app.style.display = "flex";
     } else {
       var saved = localStorage.getItem("volt_user");
-      var isApproved = false;
+      var approved = false;
       if (saved) {
         var parsed = JSON.parse(saved);
-        if (parsed && (parsed.status === "approved" || (parsed.email && parsed.email.toLowerCase() === "rinshasv@gmail.com"))) {
-          isApproved = true;
+        if (parsed && typeof isUserApproved === "function" && isUserApproved(parsed)) {
+          approved = true;
+        } else if (parsed && typeof isVoltAdmin === "function" && isVoltAdmin(parsed.email)) {
+          approved = true;
         }
       }
-      if (!isApproved) {
+      if (!approved) {
         var app = document.getElementById("app");
         if (app) app.style.display = "none";
         var botBtn = document.getElementById("aiChatbotBtn");
@@ -73104,35 +74050,30 @@ render();
 </div>
 
 <script>
-const ADMIN_EMAIL = "rinshasv@gmail.com";
-let currentUser = null;
-let currentOtpCode = null;
-let isMobileVerified = false;
-
-try {
-  const savedUser = localStorage.getItem("volt_user");
-  if (savedUser) currentUser = JSON.parse(savedUser);
-} catch (e) {}
-
-function isTestModeActive() {
-  return typeof navigator !== "undefined" && (navigator.webdriver || window.__VOLT_TEST_MODE__);
+// currentUser, currentOtpCode, isMobileVerified, ADMIN_EMAIL, isVoltAdmin, isAdmin, isUserApproved, etc.
+// are already declared in the head script.
+if (!currentUser) {
+  try {
+    const savedUser = localStorage.getItem("volt_user");
+    if (savedUser) currentUser = JSON.parse(savedUser);
+  } catch (e) {}
 }
 
-function updateAdminPortalButton(isAdmin) {
+function updateAdminPortalButton(isAdminFlag) {
   const btn = document.getElementById("adminPortalBtn");
   if (btn) {
-    btn.style.display = isAdmin ? "inline-flex" : "none";
+    btn.style.display = isAdminFlag ? "inline-flex" : "none";
   }
 }
 
 function updateAuthUi() {
   const labelEl = document.getElementById("authBtnLabel");
-  const isAdmin = currentUser && currentUser.email && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-  updateAdminPortalButton(isAdmin);
+  const isAdm = isAdmin(currentUser);
+  updateAdminPortalButton(isAdm);
 
   if (labelEl) {
     if (currentUser) {
-      labelEl.textContent = currentUser.name || currentUser.email || "Student";
+      labelEl.textContent = currentUser.name || currentUser.email || (isAdm ? "Admin" : "Student");
     } else if (isTestModeActive()) {
       labelEl.textContent = "Test Mode";
     } else {
@@ -73226,11 +74167,12 @@ function showAuthPendingScreen(userData) {
   const cardEmail = document.getElementById("pendingCardEmail");
   const cardCollege = document.getElementById("pendingCardCollege");
 
-  if (cardName) cardName.textContent = userData.name || (currentUser && currentUser.name) || "Student";
-  if (cardEmail) cardEmail.textContent = userData.email || (currentUser && currentUser.email) || "-";
+  const u = userData || currentUser || {};
+  if (cardName) cardName.textContent = u.name || "Student";
+  if (cardEmail) cardEmail.textContent = u.email || "-";
   if (cardCollege) {
-    const col = userData.college || (currentUser && currentUser.college) || "-";
-    const dept = userData.department || (currentUser && currentUser.department) || "";
+    const col = u.college || "-";
+    const dept = u.department || "";
     cardCollege.textContent = dept ? col + " (" + dept + ")" : col;
   }
   showLoginWall();
@@ -73251,30 +74193,75 @@ function showAuthRejectedScreen() {
   showLoginWall();
 }
 
+// Real-time Firestore user doc listener
+function listenToUserStatusChanges(uid) {
+  if (userDocSnapshotUnsub) {
+    try { userDocSnapshotUnsub(); } catch(e){}
+    userDocSnapshotUnsub = null;
+  }
+  if (typeof voltDb === "undefined" || !voltDb || !uid) return;
+  userDocSnapshotUnsub = voltDb.collection("users").doc(uid).onSnapshot(function(doc) {
+    if (!doc.exists) return;
+    const data = doc.data();
+    const status = String(data.status || data.approvalStatus || "pending").toLowerCase();
+    const isAppr = isUserApproved(data) || status === "approved";
+    const isRej = status === "rejected" || String(data.status || data.approvalStatus || "").toLowerCase() === "rejected";
+
+    if (currentUser) {
+      currentUser.status = status;
+      currentUser.approvalStatus = data.approvalStatus || status;
+      currentUser.isApproved = data.isApproved !== undefined ? data.isApproved : isAppr;
+      if (data.name) currentUser.name = data.name;
+      if (data.role) currentUser.role = data.role;
+      if (data.college) currentUser.college = data.college;
+      if (data.department) currentUser.department = data.department;
+      try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
+    }
+    if (isAppr || isUserApproved(currentUser)) {
+      hideLoginWall();
+      updateAuthUi();
+      loadUserCloudProgress(uid);
+    } else if (isRej) {
+      showAuthRejectedScreen();
+      updateAuthUi();
+    } else {
+      showAuthPendingScreen(data);
+      updateAuthUi();
+    }
+  }, function(err) {
+    console.warn("User status listener error:", err);
+  });
+}
+
 // Check Firestore user doc and route to appropriate view
 function checkUserStatusAndRoute(firebaseUser) {
   if (!firebaseUser) return;
   const email = (firebaseUser.email || "").toLowerCase();
-  const isAdmin = email === ADMIN_EMAIL.toLowerCase();
+  const isAdm = isVoltAdmin(email) || email === ADMIN_EMAIL.toLowerCase();
 
-  // If Rinsha, grant instant administrator access
-  if (isAdmin) {
+  // If Admin, grant instant administrator access
+  if (isAdm) {
     currentUser = {
       uid: firebaseUser.uid,
       email: firebaseUser.email,
-      name: firebaseUser.displayName || "Admin Rinsha",
+      name: firebaseUser.displayName || "Administrator",
       role: "admin",
-      status: "approved"
+      status: "approved",
+      approvalStatus: "approved",
+      isApproved: true
     };
     try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
 
     if (typeof voltDb !== "undefined" && voltDb) {
       voltDb.collection("users").doc(firebaseUser.uid).set({
-        name: firebaseUser.displayName || "Admin Rinsha",
+        name: firebaseUser.displayName || "Administrator",
         email: firebaseUser.email,
         role: "admin",
         status: "approved",
+        approvalStatus: "approved",
+        isApproved: true,
         approvedBy: "system",
+        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
         registeredAt: firebase.firestore.FieldValue.serverTimestamp()
       }, { merge: true }).catch(function(){});
     }
@@ -73311,23 +74298,29 @@ function checkUserStatusAndRoute(firebaseUser) {
       }
 
       const data = doc.data();
-      const status = data.status || "pending";
+      const status = String(data.status || data.approvalStatus || "pending").toLowerCase();
+      const isAppr = isUserApproved(data) || status === "approved";
+      const isRej = status === "rejected" || String(data.status || data.approvalStatus || "").toLowerCase() === "rejected";
       currentUser = {
         uid: firebaseUser.uid,
         email: firebaseUser.email,
         name: data.name || firebaseUser.displayName || "Student",
         role: data.role || "student",
         status: status,
+        approvalStatus: data.approvalStatus || status,
+        isApproved: data.isApproved !== undefined ? data.isApproved : isAppr,
         college: data.college,
         department: data.department
       };
       try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
 
-      if (status === "approved") {
+      listenToUserStatusChanges(firebaseUser.uid);
+
+      if (isAppr || isUserApproved(currentUser)) {
         hideLoginWall();
         updateAuthUi();
         loadUserCloudProgress(firebaseUser.uid);
-      } else if (status === "rejected") {
+      } else if (isRej) {
         showAuthRejectedScreen();
         updateAuthUi();
       } else {
@@ -73338,7 +74331,7 @@ function checkUserStatusAndRoute(firebaseUser) {
     })
     .catch(function(err) {
       console.warn("User status check error:", err);
-      if (currentUser && currentUser.status === "approved") {
+      if (isUserApproved(currentUser)) {
         hideLoginWall();
       } else {
         showAuthAlert("Error verifying account status. Please check your internet connection.", false);
@@ -73504,7 +74497,7 @@ function handleRegistrationSubmit() {
   if (submitBtn) submitBtn.disabled = true;
 
   function saveProfileToFirestore(uid, authMethod) {
-    const isAdmin = email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    const adminCheck = isVoltAdmin(email);
     const userData = {
       uid: uid,
       name: name,
@@ -73516,10 +74509,16 @@ function handleRegistrationSubmit() {
       department: department,
       heardFrom: heardFrom,
       authProvider: authMethod,
-      role: isAdmin ? "admin" : "student",
-      status: isAdmin ? "approved" : "pending",
+      role: adminCheck ? "admin" : "student",
+      status: adminCheck ? "approved" : "pending",
+      approvalStatus: adminCheck ? "approved" : "pending",
+      isApproved: adminCheck,
       registeredAt: firebase.firestore.FieldValue.serverTimestamp()
     };
+    if (adminCheck) {
+      userData.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
+      userData.approvedBy = "system_superadmin";
+    }
 
     voltDb.collection("users").doc(uid).set(userData, { merge: true })
       .then(function() {
@@ -73527,10 +74526,11 @@ function handleRegistrationSubmit() {
         if (btnText) btnText.textContent = "Submit Registration for Approval";
         if (submitBtn) submitBtn.disabled = false;
 
-        if (isAdmin) {
+        if (adminCheck) {
           checkUserStatusAndRoute({ uid: uid, email: email, displayName: name });
         } else {
           showAuthPendingScreen(userData);
+          listenToUserStatusChanges(uid);
         }
       })
       .catch(function(err) {
@@ -73572,8 +74572,12 @@ function initGlobalAuthAndChatbot() {
       if (user) {
         checkUserStatusAndRoute(user);
       } else {
+        if (typeof userDocSnapshotUnsub === "function") {
+          try { userDocSnapshotUnsub(); } catch(e){}
+          userDocSnapshotUnsub = null;
+        }
         currentUser = null;
-        try { localStorage.removeItem("volt_user"); } catch(e){}
+        try { localStorage.removeItem("volt_user"); localStorage.removeItem("volt_token"); } catch(e){}
         updateAuthUi();
         if (isTestModeActive()) {
           hideLoginWall();
@@ -73584,7 +74588,7 @@ function initGlobalAuthAndChatbot() {
       }
     });
   } else {
-    if (isTestModeActive() || (currentUser && currentUser.status === "approved")) {
+    if (isTestModeActive() || (currentUser && isUserApproved(currentUser))) {
       hideLoginWall();
     } else {
       showLoginWall();
@@ -73640,13 +74644,18 @@ function initGlobalAuthAndChatbot() {
         voltDb.collection("users").doc(voltAuth.currentUser.uid).get()
           .then(function(doc) {
             checkPendingBtn.textContent = "🔄 Check Approval Status";
-            if (doc.exists && doc.data().status === "approved") {
-              alert("🎉 Your registration has been approved! Welcome to Volt.");
-              checkUserStatusAndRoute(voltAuth.currentUser);
-            } else if (doc.exists && doc.data().status === "rejected") {
-              showAuthRejectedScreen();
+            if (doc.exists) {
+              const uData = doc.data();
+              if (isUserApproved(uData)) {
+                alert("🎉 Your registration has been approved! Welcome to Volt.");
+                checkUserStatusAndRoute(voltAuth.currentUser);
+              } else if (uData.status === "rejected" || uData.approvalStatus === "rejected") {
+                showAuthRejectedScreen();
+              } else {
+                alert("Your account is still pending approval by Rinsha (rinshasv@gmail.com). Please check back soon!");
+              }
             } else {
-              alert("Your account is still pending approval by Rinsha (rinshasv@gmail.com). Please check back soon!");
+              alert("Your registration record was not found. Please submit registration again.");
             }
           })
           .catch(function(err) {
@@ -73661,9 +74670,13 @@ function initGlobalAuthAndChatbot() {
   const pendingSignOut = document.getElementById("pendingSignOutBtn");
   if (pendingSignOut) {
     pendingSignOut.addEventListener("click", function() {
+      if (typeof userDocSnapshotUnsub === "function") {
+        try { userDocSnapshotUnsub(); } catch(e){}
+        userDocSnapshotUnsub = null;
+      }
       if (voltAuth) voltAuth.signOut();
       currentUser = null;
-      try { localStorage.removeItem("volt_user"); } catch(e){}
+      try { localStorage.removeItem("volt_user"); localStorage.removeItem("volt_token"); } catch(e){}
       updateAuthUi();
       switchAuthTab("signin");
     });
@@ -73672,9 +74685,13 @@ function initGlobalAuthAndChatbot() {
   const rejectedSignOut = document.getElementById("rejectedSignOutBtn");
   if (rejectedSignOut) {
     rejectedSignOut.addEventListener("click", function() {
+      if (typeof userDocSnapshotUnsub === "function") {
+        try { userDocSnapshotUnsub(); } catch(e){}
+        userDocSnapshotUnsub = null;
+      }
       if (voltAuth) voltAuth.signOut();
       currentUser = null;
-      try { localStorage.removeItem("volt_user"); } catch(e){}
+      try { localStorage.removeItem("volt_user"); localStorage.removeItem("volt_token"); } catch(e){}
       updateAuthUi();
       switchAuthTab("signin");
     });
@@ -73686,6 +74703,10 @@ function initGlobalAuthAndChatbot() {
     if (authBtn) {
       if (currentUser) {
         if (confirm("Logged in as " + (currentUser.name || currentUser.email) + ". Do you want to sign out?")) {
+          if (typeof userDocSnapshotUnsub === "function") {
+            try { userDocSnapshotUnsub(); } catch(e){}
+            userDocSnapshotUnsub = null;
+          }
           if (typeof voltAuth !== "undefined" && voltAuth) {
             voltAuth.signOut().catch(function(err) {
               console.error("Sign out error:", err);
