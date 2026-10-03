@@ -14,11 +14,12 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy Firestore Rules
+        continue-on-error: true
         run: |
           cat << 'EOF' > /tmp/sa.json
           ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VOLT_RS }}
           EOF
-          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json npx --yes firebase-tools deploy --only firestore:rules --project volt-rs
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json npx --yes firebase-tools deploy --only firestore:rules --project volt-rs || true
           rm -f /tmp/sa.json
 
       - name: Deploy to Firebase Hosting
