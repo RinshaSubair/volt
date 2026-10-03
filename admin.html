@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Volt — Admin Console (Rinsha)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Firebase SDK v10 (Compat) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<!-- React 18 & ReactDOM 18 -->
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+<style>
+:root{
+  --bg:#0d1117; --bg-elev:#151b26; --bg-card:#1a2233; --border:#2a3348;
+  --text:#e8ecf4; --text-dim:#9aa5bd; --text-faint:#5b6785;
+  --accent:#f2a541; --accent-glow:rgba(242,165,65,.18);
+  --volt:#5cd6c0; --volt-dim:#1f6e60;
+  --danger:#e8637a; --danger-dim:rgba(232,99,122,.15);
+  --ok:#6ed08a; --ok-dim:rgba(110,208,138,.15);
+  --font-head:'Space Grotesk',sans-serif; --font-body:'Inter',sans-serif; --font-mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:var(--bg); color:var(--text); font-family:var(--font-body); min-height:100vh;}
+button{font-family:inherit; cursor:pointer;}
+input, select{font-family:inherit;}
+::-webkit-scrollbar{width:7px; height:7px;}
+::-webkit-scrollbar-thumb{background:var(--border); border-radius:4px;}
+
+.admin-nav{
+  background:var(--bg-elev); border-bottom:1px solid var(--border);
+  padding:14px 28px; display:flex; justify-content:space-between; align-items:center;
+  position:sticky; top:0; z-index:100;
+}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand-mark{
+  width:36px; height:36px; border-radius:10px;
+  background:linear-gradient(135deg,var(--accent),var(--volt));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-head); font-weight:700; color:#0d1117; font-size:18px;
+}
+.brand-title{font-family:var(--font-head); font-size:18px; font-weight:700; letter-spacing:-0.3px;}
+.badge-admin{
+  background:rgba(242,165,65,0.18); color:var(--accent); border:1px solid rgba(242,165,65,0.4);
+  font-size:11px; font-weight:700; padding:2px 8px; border-radius:12px; letter-spacing:0.5px;
+}
+
+.admin-container{max-width:1400px; margin:0 auto; padding:28px 20px;}
+
+.stat-grid{
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:16px; margin-bottom:28px;
+}
+.stat-card{
+  background:var(--bg-elev); border:1px solid var(--border); border-radius:12px;
+  padding:18px 20px; transition:border-color .15s;
+}
+.stat-label{font-size:12px; font-weight:600; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.5px;}
+.stat-value{font-size:30px; font-family:var(--font-head); font-weight:700; margin:6px 0 2px; color:var(--text);}
+.stat-desc{font-size:12px; color:var(--text-faint);}
+
+.controls-bar{
+  background:var(--bg-elev); border:1px solid var(--border); border-radius:12px;
+  padding:16px 20px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;
+  margin-bottom:20px;
+}
+.search-input{
+  background:var(--bg); border:1px solid var(--border); border-radius:8px;
+  padding:9px 14px; color:var(--text); font-size:13.5px; min-width:280px; flex:1; outline:none;
+}
+.search-input:focus{border-color:var(--accent);}
+.filter-group{display:flex; gap:8px; flex-wrap:wrap;}
+.filter-btn{
+  background:var(--bg); border:1px solid var(--border); color:var(--text-dim);
+  padding:7px 14px; border-radius:8px; font-size:12.5px; font-weight:600; transition:all .15s;
+}
+.filter-btn:hover{color:var(--text); border-color:var(--text-faint);}
+.filter-btn.active{background:var(--accent); color:#0d1117; border-color:var(--accent); font-weight:700;}
+
+.table-wrap{
+  background:var(--bg-elev); border:1px solid var(--border); border-radius:12px;
+  overflow-x:auto; box-shadow:0 8px 24px rgba(0,0,0,0.25);
+}
+table{width:100%; border-collapse:collapse; text-align:left; font-size:13px;}
+th{
+  background:var(--bg-card); color:var(--text-dim); font-size:11.5px;
+  font-weight:700; text-transform:uppercase; letter-spacing:0.6px;
+  padding:14px 16px; border-bottom:1px solid var(--border);
+}
+td{padding:14px 16px; border-bottom:1px solid var(--border); vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,0.02);}
+
+.status-pill{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 10px; border-radius:12px; font-size:11.5px; font-weight:700; letter-spacing:0.3px;
+}
+.status-pending{background:rgba(242,165,65,0.15); color:var(--accent); border:1px solid rgba(242,165,65,0.3);}
+.status-approved{background:var(--ok-dim); color:var(--ok); border:1px solid rgba(110,208,138,0.3);}
+.status-rejected{background:var(--danger-dim); color:var(--danger); border:1px solid rgba(232,99,122,0.3);}
+
+.btn{
+  padding:7px 13px; border-radius:7px; font-size:12.5px; font-weight:600;
+  display:inline-flex; align-items:center; gap:6px; border:none; transition:all .15s;
+}
+.btn-ok{background:#27ae60; color:#fff;}
+.btn-ok:hover{background:#2ecc71;}
+.btn-danger{background:#c0392b; color:#fff;}
+.btn-danger:hover{background:#e74c3c;}
+.btn-sec{background:var(--bg-card); border:1px solid var(--border); color:var(--text);}
+.btn-sec:hover{background:var(--border);}
+
+.modal-overlay{
+  position:fixed; top:0; left:0; width:100vw; height:100vh;
+  background:rgba(0,0,0,0.75); backdrop-filter:blur(4px);
+  display:flex; align-items:center; justify-content:center; padding:16px; z-index:9999;
+}
+.modal-box{
+  background:var(--bg-elev); border:1px solid var(--border); border-top:4px solid var(--accent);
+  border-radius:12px; width:100%; max-width:680px; max-height:85vh; overflow-y:auto; padding:24px;
+}
+</style>
+</head>
+<body>
+
+<div id="root"></div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAuQJeEePogtOzcKQGLi2yR_N1WrHdv8To",
+  authDomain: "volt-rs.firebaseapp.com",
+  projectId: "volt-rs",
+  storageBucket: "volt-rs.firebasestorage.app",
+  messagingSenderId: "537893140468",
+  appId: "1:537893140468:web:a9c5c358952393acacaba1",
+  measurementId: "G-EB3X006BL6"
+};
+
+let voltApp, voltAuth, voltDb;
+try {
+  voltApp = firebase.initializeApp(firebaseConfig, "voltAdminApp");
+  voltAuth = voltApp.auth();
+  voltDb = voltApp.firestore();
+} catch(e) {
+  voltApp = firebase.app("voltAdminApp");
+  voltAuth = voltApp.auth();
+  voltDb = voltApp.firestore();
+}
+
+const ADMIN_EMAIL = "rinshasv@gmail.com";
+
+const { useState, useEffect, useMemo, createElement: h } = React;
+
+function AdminApp() {
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all"); // all | pending | approved | rejected
+  const [filterDept, setFilterDept] = useState("all");
+  const [selectedUserProgress, setSelectedUserProgress] = useState(null);
+  const [progressLoading, setProgressLoading] = useState(false);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPass, setLoginPass] = useState("");
+  const [loginError, setLoginError] = useState("");
+
+  // Auth State Listener
+  useEffect(() => {
+    const unsub = voltAuth.onAuthStateChanged((user) => {
+      setCurrentUser(user);
+      setAuthLoading(false);
+    });
+    return () => unsub();
+  }, []);
+
+  // Listen to Firestore Users in Real-Time
+  useEffect(() => {
+    if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) return;
+
+    const unsub = voltDb.collection("users").onSnapshot((snapshot) => {
+      const list = [];
+      snapshot.forEach((doc) => {
+        list.push({ id: doc.id, ...doc.data() });
+      });
+      // Sort newest first
+      list.sort((a, b) => {
+        const timeA = a.registeredAt?.seconds || 0;
+        const timeB = b.registeredAt?.seconds || 0;
+        return timeB - timeA;
+      });
+      setUsers(list);
+    }, (err) => {
+      console.error("Firestore users listen error:", err);
+    });
+
+    return () => unsub();
+  }, [currentUser]);
+
+  const handleAdminLogin = (e) => {
+    e.preventDefault();
+    setLoginError("");
+    voltAuth.signInWithEmailAndPassword(loginEmail, loginPass)
+      .then((cred) => {
+        if (cred.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          setLoginError(`Access denied. ${cred.user.email} is not the authorized administrator.`);
+          voltAuth.signOut();
+        }
+      })
+      .catch((err) => {
+        setLoginError(err.message || "Failed to sign in.");
+      });
+  };
+
+  const handleGoogleAdminLogin = () => {
+    setLoginError("");
+    const provider = new firebase.auth.GoogleAuthProvider();
+    voltAuth.signInWithPopup(provider)
+      .then((res) => {
+        if (res.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+          setLoginError(`Access restricted. ${res.user.email} is not authorized for the admin console.`);
+          voltAuth.signOut();
+        }
+      })
+      .catch((err) => {
+        setLoginError(err.message || "Google sign-in error.");
+      });
+  };
+
+  const handleUpdateStatus = (uid, newStatus) => {
+    voltDb.collection("users").doc(uid).update({
+      status: newStatus,
+      statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+      approvedBy: ADMIN_EMAIL
+    }).catch((err) => {
+      alert("Error updating status: " + err.message);
+    });
+  };
+
+  const handleViewProgress = (u) => {
+    setProgressLoading(true);
+    setSelectedUserProgress({ user: u, data: null });
+    voltDb.collection("users").doc(u.uid || u.id).collection("progress").doc("tracker").get()
+      .then((doc) => {
+        if (doc.exists) {
+          setSelectedUserProgress({ user: u, data: doc.data() });
+        } else {
+          setSelectedUserProgress({ user: u, data: { empty: true } });
+        }
+        setProgressLoading(false);
+      })
+      .catch((err) => {
+        alert("Error loading progress: " + err.message);
+        setProgressLoading(false);
+      });
+  };
+
+  const handleExportCsv = () => {
+    if (!users.length) return;
+    const headers = ["Name", "Email", "Phone", "College", "Semester", "Department", "Referral", "Status", "Registered At"];
+    const rows = users.map(u => [
+      `"${u.name || ''}"`,
+      `"${u.email || ''}"`,
+      `"${u.phone || ''}"`,
+      `"${u.college || ''}"`,
+      `"${u.semester || ''}"`,
+      `"${u.department || ''}"`,
+      `"${u.heardFrom || ''}"`,
+      `"${u.status || 'pending'}"`,
+      `"${u.registeredAt ? new Date(u.registeredAt.seconds * 1000).toLocaleString() : ''}"`
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `volt_students_cohort_${new Date().toISOString().slice(0,10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Filtered list
+  const filteredUsers = useMemo(() => {
+    return users.filter(u => {
+      const matchSearch = !search || 
+        (u.name && u.name.toLowerCase().includes(search.toLowerCase())) ||
+        (u.email && u.email.toLowerCase().includes(search.toLowerCase())) ||
+        (u.college && u.college.toLowerCase().includes(search.toLowerCase())) ||
+        (u.phone && u.phone.includes(search));
+      
+      const matchStatus = filterStatus === "all" || (u.status || "pending") === filterStatus;
+      const matchDept = filterDept === "all" || (u.department || "") === filterDept;
+
+      return matchSearch && matchStatus && matchDept;
+    });
+  }, [users, search, filterStatus, filterDept]);
+
+  // Summary counts
+  const stats = useMemo(() => {
+    const total = users.length;
+    const pending = users.filter(u => (u.status || "pending") === "pending").length;
+    const approved = users.filter(u => u.status === "approved").length;
+    const rejected = users.filter(u => u.status === "rejected").length;
+    return { total, pending, approved, rejected };
+  }, [users]);
+
+  // Auth loading state
+  if (authLoading) {
+    return h("div", { style: { display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", color: "var(--accent)" } },
+      "Authenticating Admin..."
+    );
+  }
+
+  // Not logged in or not admin
+  if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+    return h("div", { style: { minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" } },
+      h("div", { className: "stat-card", style: { width: "100%", maxWidth: "420px", padding: "32px", textAlign: "center", borderTop: "4px solid var(--accent)" } },
+        h("div", { className: "brand-mark", style: { margin: "0 auto 16px" } }, "⚡"),
+        h("h2", { style: { fontFamily: "var(--font-head)", marginBottom: "4px" } }, "Volt Admin Portal"),
+        h("div", { style: { fontSize: "12px", color: "var(--accent)", fontWeight: 700, textTransform: "uppercase", marginBottom: "16px" } }, "Restricted to Rinsha (rinshasv@gmail.com)"),
+        loginError && h("div", { style: { background: "var(--danger-dim)", color: "var(--danger)", padding: "10px", borderRadius: "8px", fontSize: "12px", marginBottom: "16px" } }, loginError),
+        h("button", {
+          className: "btn btn-sec",
+          onClick: handleGoogleAdminLogin,
+          style: { width: "100%", padding: "11px", marginBottom: "16px", justifyContent: "center", fontSize: "13.5px", fontWeight: 600 }
+        }, "Sign in with Google Admin Account"),
+        h("div", { style: { fontSize: "12px", color: "var(--text-faint)", margin: "12px 0" } }, "— OR WITH EMAIL / PASSWORD —"),
+        h("form", { onSubmit: handleAdminLogin, style: { textAlign: "left" } },
+          h("div", { style: { marginBottom: "12px" } },
+            h("label", { style: { fontSize: "11px", color: "var(--text-dim)", fontWeight: 700, display: "block", marginBottom: "4px" } }, "ADMIN EMAIL"),
+            h("input", {
+              type: "email",
+              className: "search-input",
+              style: { width: "100%" },
+              value: loginEmail,
+              onChange: e => setLoginEmail(e.target.value),
+              placeholder: "rinshasv@gmail.com",
+              required: true
+            })
+          ),
+          h("div", { style: { marginBottom: "16px" } },
+            h("label", { style: { fontSize: "11px", color: "var(--text-dim)", fontWeight: 700, display: "block", marginBottom: "4px" } }, "PASSWORD"),
+            h("input", {
+              type: "password",
+              className: "search-input",
+              style: { width: "100%" },
+              value: loginPass,
+              onChange: e => setLoginPass(e.target.value),
+              placeholder: "••••••••",
+              required: true
+            })
+          ),
+          h("button", { type: "submit", className: "btn btn-ok", style: { width: "100%", padding: "11px", justifyContent: "center", fontSize: "14px" } }, "Admin Login")
+        ),
+        h("div", { style: { marginTop: "20px" } },
+          h("a", { href: "index.html", style: { fontSize: "12px", color: "var(--text-dim)", textDecoration: "underline" } }, "← Return to Student Platform")
+        )
+      )
+    );
+  }
+
+  // Admin Dashboard Render
+  return h("div", null,
+    // Top Navbar
+    h("header", { className: "admin-nav" },
+      h("div", { className: "brand" },
+        h("div", { className: "brand-mark" }, "⚡"),
+        h("div", null,
+          h("div", { style: { display: "flex", alignItems: "center", gap: "8px" } },
+            h("span", { className: "brand-title" }, "VOLT"),
+            h("span", { className: "badge-admin" }, "COHORT ADMIN")
+          ),
+          h("div", { style: { fontSize: "11px", color: "var(--text-dim)" } }, "Student Verification & Progress Monitor")
+        )
+      ),
+      h("div", { style: { display: "flex", alignItems: "center", gap: "12px" } },
+        h("span", { style: { fontSize: "12.5px", color: "var(--text-dim)" } },
+          "Logged in as: ", h("b", { style: { color: "var(--text)" } }, currentUser.email)
+        ),
+        h("a", { href: "index.html", className: "btn btn-sec", style: { textDecoration: "none" } }, "Open Student App ↗"),
+        h("button", { className: "btn btn-danger", onClick: () => voltAuth.signOut() }, "Sign Out")
+      )
+    ),
+
+    // Main Content
+    h("main", { className: "admin-container" },
+      // KPI Stat Cards
+      h("div", { className: "stat-grid" },
+        h("div", { className: "stat-card" },
+          h("div", { className: "stat-label" }, "Total Registrations"),
+          h("div", { className: "stat-value" }, stats.total),
+          h("div", { className: "stat-desc" }, "Registered student applications")
+        ),
+        h("div", { className: "stat-card", style: { borderColor: stats.pending > 0 ? "var(--accent)" : "var(--border)" } },
+          h("div", { className: "stat-label", style: { color: "var(--accent)" } }, "Pending Approval"),
+          h("div", { className: "stat-value", style: { color: "var(--accent)" } }, stats.pending),
+          h("div", { className: "stat-desc" }, "Awaiting your verification to log in")
+        ),
+        h("div", { className: "stat-card" },
+          h("div", { className: "stat-label", style: { color: "var(--ok)" } }, "Approved Students"),
+          h("div", { className: "stat-value", style: { color: "var(--ok)" } }, stats.approved),
+          h("div", { className: "stat-desc" }, "Active platform learners")
+        ),
+        h("div", { className: "stat-card" },
+          h("div", { className: "stat-label", style: { color: "var(--danger)" } }, "Rejected / Inactive"),
+          h("div", { className: "stat-value", style: { color: "var(--danger)" } }, stats.rejected),
+          h("div", { className: "stat-desc" }, "Access revoked or denied")
+        )
+      ),
+
+      // Controls Bar (Search + Filter + Export)
+      h("div", { className: "controls-bar" },
+        h("input", {
+          type: "text",
+          className: "search-input",
+          placeholder: "Search student by name, email, phone, college...",
+          value: search,
+          onChange: e => setSearch(e.target.value)
+        }),
+        h("div", { className: "filter-group" },
+          h("button", {
+            className: `filter-btn ${filterStatus === 'all' ? 'active' : ''}`,
+            onClick: () => setFilterStatus("all")
+          }, `All (${stats.total})`),
+          h("button", {
+            className: `filter-btn ${filterStatus === 'pending' ? 'active' : ''}`,
+            onClick: () => setFilterStatus("pending")
+          }, `Pending (${stats.pending})`),
+          h("button", {
+            className: `filter-btn ${filterStatus === 'approved' ? 'active' : ''}`,
+            onClick: () => setFilterStatus("approved")
+          }, `Approved (${stats.approved})`),
+          h("button", {
+            className: `filter-btn ${filterStatus === 'rejected' ? 'active' : ''}`,
+            onClick: () => setFilterStatus("rejected")
+          }, `Rejected (${stats.rejected})`)
+        ),
+        h("button", { className: "btn btn-sec", onClick: handleExportCsv }, "📥 Export CSV")
+      ),
+
+      // User Table
+      h("div", { className: "table-wrap" },
+        h("table", null,
+          h("thead", null,
+            h("tr", null,
+              h("th", null, "Student"),
+              h("th", null, "Phone & Verification"),
+              h("th", null, "College & Branch"),
+              h("th", null, "Semester"),
+              h("th", null, "Referral Source"),
+              h("th", null, "Status"),
+              h("th", null, "Progress"),
+              h("th", { style: { textAlign: "right" } }, "Approval Actions")
+            )
+          ),
+          h("tbody", null,
+            filteredUsers.length === 0 ? (
+              h("tr", null,
+                h("td", { colSpan: 8, style: { textAlign: "center", padding: "36px", color: "var(--text-dim)" } },
+                  users.length === 0 ? "No student registrations found yet." : "No students match your filter criteria."
+                )
+              )
+            ) : (
+              filteredUsers.map(u => {
+                const isPending = (u.status || "pending") === "pending";
+                const isApproved = u.status === "approved";
+                const isRejected = u.status === "rejected";
+
+                return h("tr", { key: u.id || u.uid },
+                  // Student
+                  h("td", null,
+                    h("div", { style: { fontWeight: 600, color: "var(--text)", fontSize: "14px" } }, u.name || "Student"),
+                    h("div", { style: { color: "var(--text-dim)", fontSize: "12px" } }, u.email),
+                    u.authProvider === "google" && h("span", { style: { fontSize: "10px", color: "var(--volt)", background: "rgba(92,214,192,0.12)", padding: "1px 6px", borderRadius: "4px" } }, "Google Auth")
+                  ),
+                  // Phone
+                  h("td", null,
+                    h("div", { style: { fontFamily: "var(--font-mono)", fontSize: "12px" } }, u.phone || "Not provided"),
+                    u.phoneVerified && h("span", { style: { fontSize: "11px", color: "var(--ok)" } }, "✓ OTP Verified")
+                  ),
+                  // College & Branch
+                  h("td", null,
+                    h("div", { style: { fontWeight: 500 } }, u.college || "N/A"),
+                    h("div", { style: { color: "var(--text-faint)", fontSize: "11.5px" } }, u.department || "EEE")
+                  ),
+                  // Semester
+                  h("td", null,
+                    h("span", { style: { background: "var(--bg-card)", padding: "3px 8px", borderRadius: "6px", fontSize: "11.5px" } },
+                      u.semester || "Semester 5"
+                    )
+                  ),
+                  // Referral
+                  h("td", { style: { color: "var(--text-dim)", fontSize: "12px" } },
+                    u.heardFrom || "Classmate / Word of Mouth"
+                  ),
+                  // Status
+                  h("td", null,
+                    isPending && h("span", { className: "status-pill status-pending" }, "⏳ Pending Approval"),
+                    isApproved && h("span", { className: "status-pill status-approved" }, "✓ Approved"),
+                    isRejected && h("span", { className: "status-pill status-rejected" }, "✕ Rejected")
+                  ),
+                  // Progress summary button
+                  h("td", null,
+                    h("button", {
+                      className: "btn btn-sec",
+                      style: { fontSize: "11.5px", padding: "4px 8px" },
+                      onClick: () => handleViewProgress(u)
+                    }, "📊 View Progress")
+                  ),
+                  // Actions
+                  h("td", { style: { textAlign: "right" } },
+                    h("div", { style: { display: "inline-flex", gap: "6px" } },
+                      isPending && h(React.Fragment, null,
+                        h("button", {
+                          className: "btn btn-ok",
+                          title: "Approve student for full platform access",
+                          onClick: () => handleUpdateStatus(u.uid || u.id, "approved")
+                        }, "✓ Approve"),
+                        h("button", {
+                          className: "btn btn-danger",
+                          title: "Reject application",
+                          onClick: () => handleUpdateStatus(u.uid || u.id, "rejected")
+                        }, "✕ Reject")
+                      ),
+                      isApproved && h("button", {
+                        className: "btn btn-danger",
+                        style: { background: "#7f1d1d" },
+                        title: "Revoke student platform access",
+                        onClick: () => handleUpdateStatus(u.uid || u.id, "rejected")
+                      }, "Revoke Access"),
+                      isRejected && h("button", {
+                        className: "btn btn-ok",
+                        title: "Re-approve student",
+                        onClick: () => handleUpdateStatus(u.uid || u.id, "approved")
+                      }, "Re-Approve")
+                    )
+                  )
+                );
+              })
+            )
+          )
+        )
+      )
+    ),
+
+    // Student Progress Modal
+    selectedUserProgress && h("div", { className: "modal-overlay", onClick: () => setSelectedUserProgress(null) },
+      h("div", { className: "modal-box", onClick: e => e.stopPropagation() },
+        h("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", borderBottom: "1px solid var(--border)", paddingBottom: "12px" } },
+          h("div", null,
+            h("h3", { style: { fontFamily: "var(--font-head)", fontSize: "18px" } }, `${selectedUserProgress.user.name}'s Learning Progress`),
+            h("div", { style: { fontSize: "12px", color: "var(--text-dim)" } }, selectedUserProgress.user.email)
+          ),
+          h("button", { className: "btn btn-sec", onClick: () => setSelectedUserProgress(null) }, "✕ Close")
+        ),
+        progressLoading ? (
+          h("div", { style: { padding: "30px", textAlign: "center", color: "var(--accent)" } }, "Fetching real-time progress from Firestore...")
+        ) : selectedUserProgress.data?.empty ? (
+          h("div", { style: { padding: "30px", textAlign: "center", color: "var(--text-dim)" } }, "No learning activity recorded yet for this student.")
+        ) : (
+          (() => {
+            const p = selectedUserProgress.data || {};
+            const mcq = p.mcqStats || { attempted: 0, correct: 0 };
+            const acc = mcq.attempted ? Math.round((mcq.correct / mcq.attempted) * 100) : 0;
+            const completedCount = Object.keys(p.completedTopics || {}).length;
+            const bookmarksCount = (p.bookmarks || []).length;
+
+            return h("div", null,
+              h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px", marginBottom: "20px" } },
+                h("div", { className: "stat-card", style: { padding: "12px" } },
+                  h("div", { className: "stat-label" }, "Topics Studied"),
+                  h("div", { className: "stat-value", style: { fontSize: "22px" } }, completedCount)
+                ),
+                h("div", { className: "stat-card", style: { padding: "12px" } },
+                  h("div", { className: "stat-label" }, "MCQ Accuracy"),
+                  h("div", { className: "stat-value", style: { fontSize: "22px", color: "var(--ok)" } }, `${acc}%`),
+                  h("div", { className: "stat-desc" }, `${mcq.correct} / ${mcq.attempted} correct`)
+                ),
+                h("div", { className: "stat-card", style: { padding: "12px" } },
+                  h("div", { className: "stat-label" }, "Day Streak"),
+                  h("div", { className: "stat-value", style: { fontSize: "22px", color: "var(--accent)" } }, `🔥 ${p.streak || 0}`),
+                  h("div", { className: "stat-desc" }, `Today: ${p.todayCount || 0} / ${p.dailyTarget || 20}`)
+                )
+              ),
+              h("h4", { style: { fontSize: "14px", marginBottom: "8px" } }, "Completed Topic IDs"),
+              h("div", { style: { background: "var(--bg)", padding: "12px", borderRadius: "8px", border: "1px solid var(--border)", maxHeight: "180px", overflowY: "auto", fontFamily: "var(--font-mono)", fontSize: "11px", color: "var(--text-dim)" } },
+                completedCount > 0 
+                  ? Object.keys(p.completedTopics).map(t => h("span", { key: t, style: { display: "inline-block", background: "var(--bg-card)", padding: "2px 6px", borderRadius: "4px", margin: "2px 4px 2px 0", color: "var(--text)" } }, t))
+                  : "No completed topics yet."
+              )
+            );
+          })()
+        )
+      )
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(h(AdminApp));
+</script>
+</body>
+</html>
