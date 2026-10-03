@@ -204,6 +204,7 @@ function AdminApp() {
   const [loginPass, setLoginPass] = useState("VoltAdmin@2026");
   const [loginError, setLoginError] = useState("");
   const [firestoreError, setFirestoreError] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const checkAdminPrivileges = async (user) => {
     if (!user) return false;
@@ -242,6 +243,7 @@ function AdminApp() {
         checkAdminPrivileges(user).then((hasPriv) => {
           setIsRoleAdmin(hasPriv);
           setAuthLoading(false);
+          setRefreshKey(k => k + 1);
           if (hasPriv) {
             try {
               localStorage.setItem("volt_user", JSON.stringify({
@@ -282,7 +284,9 @@ function AdminApp() {
   useEffect(() => {
     if (!isAuthorized) return;
 
+    let isMounted = true;
     const unsub = voltDb.collection("users").onSnapshot((snapshot) => {
+      if (!isMounted) return;
       setFirestoreError("");
       const list = [];
       snapshot.forEach((doc) => {
@@ -296,12 +300,16 @@ function AdminApp() {
       });
       setUsers(list);
     }, (err) => {
+      if (!isMounted) return;
       console.error("Firestore users listen error:", err);
       setFirestoreError(err.message || String(err));
     });
 
-    return () => unsub();
-  }, [isAuthorized]);
+    return () => {
+      isMounted = false;
+      unsub();
+    };
+  }, [isAuthorized, currentUser && currentUser.uid, refreshKey]);
 
   const handleAdminLogin = (e) => {
     e.preventDefault();
@@ -551,6 +559,7 @@ function AdminApp() {
                   setCurrentUser(adminObj);
                   setIsRoleAdmin(true);
                   setAuthLoading(false);
+                  setRefreshKey(k => k + 1);
                 })
                 .catch(err => {
                   console.warn("Auto-login error:", err);
@@ -566,6 +575,7 @@ function AdminApp() {
                   setCurrentUser(adminUser);
                   setIsRoleAdmin(true);
                   setAuthLoading(false);
+                  setRefreshKey(k => k + 1);
                 });
             }
           }, "👑 One-Click Unlock as Admin (Connected to Cloud)")
@@ -613,35 +623,62 @@ function AdminApp() {
       // Firestore Connection / Permission Alert
       firestoreError && h("div", {
         style: {
-          background: "rgba(232, 99, 122, 0.15)",
+          background: "rgba(232, 99, 122, 0.12)",
           border: "1px solid var(--danger)",
           borderRadius: "10px",
           padding: "16px 20px",
-          marginBottom: "20px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: "12px"
+          marginBottom: "20px"
         }
       },
-        h("div", { style: { flex: 1, minWidth: "260px" } },
-          h("div", { style: { fontWeight: 700, color: "var(--danger)", fontSize: "14px", marginBottom: "4px" } }, "⚠️ Cloud Firestore Sync: " + firestoreError),
-          h("div", { style: { fontSize: "12.5px", color: "var(--text-dim)" } },
-            "Student approval requests require authenticated administrator access. Click below to connect as the verified cloud Admin (admin@volt.edu)."
+        h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "12px" } },
+          h("div", { style: { flex: 1, minWidth: "260px" } },
+            h("div", { style: { fontWeight: 700, color: "var(--danger)", fontSize: "14px", marginBottom: "4px" } }, "⚠️ Cloud Firestore Sync: " + firestoreError),
+            h("div", { style: { fontSize: "12.5px", color: "var(--text-dim)", lineHeight: "1.4" } },
+              "The live database is restricting read access to student documents. Once admin security rules are published in Firebase Console, approval requests will automatically stream in."
+            )
+          ),
+          h("div", { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+            h("button", {
+              className: "btn btn-ok",
+              style: { padding: "8px 14px", fontWeight: 700 },
+              onClick: () => {
+                voltAuth.signInWithEmailAndPassword("admin@volt.edu", "VoltAdmin@2026")
+                  .then(() => {
+                    setFirestoreError("");
+                    setRefreshKey(k => k + 1);
+                  })
+                  .catch(e => alert("Sign-in failed: " + e.message));
+              }
+            }, "🔑 Re-Authenticate Admin"),
+            h("button", {
+              className: "btn btn-sec",
+              style: { padding: "8px 14px", fontWeight: 700 },
+              onClick: () => {
+                setFirestoreError("");
+                setRefreshKey(k => k + 1);
+              }
+            }, "🔄 Retry Sync")
           )
         ),
-        h("button", {
-          className: "btn btn-ok",
-          style: { padding: "9px 16px", fontWeight: 700 },
-          onClick: () => {
-            voltAuth.signInWithEmailAndPassword("admin@volt.edu", "VoltAdmin@2026")
-              .then(() => {
-                setFirestoreError("");
-              })
-              .catch(e => alert("Sign-in failed: " + e.message));
-          }
-        }, "🔑 Connect as admin@volt.edu")
+        h("div", { style: { padding: "12px 14px", background: "rgba(0,0,0,0.35)", borderRadius: "8px", fontSize: "12px", color: "#e2e8f0", border: "1px solid rgba(255,255,255,0.08)" } },
+          h("div", { style: { fontWeight: 600, color: "var(--accent)", marginBottom: "4px" } }, "💡 Quick Step to Activate Student Approvals:"),
+          h("div", { style: { color: "var(--text-dim)", lineHeight: "1.5" } },
+            "1. Open ",
+            h("a", { href: "https://console.firebase.google.com/project/volt-rs/firestore/rules", target: "_blank", style: { color: "var(--accent)", textDecoration: "underline", fontWeight: 600 } }, "Firebase Console → Firestore Database → Rules ↗"),
+            h("br"),
+            "2. Click the button below to copy the complete rules, paste them into the editor, and click ",
+            h("b", { style: { color: "#fff" } }, "Publish"),
+            "."
+          ),
+          h("button", {
+            className: "btn btn-sec",
+            style: { marginTop: "10px", fontSize: "12px", padding: "6px 14px", borderColor: "var(--accent)", color: "var(--accent)", background: "rgba(242,165,65,0.12)" },
+            onClick: () => {
+              const rules = `rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    function isAdmin() {\n      return request.auth != null && (\n        (request.auth.token.email != null && request.auth.token.email.lower() in [\n          'rinshasv@gmail.com', 'admin@volt.edu', 'admin@volt.io', 'rinsha@gmail.com', 'rinshahrinsha2004@gmail.com', 'rinshads2006@gmail.com', 'arunv2006@gmail.com', 'rinshamuhammed098@gmail.com'\n        ]) ||\n        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&\n         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')\n      );\n    }\n    match /users/{userId} {\n      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());\n      allow create: if request.auth != null && request.auth.uid == userId;\n      allow update: if request.auth != null && (isAdmin() || request.auth.uid == userId);\n      allow delete: if isAdmin();\n    }\n    match /{document=**} {\n      allow read, write: if request.auth != null;\n    }\n  }\n}`;
+              navigator.clipboard.writeText(rules).then(() => alert("✅ Copied Firestore Rules to clipboard!\n\nNow open Firebase Console > Firestore Database > Rules, paste them in, and click 'Publish'.")).catch(() => alert("Please copy the contents of firestore.rules from the repository."));
+            }
+          }, "📋 Copy Complete Firestore Rules to Clipboard")
+        )
       ),
 
       // KPI Stat Cards
