@@ -152,23 +152,8 @@ try {
   voltDb = firebase.firestore();
 }
 
-const VOLT_ADMIN_EMAILS = [
-  "admin@volt.edu",
-  "admin@volt.io",
-  "rinshasv@gmail.com",
-  "rinshahrinsha2004@gmail.com",
-  "rinshads2006@gmail.com",
-  "arunv2006@gmail.com",
-  "rinsha@gmail.com",
-  "rinshamuhammed098@gmail.com"
-];
-const ADMIN_EMAIL = "admin@volt.edu";
-function isVoltAdmin(email) {
-  if (!email) return false;
-  const e = String(email).trim().toLowerCase();
-  if (e === "admin@volt.edu" || e === "admin@volt.io" || e.startsWith("admin@")) return true;
-  return VOLT_ADMIN_EMAILS.some(a => String(a).trim().toLowerCase() === e);
-}
+// Admin access is purely role-based: users/{uid}.role === 'admin' in Firestore.
+// No hardcoded email lists.
 
 const { useState, useEffect, useMemo, createElement: h } = React;
 
@@ -178,7 +163,7 @@ function AdminApp() {
       const saved = localStorage.getItem("volt_user");
       if (saved) {
         const u = JSON.parse(saved);
-        if (u && (isVoltAdmin(u.email) || u.role === "admin")) return u;
+        if (u && u.role === "admin") return u;
       }
     } catch(e){}
     return null;
@@ -188,7 +173,7 @@ function AdminApp() {
       const saved = localStorage.getItem("volt_user");
       if (saved) {
         const u = JSON.parse(saved);
-        if (u && (isVoltAdmin(u.email) || u.role === "admin")) return true;
+        if (u && u.role === "admin") return true;
       }
     } catch(e){}
     return false;
@@ -208,14 +193,11 @@ function AdminApp() {
 
   const checkAdminPrivileges = async (user) => {
     if (!user) return false;
-    if (isVoltAdmin(user.email)) return true;
     try {
       const doc = await voltDb.collection("users").doc(user.uid).get();
       if (doc.exists) {
         const d = doc.data();
-        if (d.role === "admin" || d.isAdmin === true || isVoltAdmin(d.email)) {
-          return true;
-        }
+        if (d.role === "admin") return true;
       }
     } catch(e) {
       console.warn("Admin privilege verification error:", e);
@@ -230,7 +212,7 @@ function AdminApp() {
       const saved = localStorage.getItem("volt_user");
       if (saved) {
         const u = JSON.parse(saved);
-        if (u && (isVoltAdmin(u.email) || u.role === "admin")) {
+        if (u && u.role === "admin") {
           setCurrentUser(u);
           setIsRoleAdmin(true);
         }
@@ -263,7 +245,7 @@ function AdminApp() {
           const saved = localStorage.getItem("volt_user");
           if (saved) {
             const u = JSON.parse(saved);
-            if (u && (isVoltAdmin(u.email) || u.role === "admin")) {
+            if (u && u.role === "admin") {
               setCurrentUser(u);
               setIsRoleAdmin(true);
               setAuthLoading(false);
@@ -278,7 +260,7 @@ function AdminApp() {
     return () => unsub();
   }, []);
 
-  const isAuthorized = Boolean(currentUser && (isVoltAdmin(currentUser.email) || isRoleAdmin || currentUser.role === "admin"));
+  const isAuthorized = Boolean(currentUser && (isRoleAdmin || currentUser.role === "admin"));
 
   // Listen to Firestore Users in Real-Time
   useEffect(() => {
@@ -315,10 +297,6 @@ function AdminApp() {
     e.preventDefault();
     setLoginError("");
     const em = loginEmail.trim();
-    if (!isVoltAdmin(em)) {
-      setLoginError(`Email ${em} is not in the authorized Volt administrator list.`);
-      return;
-    }
     voltAuth.signInWithEmailAndPassword(em, loginPass)
       .then(async (cred) => {
         const hasPriv = await checkAdminPrivileges(cred.user);
@@ -383,7 +361,7 @@ function AdminApp() {
       isApproved: isAppr,
       approvalStatus: newStatus,
       statusUpdatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-      approvedBy: (currentUser && currentUser.email) || ADMIN_EMAIL
+      approvedBy: (currentUser && currentUser.email) || "admin"
     };
     if (isAppr) {
       updatePayload.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
@@ -674,7 +652,7 @@ function AdminApp() {
             className: "btn btn-sec",
             style: { marginTop: "10px", fontSize: "12px", padding: "6px 14px", borderColor: "var(--accent)", color: "var(--accent)", background: "rgba(242,165,65,0.12)" },
             onClick: () => {
-              const rules = `rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    function isAdmin() {\n      return request.auth != null && (\n        (request.auth.token.email != null && request.auth.token.email.lower() in [\n          'rinshasv@gmail.com', 'admin@volt.edu', 'admin@volt.io', 'rinsha@gmail.com', 'rinshahrinsha2004@gmail.com', 'rinshads2006@gmail.com', 'arunv2006@gmail.com', 'rinshamuhammed098@gmail.com'\n        ]) ||\n        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&\n         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')\n      );\n    }\n    match /users/{userId} {\n      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());\n      allow create: if request.auth != null && request.auth.uid == userId;\n      allow update: if request.auth != null && (isAdmin() || request.auth.uid == userId);\n      allow delete: if isAdmin();\n    }\n    match /{document=**} {\n      allow read, write: if request.auth != null;\n    }\n  }\n}`;
+              const rules = `rules_version = '2';\nservice cloud.firestore {\n  match /databases/{database}/documents {\n    function isAuthenticated() {\n      return request.auth != null;\n    }\n    function isAdmin() {\n      return request.auth != null && (\n        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&\n        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'\n      );\n    }\n    function isApprovedUser() {\n      return request.auth != null && (\n        isAdmin() ||\n        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && (\n          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'approved' ||\n          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.approvalStatus == 'approved' ||\n          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isApproved == true\n        ))\n      );\n    }\n    match /users/{userId} {\n      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());\n      allow create: if isAuthenticated() && (\n        isAdmin() ||\n        (\n          request.auth.uid == userId &&\n          request.resource.data.role == 'student' &&\n          request.resource.data.status == 'pending' &&\n          (!('isApproved' in request.resource.data) || request.resource.data.isApproved == false) &&\n          (!('approvalStatus' in request.resource.data) || request.resource.data.approvalStatus == 'pending')\n        )\n      );\n      allow update: if isAuthenticated() && (\n        isAdmin() ||\n        (\n          request.auth.uid == userId &&\n          !request.resource.data.diff(resource.data).affectedKeys().hasAny([\n            'role', 'status', 'approvalStatus', 'isApproved', 'approvedAt', 'approvedBy'\n          ])\n        )\n      );\n      allow delete: if isAdmin();\n      match /progress/{docId} {\n        allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());\n      }\n      match /{allSubcollections=**} {\n        allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());\n      }\n    }\n    match /progress/{userId} {\n      allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());\n      match /{subcollection=**} {\n        allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());\n      }\n    }\n    match /questions/{questionId} {\n      allow read: if isApprovedUser();\n      allow write: if isAdmin();\n      match /{subcollection=**} {\n        allow read: if isApprovedUser();\n        allow write: if isAdmin();\n      }\n    }\n    match /audits/{auditId} {\n      allow read: if isAdmin();\n      allow create: if isAuthenticated();\n      allow update, delete: if isAdmin();\n      match /{subcollection=**} {\n        allow read: if isAdmin();\n        allow create: if isAuthenticated();\n        allow update, delete: if isAdmin();\n      }\n    }\n    match /feedback/{feedbackId} {\n      allow read: if isAuthenticated() && (\n        isAdmin() ||\n        (resource.data.userId == request.auth.uid || resource.data.uid == request.auth.uid)\n      );\n      allow create: if isAuthenticated() && (\n        isAdmin() ||\n        (\n          (!('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid) &&\n          (!('uid' in request.resource.data) || request.resource.data.uid == request.auth.uid)\n        )\n      );\n      allow update: if isAuthenticated() && (\n        isAdmin() ||\n        (resource.data.userId == request.auth.uid || resource.data.uid == request.auth.uid)\n      );\n      allow delete: if isAdmin();\n      match /{subcollection=**} {\n        allow read, write: if isAdmin();\n      }\n    }\n    match /metadata/{docId} {\n      allow read: if isAuthenticated();\n      allow write: if isAdmin();\n      match /{subcollection=**} {\n        allow read: if isAuthenticated();\n        allow write: if isAdmin();\n      }\n    }\n    match /platform/{docId} {\n      allow read: if isAuthenticated();\n      allow write: if isAdmin();\n      match /{subcollection=**} {\n        allow read: if isAuthenticated();\n        allow write: if isAdmin();\n      }\n    }\n    match /platform_metadata/{docId} {\n      allow read: if isAuthenticated();\n      allow write: if isAdmin();\n      match /{subcollection=**} {\n        allow read: if isAuthenticated();\n        allow write: if isAdmin();\n      }\n    }\n    match /{document=**} {\n      allow read, write: if isAdmin();\n    }\n  }\n}`;
               navigator.clipboard.writeText(rules).then(() => alert("✅ Copied Firestore Rules to clipboard!\n\nNow open Firebase Console > Firestore Database > Rules, paste them in, and click 'Publish'.")).catch(() => alert("Please copy the contents of firestore.rules from the repository."));
             }
           }, "📋 Copy Complete Firestore Rules to Clipboard")
