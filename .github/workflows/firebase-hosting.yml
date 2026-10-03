@@ -13,6 +13,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Deploy Firestore Rules
+        run: |
+          cat << 'EOF' > /tmp/sa.json
+          ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VOLT_RS }}
+          EOF
+          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json npx --yes firebase-tools deploy --only firestore:rules --project volt-rs
+          rm -f /tmp/sa.json
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

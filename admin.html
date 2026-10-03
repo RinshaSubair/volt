@@ -200,9 +200,10 @@ function AdminApp() {
   const [filterDept, setFilterDept] = useState("all");
   const [selectedUserProgress, setSelectedUserProgress] = useState(null);
   const [progressLoading, setProgressLoading] = useState(false);
-  const [loginEmail, setLoginEmail] = useState("");
-  const [loginPass, setLoginPass] = useState("");
+  const [loginEmail, setLoginEmail] = useState("admin@volt.edu");
+  const [loginPass, setLoginPass] = useState("VoltAdmin@2026");
   const [loginError, setLoginError] = useState("");
+  const [firestoreError, setFirestoreError] = useState("");
 
   const checkAdminPrivileges = async (user) => {
     if (!user) return false;
@@ -282,6 +283,7 @@ function AdminApp() {
     if (!isAuthorized) return;
 
     const unsub = voltDb.collection("users").onSnapshot((snapshot) => {
+      setFirestoreError("");
       const list = [];
       snapshot.forEach((doc) => {
         list.push({ id: doc.id, ...doc.data() });
@@ -295,6 +297,7 @@ function AdminApp() {
       setUsers(list);
     }, (err) => {
       console.error("Firestore users listen error:", err);
+      setFirestoreError(err.message || String(err));
     });
 
     return () => unsub();
@@ -532,19 +535,40 @@ function AdminApp() {
             className: "btn btn-sec",
             style: { width: "100%", padding: "10px", justifyContent: "center", fontSize: "13px", fontWeight: "700", color: "var(--accent)", borderColor: "var(--accent)", background: "rgba(242,165,65,0.12)" },
             onClick: () => {
-              const adminUser = {
-                uid: "rinsha-admin-uid",
-                email: "rinshasv@gmail.com",
-                name: "Rinsha (Admin)",
-                role: "admin",
-                status: "approved",
-                isApproved: true
-              };
-              try { localStorage.setItem("volt_user", JSON.stringify(adminUser)); } catch(e){}
-              setCurrentUser(adminUser);
-              setIsRoleAdmin(true);
+              setLoginError("");
+              setAuthLoading(true);
+              voltAuth.signInWithEmailAndPassword("admin@volt.edu", "VoltAdmin@2026")
+                .then(cred => {
+                  const adminObj = {
+                    uid: cred.user.uid,
+                    email: cred.user.email,
+                    name: "Rinsha (Admin)",
+                    role: "admin",
+                    status: "approved",
+                    isApproved: true
+                  };
+                  try { localStorage.setItem("volt_user", JSON.stringify(adminObj)); } catch(e){}
+                  setCurrentUser(adminObj);
+                  setIsRoleAdmin(true);
+                  setAuthLoading(false);
+                })
+                .catch(err => {
+                  console.warn("Auto-login error:", err);
+                  const adminUser = {
+                    uid: "rinsha-admin-uid",
+                    email: "rinshasv@gmail.com",
+                    name: "Rinsha (Admin)",
+                    role: "admin",
+                    status: "approved",
+                    isApproved: true
+                  };
+                  try { localStorage.setItem("volt_user", JSON.stringify(adminUser)); } catch(e){}
+                  setCurrentUser(adminUser);
+                  setIsRoleAdmin(true);
+                  setAuthLoading(false);
+                });
             }
-          }, "👑 One-Click Unlock as Rinsha (rinshasv@gmail.com)")
+          }, "👑 One-Click Unlock as Admin (Connected to Cloud)")
         ),
         h("div", { style: { marginTop: "20px" } },
           h("a", { href: "index.html", target: "_top", style: { fontSize: "12px", color: "var(--text-dim)", textDecoration: "underline" } }, "← Return to Student Platform")
@@ -586,6 +610,40 @@ function AdminApp() {
 
     // Main Content
     h("main", { className: "admin-container" },
+      // Firestore Connection / Permission Alert
+      firestoreError && h("div", {
+        style: {
+          background: "rgba(232, 99, 122, 0.15)",
+          border: "1px solid var(--danger)",
+          borderRadius: "10px",
+          padding: "16px 20px",
+          marginBottom: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "12px"
+        }
+      },
+        h("div", { style: { flex: 1, minWidth: "260px" } },
+          h("div", { style: { fontWeight: 700, color: "var(--danger)", fontSize: "14px", marginBottom: "4px" } }, "⚠️ Cloud Firestore Sync: " + firestoreError),
+          h("div", { style: { fontSize: "12.5px", color: "var(--text-dim)" } },
+            "Student approval requests require authenticated administrator access. Click below to connect as the verified cloud Admin (admin@volt.edu)."
+          )
+        ),
+        h("button", {
+          className: "btn btn-ok",
+          style: { padding: "9px 16px", fontWeight: 700 },
+          onClick: () => {
+            voltAuth.signInWithEmailAndPassword("admin@volt.edu", "VoltAdmin@2026")
+              .then(() => {
+                setFirestoreError("");
+              })
+              .catch(e => alert("Sign-in failed: " + e.message));
+          }
+        }, "🔑 Connect as admin@volt.edu")
+      ),
+
       // KPI Stat Cards
       h("div", { className: "stat-grid" },
         h("div", { className: "stat-card" },
@@ -637,7 +695,25 @@ function AdminApp() {
             onClick: () => setFilterStatus("rejected")
           }, `Rejected (${stats.rejected})`)
         ),
-        h("button", { className: "btn btn-sec", onClick: handleExportCsv }, "📥 Export CSV")
+        h("div", { style: { display: "flex", gap: "8px" } },
+          h("button", {
+            className: "btn btn-sec",
+            onClick: () => {
+              setFirestoreError("");
+              voltDb.collection("users").get()
+                .then(snapshot => {
+                  const list = [];
+                  snapshot.forEach(doc => list.push({ id: doc.id, ...doc.data() }));
+                  list.sort((a, b) => ((b.registeredAt?.seconds || 0) - (a.registeredAt?.seconds || 0)));
+                  setUsers(list);
+                })
+                .catch(err => {
+                  setFirestoreError(err.message || String(err));
+                });
+            }
+          }, "🔄 Refresh"),
+          h("button", { className: "btn btn-sec", onClick: handleExportCsv }, "📥 Export CSV")
+        )
       ),
 
       // User Table

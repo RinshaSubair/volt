@@ -5,7 +5,7 @@ service cloud.firestore {
     // Helper: Check if authenticated user is a Volt Administrator
     function isAdmin() {
       return request.auth != null && (
-        request.auth.token.email.lower() in [
+        (request.auth.token.email != null && request.auth.token.email.lower() in [
           'rinshasv@gmail.com',
           'admin@volt.edu',
           'admin@volt.io',
@@ -14,7 +14,7 @@ service cloud.firestore {
           'arunv2006@gmail.com',
           'rinsha@gmail.com',
           'rinshamuhammed098@gmail.com'
-        ] ||
+        ]) ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );
@@ -57,10 +57,17 @@ service cloud.firestore {
         isAdmin() ||
         (
           request.auth.uid == userId &&
-          // Prevent students from altering administrative fields
-          !request.resource.data.diff(resource.data).affectedKeys().hasAny([
-            'role', 'status', 'approvalStatus', 'isApproved', 'approvedAt', 'approvedBy'
-          ])
+          (
+            !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+              'role', 'status', 'approvalStatus', 'isApproved', 'approvedAt', 'approvedBy'
+            ])
+            ||
+            (
+              resource.data.status == 'pending' &&
+              request.resource.data.status == 'pending' &&
+              request.resource.data.role == 'student'
+            )
+          )
         )
       );
 

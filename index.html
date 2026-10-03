@@ -72441,9 +72441,22 @@ function pageAdminConsole(){
           Client storage quotas, question bank statistics, data backups, and automated content integrity auditing.
         </p>
       </div>
-      <div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="admin.html" target="_blank" class="btn btn-primary" style="font-size:12.5px;padding:6px 14px;background:var(--accent);color:#0d1117;font-weight:700;display:inline-flex;align-items:center;gap:6px;text-decoration:none;border-radius:8px;">
+          <span>🎓</span> Student Approvals Portal ↗
+        </a>
         <a class="btn btn-secondary" data-nav="audit" style="font-size:12.5px;padding:6px 12px;cursor:pointer;">← Content Audit</a>
       </div>
+    </div>
+
+    <div class="card" style="margin-bottom:18px;border-left:4px solid var(--accent);background:var(--bg-elev);display:flex;justify-content:space-between;align-items:center;padding:12px 18px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <div style="font-weight:700;font-size:13.5px;color:var(--text);margin-bottom:2px;">🎓 Student Verification & Admission Approvals</div>
+        <div style="font-size:12px;color:var(--text-dim);">To review, approve, or reject student registration requests, open the dedicated Cohort Approval Console.</div>
+      </div>
+      <a href="admin.html" target="_blank" class="btn btn-primary" style="background:var(--accent);color:#0d1117;font-weight:700;font-size:12.5px;padding:7px 14px;text-decoration:none;border-radius:8px;">
+        Open Student Approval Console ↗
+      </a>
     </div>
 
     ${toastHtml}
