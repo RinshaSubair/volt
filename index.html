@@ -73402,7 +73402,11 @@ function handleGoogleAuth(isRegister) {
     })
     .catch(function(err) {
       if (err.code !== "auth/popup-closed-by-user") {
-        showAuthAlert(err.message || "Google sign in was unsuccessful.", false);
+        let msg = err.message || "Google sign in was unsuccessful.";
+        if (err.code === "auth/operation-not-allowed") {
+          msg = "Google Sign-In is not enabled yet in your Firebase Console for project 'volt-rs'. Please enable Google under Authentication > Sign-in method in Firebase Console (or sign in with Email & Password below).";
+        }
+        showAuthAlert(msg, false);
       }
     });
 }
