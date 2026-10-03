@@ -1,0 +1,322 @@
+{
+  "phase_results": {
+    "phase_4_counts": {
+      "total_records": 1160,
+      "total_mcqs": 120,
+      "langCounts": {
+        "c": 290,
+        "cpp": 290,
+        "python": 290,
+        "java": 290,
+        "unknown": 0
+      },
+      "trackCounts": {
+        "core": 780,
+        "pattern": 120,
+        "application": 260
+      },
+      "diffCounts": {
+        "easy": 440,
+        "medium": 468,
+        "hard": 132,
+        "placement": 120
+      }
+    },
+    "phase_3_navigation": {
+      "success": false,
+      "error": "ReferenceError: CURRENT_PAGE is not defined"
+    },
+    "phase_5_lang_filter": {
+      "c": {
+        "count": 290,
+        "sample_id": "prob-c-1",
+        "sample_title": "Check Even or Odd (C)"
+      },
+      "cpp": {
+        "count": 290,
+        "sample_id": "prob-cpp-1",
+        "sample_title": "Check Even or Odd (CPP)"
+      },
+      "python": {
+        "count": 290,
+        "sample_id": "prob-python-1",
+        "sample_title": "Check Even or Odd (PYTHON)"
+      },
+      "java": {
+        "count": 290,
+        "sample_id": "prob-java-1",
+        "sample_title": "Check Even or Odd (JAVA)"
+      }
+    },
+    "phase_6_categories": {
+      "unique_categories_count": 10,
+      "categories": {
+        "Basic Numbers": 140,
+        "Strings": 140,
+        "Arrays": 140,
+        "Matrices": 100,
+        "Searching & Sorting": 100,
+        "Recursion & DSA": 100,
+        "EEE & Embedded Systems": 60,
+        "Application & CS": 60,
+        "Pattern Programming": 120,
+        "Application Problems": 200
+      }
+    },
+    "phase_7_search": {
+      "matrix": 84,
+      "factorial": 8,
+      "pattern": 120,
+      "array": 180,
+      "tree": 8
+    },
+    "phase_8_details": [
+      {
+        "id": "prob-c-1",
+        "title": "Check Even or Odd (C)",
+        "lang": "c",
+        "category": "Basic Numbers",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-c-61",
+        "title": "Roman to Integer Conversion (C)",
+        "lang": "c",
+        "category": "Strings",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-c-121",
+        "title": "Search Element in Sorted 2D Matrix (C)",
+        "lang": "c",
+        "category": "Matrices",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-c-181",
+        "title": "ADC Voltage Scaling Calculator (C)",
+        "lang": "c",
+        "category": "EEE & Embedded Systems",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-cpp-31",
+        "title": "Count Digit Frequency (CPP)",
+        "lang": "cpp",
+        "category": "Basic Numbers",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-cpp-91",
+        "title": "Maximum Subarray Sum Kadane (CPP)",
+        "lang": "cpp",
+        "category": "Arrays",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-cpp-151",
+        "title": "Count Inversions in Array (CPP)",
+        "lang": "cpp",
+        "category": "Searching & Sorting",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-python-1",
+        "title": "Check Even or Odd (PYTHON)",
+        "lang": "python",
+        "category": "Basic Numbers",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-python-61",
+        "title": "Roman to Integer Conversion (PYTHON)",
+        "lang": "python",
+        "category": "Strings",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-python-121",
+        "title": "Search Element in Sorted 2D Matrix (PYTHON)",
+        "lang": "python",
+        "category": "Matrices",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-python-181",
+        "title": "ADC Voltage Scaling Calculator (PYTHON)",
+        "lang": "python",
+        "category": "EEE & Embedded Systems",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-java-31",
+        "title": "Count Digit Frequency (JAVA)",
+        "lang": "java",
+        "category": "Basic Numbers",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-java-91",
+        "title": "Maximum Subarray Sum Kadane (JAVA)",
+        "lang": "java",
+        "category": "Arrays",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-java-151",
+        "title": "Count Inversions in Array (JAVA)",
+        "lang": "java",
+        "category": "Searching & Sorting",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-pattern-c-1",
+        "title": "Right Triangle Star Pattern (C)",
+        "lang": "c",
+        "category": "Pattern Programming",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-pattern-c-16",
+        "title": "Inverted Alphabet Triangle Pattern (C)",
+        "lang": "c",
+        "category": "Pattern Programming",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-app-c-1",
+        "title": "E-Commerce Order Filter Duplicate Products (C)",
+        "lang": "c",
+        "category": "Application Problems",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-app-c-16",
+        "title": "Email Address Masking Processor (C)",
+        "lang": "c",
+        "category": "Application Problems",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-app-c-31",
+        "title": "Customer Loyalty Points Linked List Cycle Detector (C)",
+        "lang": "c",
+        "category": "Application Problems",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      },
+      {
+        "id": "prob-app-c-46",
+        "title": "Warehouse Cargo Shipping 0-1 Knapsack DP (C)",
+        "lang": "c",
+        "category": "Application Problems",
+        "has_title": true,
+        "has_description": true,
+        "has_pre_or_code": true,
+        "has_copy_btn": true,
+        "has_nav": true
+      }
+    ],
+    "phase_10_patterns": {
+      "total_patterns": 120,
+      "missingPreCount": 0,
+      "sampleBad": []
+    },
+    "phase_13_navigation_integrity": {
+      "total_audited": 1160,
+      "mismatch_count": 0,
+      "mismatches": []
+    },
+    "phase_14_mobile": {
+      "bodyWidth": 390,
+      "scrollWidth": 390,
+      "is_overflowing": false,
+      "overflowCount": 0,
+      "sampleOverflows": []
+    },
+    "phase_15_copy": {
+      "copyFuncExists": true,
+      "sample_id": "prob-c-1",
+      "code_length": 176
+    }
+  },
+  "defects": [],
+  "content_candidates": [],
+  "console_logs": [],
+  "page_errors": []
+}

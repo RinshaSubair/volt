@@ -1,0 +1,10 @@
+1. plc-hardware-architecture-cpu-power-supply-io-modules | Programmable Logic Controllers: Modular vs Compact PLC Architecture, CPU Microarchitecture, Sinking/Sourcing I/O & Isolation
+2. microprocessor-vs-microcontroller-8085-8051-architecture | Microprocessor vs Microcontroller: Architectural Differences, 8085 Internal Structure, 8051 Memory Map & Von Neumann vs Harvard
+3. transmission-lines-abcd-parameters | Transmission Line Modeling, ABCD Two-Port Parameters & Surge Impedance Loading
+4. phasors-impedance | Phasor Representation & Complex Impedance
+5. emt-swr-impedance-emi | Standing Wave Ratio (SWR), Reflection Coefficient, Impedance Matching, and EMI Fundamentals
+6. sse-instrumentation-comparators | Instrumentation Amplifiers, Zero-Crossing Detectors & LM311 Comparators
+7. sse-cmos-circuits-opamp | CMOS Circuits, Logic Gates and CMOS Operational Amplifiers
+8. ct-parallel-rlc | Parallel RLC Circuits: Concepts
+9. ac-alt-potier-asa | Voltage Regulation of Alternators: The Potier (ZPF) Method and the ASA Method
+10. es-arm7-arch-risc-flags | ARM7 Microcontroller: RISC vs CISC, Architecture, Registers, and CPSR Flags

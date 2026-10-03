@@ -1,0 +1,1887 @@
+{
+ "source": "Syllabus_EEE_2023_S3-S8.pdf, \"COURSE CONTENTS AND LECTURE SCHEDULE\" tables (pdfplumber). Rows titled \"Numerical Problems\"/\"Class Assignment\"/\"Test n\" dropped. DE Verilog topics added from the syllabus prose (Modules III/IV).",
+ "verification": {
+  "last_cross_checked": "session 65 (Target 3: SSE - Full Semester 4 Complete)",
+  "method": "Regenerated directly FROM the live SYLLABUS object inside eee-platform.html (headless Chromium, live page evaluation), then diffed module-by-module against the session-13 copy of this file.",
+  "result": "exact match on all topic strings - 20 courses, 100 modules, 609 topics, 0 differing rows. Session 14 added no syllabus topic strings; only TOPIC_TO_LESSON mappings changed (AC Machines Module I: 6 rows). Coverage block and per-semester counts recomputed from the live code.",
+  "note": "If this file and the HTML ever disagree, the HTML is the authority (it is what users actually see); regenerate this file from it.",
+  "corrections": [
+   "session 8: removed the row \"Class Test\" from 23EEP603 Module 2 - an administrative row that should have been dropped by the stated extraction rule. Topic count 610 -> 609."
+  ],
+  "session_15": "Regenerated check: compared with live SYLLABUS object in session 15 — 0 differing module lists (609 topic strings). Session 15 changed only the interview bank; no syllabus strings or TOPIC_TO_LESSON mappings changed.",
+  "session_16": "Session 16 changed only the Practice hub category logic; no syllabus strings or TOPIC_TO_LESSON mappings changed, so the 609-string lists and coverage/counts blocks from session 14/15 remain exact.",
+  "session_17": "Session 17 added one SVG figure to an existing lesson; no syllabus strings or TOPIC_TO_LESSON mappings changed, so the 609-string lists and coverage/counts blocks remain exact.",
+  "session_18": "Session 18 added one SVG figure to an existing lesson; no syllabus strings or TOPIC_TO_LESSON mappings changed, so the 609-string lists and coverage/counts blocks remain exact.",
+  "session_19": "Session 19 redrew one existing SVG figure; no syllabus strings or TOPIC_TO_LESSON mappings changed, so the 609-string lists and coverage/counts blocks remain exact.",
+  "session_20": "Session 20 redrew one existing SVG figure; no syllabus strings or TOPIC_TO_LESSON mappings changed, so the 609-string lists and coverage/counts blocks remain exact.",
+  "session_21": "Session 21 redrew one existing SVG figure; no syllabus strings or TOPIC_TO_LESSON mappings changed, so the 609-string lists and coverage/counts blocks remain exact.",
+  "session_22": "Session 22 mapped one existing row (AC Machines Module II row 1) to a new lesson. CORRECTION found in session 23: the coverage block and per-semester counts in this file were NOT refreshed after that change, so they were stale by one row (192 rows with a lesson instead of 193; S5 32 instead of 33; 417 not started instead of 416). No topic strings were affected.",
+  "session_23": "Session 23 mapped two existing rows (AC Machines Module II rows 2-3, Potier and ASA methods) to one new lesson. Regenerated directly from the live SYLLABUS object in headless Chromium: 0 differing module lists (609 topic strings); coverage block, per-semester counts, per-module full/partial/unwritten counts and the clean-module list recomputed from the live code. volt_tests.py now checks this file against the live page on every run, so it can no longer go stale silently.",
+  "session_24": "Session 24 mapped one existing row (AC Machines Module II row 4, \"Blondel’s two reaction theory-Phasor diagram\") to a new lesson. Regenerated from the live page: 0 differing topic strings (609), rows with a lesson 195 -> 196, partial unchanged at 46, not started 414 -> 413. volt_tests.py checks this file against the live page on every run.",
+  "session_25": "Session 25 changed only MCQ answer-key positions (161 questions re-ordered by 2-position swaps), reworded 5 MCQ explanations, and tightened the mock's position-wording detector. No syllabus strings, TOPIC_TO_LESSON or TOPIC_PARTIAL mappings changed, so the 609-string lists and coverage/counts blocks remain exact (verified by the 3 JSON checks in volt_tests.py).",
+  "session_26": "Session 26 mapped one existing row (AC Machines Module II row 5, \"Regulation of salient pole alternator by slip Test-Power developed\") to a new lesson. Regenerated from the live page: 0 differing topic strings (609), rows with a lesson 196 -> 197, partial unchanged at 46, not started 413 -> 412, S5 rows with a lesson 36 -> 37, AC Machines Module II full rows 4 -> 5. volt_tests.py checks this file against the live page on every run.",
+  "session_27": "Session 27 mapped one existing row (AC Machines Module II row 7, \"Synchronising Power and Torque- Power and Torque equations\") to a new lesson. Regenerated from the live page with regen_json.py: 0 differing topic strings (609), rows with a lesson 197 -> 198, partial unchanged at 46, not started 412 -> 411, S5 rows with a lesson 37 -> 38, AC Machines Module II full rows 5 -> 6 (rows 6 and 8 still unwritten). volt_tests.py checks this file against the live page on every run.",
+  "session_28": "Session 28 mapped one existing row (AC Machines Module II row 6, \"Load test on alternators Parallel operation of alternators\") to a new lesson. Regenerated from the live page: 0 differing topic strings (609), rows with a lesson 198 -> 199, partial unchanged at 46, not started 411 -> 410, S5 rows with a lesson 38 -> 39, AC Machines Module II full rows 6 -> 7 (only row 8, \"Methods of Synchronisation\", still unwritten). volt_tests.py checks this file against the live page on every run.",
+  "session_29": "Session 29 mapped one existing row (AC Machines Module II row 8, \"Methods of Synchronisation\") to a new lesson, which makes AC Machines Module II the sixth module with no unwritten and no partial rows. Regenerated from the live page: 0 differing topic strings (609), rows with a lesson 199 -> 200, partial unchanged at 46, not started 410 -> 409, S5 rows with a lesson 39 -> 40, AC Machines Module II full rows 7 -> 8. volt_tests.py checks this file against the live page on every run."
+ },
+ "counts": {
+  "courses": 20,
+  "modules": 100,
+  "topics": 609,
+  "per_semester": {
+   "3": {
+    "courses": 4,
+    "topics": 120,
+    "rows_with_lesson": 120,
+    "of_which_partial": 0
+   },
+   "4": {
+    "courses": 4,
+    "topics": 142,
+    "rows_with_lesson": 142,
+    "of_which_partial": 0
+   },
+   "5": {
+    "courses": 5,
+    "topics": 132,
+    "rows_with_lesson": 132,
+    "of_which_partial": 0
+   },
+   "6": {
+    "courses": 5,
+    "topics": 149,
+    "rows_with_lesson": 149,
+    "of_which_partial": 0
+   },
+   "7": {
+    "courses": 2,
+    "topics": 66,
+    "rows_with_lesson": 66,
+    "of_which_partial": 0
+   }
+  },
+  "semester_8": "excluded by specification"
+ },
+ "coverage": {
+  "explanation": "Written status per module, read live from the code. \"full\" = topic has a lesson and is not in TOPIC_PARTIAL; \"partial\" = mapped but the lesson covers only part of the PDF row; \"unwritten\" = no lesson at all (NOT STARTED).",
+  "rows_with_lesson": 609,
+  "of_which_partial": 0,
+  "rows_not_started": 0,
+  "modules_with_zero_unwritten_and_zero_partial": 100,
+  "by_course": {
+   "23EEJ303": [
+    {
+     "name": "Number Systems and Logic Gate Fundamentals",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Boolean Algebra and Combinational Circuits Design",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Digital Logic Components and Verilog Programming",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Flip-Flops, Registers, and Counters",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "State Machines, D/A & A/D Converters, PLDs",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP304": [
+    {
+     "name": "Classification and Calibration of Meters",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Power and Energy Measurements",
+     "topics": 9,
+     "full": 9,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Resistance and Inductance Measurement",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Magnetic Measurements and Oscilloscope",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Transducers and Sensors",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EET305": [
+    {
+     "name": "Steady-State Analysis using Circuit Theorems",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Transient Analysis in s-domain",
+     "topics": 9,
+     "full": 9,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Analysis of Coupled Circuits",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Resonance & Three-Phase Networks",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Two-Port Networks",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP311": [
+    {
+     "name": "Power Generation and Tariff",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Power Transmission System (Electrical Modelling)",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Design of Power Transmission System Components",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Switchgear Fundamentals",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Distribution Systems",
+     "topics": 3,
+     "full": 3,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EET401": [
+    {
+     "name": "Introduction to Signals and Systems",
+     "topics": 9,
+     "full": 9,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Convolution and Laplace Transform Analysis",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Fourier Representation and Sampling of Signals",
+     "topics": 9,
+     "full": 9,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Discrete Domain Representation of Signals and Systems",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Discrete Convolution and Z Transform Analysis",
+     "topics": 9,
+     "full": 9,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EET402": [
+    {
+     "name": "Coordinate Systems and Vector Calculus",
+     "topics": 9,
+     "full": 9,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Electrostatics",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Magnetostatics and Time Varying Fields",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Electromagnetic Waves",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Wave Propagation through Transmission Lines",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP403": [
+    {
+     "name": "Fundamentals of DC Machines",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "DC Generators",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "DC Motors",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Single-phase Transformer",
+     "topics": 10,
+     "full": 10,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Three-phase Transformer",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEJ404": [
+    {
+     "name": "h-parameter Model of CE Amplifier, Biasing of JFET and MOSFET Amplifiers",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Frequency Response, Multistage and Power Amplifiers",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Feedback in Amplifiers and Basics of OPAMP",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Operational Amplifier Circuits",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Waveform Generation and Introduction to CMOS",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EET501": [
+    {
+     "name": "Modelling of Physical Systems",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Time Domain Analysis",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Root Locus Construction and Compensator Design",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Frequency Domain Analysis",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Compensator Design in Frequency Domain",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEJ502": [
+    {
+     "name": "Basics of 8085 Microprocessor",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Interfacing Circuits and Introduction to Embedded Systems & 8051",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "8051 Microcontroller Instruction Sets and Programming",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Timer, Serial Communication in 8051",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Introduction to ARM7 Microcontroller and Internet of Things",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EET503": [
+    {
+     "name": "Power Semiconductor Devices",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Line Commutated Converters",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "AC Voltage Controllers and Inverters",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "DC-DC Converters",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Isolated DC-DC Converters",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP504": [
+    {
+     "name": "Fundamentals of Alternators",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Performance Characteristics of Alternators",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Three Phase AC Motors",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Performance Characteristics of Three Phase Induction Motors",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Single Phase Induction Motors and Induction Generator",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23ESP510": [
+    {
+     "name": "Overview of Machine Learning",
+     "topics": 2,
+     "full": 2,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Supervised Learning",
+     "topics": 2,
+     "full": 2,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Neural Networks and Support Vector Machines",
+     "topics": 3,
+     "full": 3,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Unsupervised Learning",
+     "topics": 3,
+     "full": 3,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Classification Assessment",
+     "topics": 3,
+     "full": 3,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EET601": [
+    {
+     "name": "Introduction to Hybrid/Electric, Conventional & Autonomous Vehicles",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Hybrid & Electric Drive-trains",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Electric Propulsion System",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Energy Storage",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Sizing the Drive System",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP602": [
+    {
+     "name": "Fundamentals of Electric Drives",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Rectifier Control of DC Drives",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Control of DC Motors by Choppers",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Three Phase Induction Motor Drives",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Synchronous Motor Drives",
+     "topics": 3,
+     "full": 3,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP603": [
+    {
+     "name": "Introduction to DSP and Fourier Transform",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Fast Fourier Transform",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Infinite Impulse Response Filters",
+     "topics": 4,
+     "full": 4,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Finite Impulse Response Filters",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Digital Signal Processors",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEE634": [
+    {
+     "name": "Energy Resources and Economic Analysis",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Solar Photovoltaic Power Generation",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Design of PV Systems for Off-Grid and On-Grid Applications",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Wind and Ocean Energy Conversion Systems",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Introduction to Green Energy Methods",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEE615": [
+    {
+     "name": "Introduction to Power Quality & Standards",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Mitigation of Interruptions",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Fundamentals of Harmonics & Harmonics Filters",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Power Quality Monitoring",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Power Reliability",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP701": [
+    {
+     "name": "Fault Analysis",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Load Flow Analysis",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Stability Analysis",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Automatic Generation Control",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Generation Scheduling",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ],
+   "23EEP702": [
+    {
+     "name": "Codes of Practice",
+     "topics": 5,
+     "full": 5,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Lighting Schemes and Calculations",
+     "topics": 6,
+     "full": 6,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Domestic Installation",
+     "topics": 9,
+     "full": 9,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "Industrial Power and Lighting Installations",
+     "topics": 8,
+     "full": 8,
+     "partial": 0,
+     "unwritten": 0
+    },
+    {
+     "name": "High Rise Buildings",
+     "topics": 7,
+     "full": 7,
+     "partial": 0,
+     "unwritten": 0
+    }
+   ]
+  }
+ },
+ "course_index": {
+  "23EEJ303": {
+   "sem": 3,
+   "title": "Digital Electronics & Logic Design",
+   "modules": [
+    "Number Systems and Logic Gate Fundamentals",
+    "Boolean Algebra and Combinational Circuits Design",
+    "Digital Logic Components and Verilog Programming",
+    "Flip-Flops, Registers, and Counters",
+    "State Machines, D/A & A/D Converters, PLDs"
+   ]
+  },
+  "23EEP304": {
+   "sem": 3,
+   "title": "Measurements & Instrumentation",
+   "modules": [
+    "Classification and Calibration of Meters",
+    "Power and Energy Measurements",
+    "Resistance and Inductance Measurement",
+    "Magnetic Measurements and Oscilloscope",
+    "Transducers and Sensors"
+   ]
+  },
+  "23EET305": {
+   "sem": 3,
+   "title": "Circuit Theory",
+   "modules": [
+    "Steady-State Analysis using Circuit Theorems",
+    "Transient Analysis in s-domain",
+    "Analysis of Coupled Circuits",
+    "Resonance & Three-Phase Networks",
+    "Two-Port Networks"
+   ]
+  },
+  "23EEP311": {
+   "sem": 3,
+   "title": "Fundamentals of Electrical Power Systems",
+   "modules": [
+    "Power Generation and Tariff",
+    "Power Transmission System (Electrical Modelling)",
+    "Design of Power Transmission System Components",
+    "Switchgear Fundamentals",
+    "Distribution Systems"
+   ]
+  },
+  "23EET401": {
+   "sem": 4,
+   "title": "Signals & Systems",
+   "modules": [
+    "Introduction to Signals and Systems",
+    "Convolution and Laplace Transform Analysis",
+    "Fourier Representation and Sampling of Signals",
+    "Discrete Domain Representation of Signals and Systems",
+    "Discrete Convolution and Z Transform Analysis"
+   ]
+  },
+  "23EET402": {
+   "sem": 4,
+   "title": "Electromagnetic Theory",
+   "modules": [
+    "Coordinate Systems and Vector Calculus",
+    "Electrostatics",
+    "Magnetostatics and Time Varying Fields",
+    "Electromagnetic Waves",
+    "Wave Propagation through Transmission Lines"
+   ]
+  },
+  "23EEP403": {
+   "sem": 4,
+   "title": "DC Machines & Transformers",
+   "modules": [
+    "Fundamentals of DC Machines",
+    "DC Generators",
+    "DC Motors",
+    "Single-phase Transformer",
+    "Three-phase Transformer"
+   ]
+  },
+  "23EEJ404": {
+   "sem": 4,
+   "title": "Solid State Electronic Devices & Circuits",
+   "modules": [
+    "h-parameter Model of CE Amplifier, Biasing of JFET and MOSFET Amplifiers",
+    "Frequency Response, Multistage and Power Amplifiers",
+    "Feedback in Amplifiers and Basics of OPAMP",
+    "Operational Amplifier Circuits",
+    "Waveform Generation and Introduction to CMOS"
+   ]
+  },
+  "23EET501": {
+   "sem": 5,
+   "title": "Control System Engineering",
+   "modules": [
+    "Modelling of Physical Systems",
+    "Time Domain Analysis",
+    "Root Locus Construction and Compensator Design",
+    "Frequency Domain Analysis",
+    "Compensator Design in Frequency Domain"
+   ]
+  },
+  "23EEJ502": {
+   "sem": 5,
+   "title": "Embedded System Design and IoT",
+   "modules": [
+    "Basics of 8085 Microprocessor",
+    "Interfacing Circuits and Introduction to Embedded Systems & 8051",
+    "8051 Microcontroller Instruction Sets and Programming",
+    "Timer, Serial Communication in 8051",
+    "Introduction to ARM7 Microcontroller and Internet of Things"
+   ]
+  },
+  "23EET503": {
+   "sem": 5,
+   "title": "Power Electronics",
+   "modules": [
+    "Power Semiconductor Devices",
+    "Line Commutated Converters",
+    "AC Voltage Controllers and Inverters",
+    "DC-DC Converters",
+    "Isolated DC-DC Converters"
+   ]
+  },
+  "23EEP504": {
+   "sem": 5,
+   "title": "AC Machines",
+   "modules": [
+    "Fundamentals of Alternators",
+    "Performance Characteristics of Alternators",
+    "Three Phase AC Motors",
+    "Performance Characteristics of Three Phase Induction Motors",
+    "Single Phase Induction Motors and Induction Generator"
+   ]
+  },
+  "23ESP510": {
+   "sem": 5,
+   "title": "Introduction to Machine Learning",
+   "modules": [
+    "Overview of Machine Learning",
+    "Supervised Learning",
+    "Neural Networks and Support Vector Machines",
+    "Unsupervised Learning",
+    "Classification Assessment"
+   ]
+  },
+  "23EET601": {
+   "sem": 6,
+   "title": "Electric Vehicle Technology",
+   "modules": [
+    "Introduction to Hybrid/Electric, Conventional & Autonomous Vehicles",
+    "Hybrid & Electric Drive-trains",
+    "Electric Propulsion System",
+    "Energy Storage",
+    "Sizing the Drive System"
+   ]
+  },
+  "23EEP602": {
+   "sem": 6,
+   "title": "Power Semiconductor Drives",
+   "modules": [
+    "Fundamentals of Electric Drives",
+    "Rectifier Control of DC Drives",
+    "Control of DC Motors by Choppers",
+    "Three Phase Induction Motor Drives",
+    "Synchronous Motor Drives"
+   ]
+  },
+  "23EEP603": {
+   "sem": 6,
+   "title": "Digital Signal Processing",
+   "modules": [
+    "Introduction to DSP and Fourier Transform",
+    "Fast Fourier Transform",
+    "Infinite Impulse Response Filters",
+    "Finite Impulse Response Filters",
+    "Digital Signal Processors"
+   ]
+  },
+  "23EEE634": {
+   "sem": 6,
+   "title": "Renewable and Distributed Energy Sources",
+   "modules": [
+    "Energy Resources and Economic Analysis",
+    "Solar Photovoltaic Power Generation",
+    "Design of PV Systems for Off-Grid and On-Grid Applications",
+    "Wind and Ocean Energy Conversion Systems",
+    "Introduction to Green Energy Methods"
+   ]
+  },
+  "23EEE615": {
+   "sem": 6,
+   "title": "Electrical Power Quality and Reliability",
+   "modules": [
+    "Introduction to Power Quality & Standards",
+    "Mitigation of Interruptions",
+    "Fundamentals of Harmonics & Harmonics Filters",
+    "Power Quality Monitoring",
+    "Power Reliability"
+   ]
+  },
+  "23EEP701": {
+   "sem": 7,
+   "title": "Power System Analysis",
+   "modules": [
+    "Fault Analysis",
+    "Load Flow Analysis",
+    "Stability Analysis",
+    "Automatic Generation Control",
+    "Generation Scheduling"
+   ]
+  },
+  "23EEP702": {
+   "sem": 7,
+   "title": "Electrical System Design",
+   "modules": [
+    "Codes of Practice",
+    "Lighting Schemes and Calculations",
+    "Domestic Installation",
+    "Industrial Power and Lighting Installations",
+    "High Rise Buildings"
+   ]
+  }
+ },
+ "topics": {
+  "23EEJ303": {
+   "1": [
+    "Introduction to Number Systems, and the conversions",
+    "ASCII code, Excess -3 code, Gray code, BCD, Error detection codes- Parity code",
+    "Signed Numbers Representation – 1’s complement and 2’s complement method",
+    "Fixed Point and Floating-Point Representation",
+    "TTL and CMOS Logic Families",
+    "Internal Diagram of TTL NAND Gate and CMOS NOR Gate"
+   ],
+   "2": [
+    "Review of Boolean Algebra",
+    "Sum of Products (SOP) and Product of Sums (POS) Methods",
+    "Karnaugh Map Representation and Simplification (Up to Four Variables)",
+    "Half Adder and Full Adder, Half Subtractor and Full Subtractor",
+    "4-Bit Parallel Binary Adder/Subtractor and Carry Look Ahead Adders"
+   ],
+   "3": [
+    "Introduction to Comparators, Parity Generators and Checkers",
+    "Encoders and Decoders, BCD to Seven Segment Decoder",
+    "Code Converters",
+    "Multiplexers, Demultiplexers",
+    "Architecture of Arithmetic Logic Units (ALUs)",
+    "Verilog basic language elements: identifiers, data objects, scalar data types, operators",
+    "Verilog entity and architecture; gate-level modelling: basic gates, testbench, XOR using NAND and NOR",
+    "Modelling combinational logic in Verilog: data-flow and behavioural (half adder, full adder, mux, demux, decoder, encoder)"
+   ],
+   "4": [
+    "Introduction to Flip-Flops – SR Flip-Flop",
+    "JK and D Flip-Flops",
+    "T Flip-Flop and JK Master-Slave Flip-Flop, Flipflop Conversions",
+    "Asynchronous Counters using flipflops",
+    "Synchronous Counters design using flipflops",
+    "Shift Registers – SISO, SIPO, PISO, PIPO using flipflops, Ring Counter and Johnson Counter",
+    "Modelling sequential logic circuits in Verilog: flip-flops, counters"
+   ],
+   "5": [
+    "Introduction to State Machines",
+    "State Machine Design and Implementation",
+    "Digital to Analog Converter (DAC) - Specifications and Types",
+    "Analog to Digital Converter (ADC) - Specifications and Types",
+    "Programmable Logic Devices (PLDs), Combinational Logic Design with PAL and PLA"
+   ]
+  },
+  "23EEP304": {
+   "1": [
+    "Concept of Measurement- Static and dynamic characteristics of instruments-Resolution-accuracy-Measurement standards",
+    "Errors-Types of Errors- Statistics of errors, Need for calibration",
+    "Classification of instruments, secondary instruments–indicating, integrating, and recording type",
+    "Operating forces - essentials of indicating instruments - deflecting, damping, and controlling torques",
+    "Ammeters and voltmeters - moving coil-constructional details and operation",
+    "Moving iron-constructional details and operation",
+    "Principles - shunts and multipliers – extension of range",
+    "Calibration of Meters using DC potentiometers"
+   ],
+   "2": [
+    "Measurement of power: Dynamometer type wattmeter –Construction and working",
+    "3-phase power measurement",
+    "Low power factor wattmeter",
+    "Measurement of energy: Induction type watt-hour meters",
+    "Single-phase energy meter – construction and working",
+    "Three phase energy meter-Calibration of Energy meter",
+    "High voltage and high current in DC measurements- voltmeters",
+    "Sphere gaps, DC Hall effect sensors",
+    "Digital Energy meters -Time of Day (TOD) and Smart metering"
+   ],
+   "3": [
+    "Measurement of low, medium and high resistance - Ammeter voltmeter method (for low and medium resistance measurements)",
+    "Kelvin’s double bridge- Wheatstone's bridge",
+    "Loss of charge method- measurement of earth resistance",
+    "Measurement of self-inductance-Maxwell’s Inductance bridge",
+    "Measurement of capacitance –Schering’s Bridge",
+    "Measurement of frequency-Wien’s bridge"
+   ],
+   "4": [
+    "Magnetic Measurements: Measurement of flux and permeability - flux meter",
+    "BH curve and permeability measurement - hysteresis measurement",
+    "Ballistic galvanometer – principle- determination of BH curve - hysteresis loop",
+    "Oscilloscopes- Principal of operation of general-purpose CRO- basics of a vertical and horizontal deflection system, sweep generator etc",
+    "DSO-Characteristics-Probes and Probing techniques"
+   ],
+   "5": [
+    "Transducers - Definition and classification. different types of transducers, criteria for selection",
+    "LVDT, Electromagnetic and Ultrasonic flow meters",
+    "Piezoelectric transducers-modes of the operation-force transducer",
+    "Load cell, and Strain gauge",
+    "Temperature sensors: RTD, Thermistor, Thermocouple",
+    "Digital voltmeters and frequency meters using electronic counters",
+    "DMM, and Clamp-on meters",
+    "Introduction to Virtual Instrumentation systems- Simulation software"
+   ]
+  },
+  "23EET305": {
+   "1": [
+    "Superposition principle - Application to the analysis of DC and AC (sinusoidal excitation) circuits with dependent and independent sources",
+    "Application of source transformation in electric circuit analysis",
+    "Thevenin’s theorem - Application to the analysis of DC and AC circuits with dependent and independent sources",
+    "Norton’s theorem - Application to the analysis of DC and AC circuits with dependent and independent sources",
+    "Reciprocity Theorem - Application to the analysis of DC and AC Circuits",
+    "Maximum power transfer theorem - DC and AC steady state analysis with dependent and independent sources"
+   ],
+   "2": [
+    "Review of Laplace transform - Transformation of a circuit into S-domain",
+    "Transform impedance and admittance of passive elements - R, L and C",
+    "Formulation and solution of dynamic equations of RL network with DC excitation and initial conditions using Laplace Transforms",
+    "Formulation and solution of dynamic equations of RC network with DC excitation and initial conditions using Laplace Transforms",
+    "Formulation and solution of dynamic equations of RLC network with DC excitation and initial conditions using Laplace Transforms; Time constant",
+    "Complete solution of RL series circuit with sinusoidal excitation using Laplace Transforms",
+    "Complete solution of RC series circuit with sinusoidal excitation using Laplace Transforms",
+    "Complete solution of RLC series circuit with sinusoidal excitation using Laplace Transforms",
+    "Parallel RLC circuits"
+   ],
+   "3": [
+    "Mesh analysis of transformed circuits in s-domain",
+    "Node analysis of transformed circuits in s-domain",
+    "Dot polarity convention, Sinusoidal steady state analysis of coupled circuits",
+    "Analysis of coupled circuits in s-domain"
+   ],
+   "4": [
+    "Resonance in Series circuits – Quality factor – Bandwidth",
+    "Variation of Impedance/ admittance Vs Frequency. Simple Numerical",
+    "Steady state analysis of - three-phase three-wire and four-wire unbalanced Y circuits",
+    "Steady state analysis of - three-phase three-wire and four-wire unbalanced Delta circuits",
+    "Neutral shift",
+    "Complex power"
+   ],
+   "5": [
+    "Driving point impedance and admittance",
+    "Two-port network parameters – Z, Y parameters. Equivalent circuit representation",
+    "Two-port network parameters – h, T parameters. Equivalent circuit representation",
+    "Conditions for symmetry & reciprocity, relationships between parameters",
+    "Interconnections of two port networks (series, parallel and cascade)",
+    "T-π transformation"
+   ]
+  },
+  "23EEP311": {
+   "1": [
+    "Evolution of Modern Power Systems",
+    "Load factor, Demand factor, diversity factor, Plant capacity factors",
+    "Presentation on Methods of generation",
+    "Tariff and Power factor improvement"
+   ],
+   "2": [
+    "Power Transmission line: Line parameters-skin effect, Proximity effect",
+    "Line Inductance -Derivation of single phase, three phase - single circuit and double circuit",
+    "Line Inductance - three phase - double circuit - Transposing of transmission line- bundled conductor",
+    "Line Capacitance – Numerical problems",
+    "Transmission line modelling: classifications-short line, medium line– ABCD parameters problems Ferranti effect"
+   ],
+   "3": [
+    "Calculation of Sag and Tension Numerical Problems related to Sag and Tension",
+    "Insulators-String Efficiency-grading-Numerical problems",
+    "Corona Power loss, Factors affecting corona loss, corona effect on transmission line design, Numerical Problems",
+    "Sag, Corona and Insulators",
+    "Underground Cable Calculation"
+   ],
+   "4": [
+    "Need for protection – Re-striking Voltage-Recovery voltage –RRRV",
+    "Relays introduction",
+    "Circuit Interruption – Current Chopping- Resistance Switching –Capacitive current interruption",
+    "Circuit breakers-rating- SF6, VCB- (Diagram, construction, working, advantages, disadvantages)",
+    "Protective relays –classification - principle- advantages-disadvantages- block diagram – schematic diagrams"
+   ],
+   "5": [
+    "Power distribution systems- Types of distribution schemes",
+    "Radial and Ring main distribution",
+    "AC and DC distribution – Schemes and Protection"
+   ]
+  },
+  "23EET401": {
+   "1": [
+    "Introduction to signals and systems Elementary signals – unit step, unit ramp, unit impulse – properties, real and complex exponentials, sinusoidals",
+    "Elementary signals –real and complex exponentials, sinusoidals",
+    "Classification of signals – Continuous Time and Discrete Time, Even and Odd – Numerical Problems",
+    "Classification of signals –Causal and Non causal, Periodic and Aperiodic",
+    "Classification of signals –Power and Energy, Deterministic and Random signals",
+    "Basic operations on signals – reversal, shifting, scaling (both time and amplitude)",
+    "Combination of reversal, shifting, scaling (both time and amplitude)",
+    "Concept of system – Properties of systems – linearity, time invariance, causality",
+    "Properties of systems memory, stability, invertability – Numerical problems"
+   ],
+   "2": [
+    "Convolution integral – Analytical method",
+    "Convolution integral –graphical method",
+    "Representation of LTI systems – Impulse response representation",
+    "Differential equation representations of LTI systems",
+    "Overview of Laplace Transform – Laplace transform analysis of systems",
+    "Relation between the transfer function and differential equation. Laplace Transform analysis on Causality and stability",
+    "Determining the time domain response from transfer function",
+    "Numerical problems on electrical networks"
+   ],
+   "3": [
+    "Fourier representation of continuous time signals – Fourier Series – Definition",
+    "Fourier Series – Trignometric Form",
+    "Fourier Series – Harmonic Form",
+    "Fourier transform – Existence – properties of FT",
+    "Frequency response of LTI systems",
+    "Sampling process- sampling theorem",
+    "Proof of Sampling Theorem, Aliasing – Nyquist rate",
+    "Signal reconstruction- Zero order and First order hold circuits",
+    "Derivation of Transfer function of Zoh and Foh"
+   ],
+   "4": [
+    "Difference equation representations of LTI systems – Discrete forms of representing systems – Direct form I and II",
+    "Cascade, Parallel forms",
+    "Fourier representation of discrete time signals – Discrete Fourier series",
+    "Properties of Discrete Fourier Series",
+    "Numerical Problems on finding DFS",
+    "Discrete time Fourier Transform",
+    "Properties of DTFT",
+    "Frequency response of Discrete Time systems"
+   ],
+   "5": [
+    "Discrete convolution- methods",
+    "Discrete convolution- properties",
+    "Z Transform – Region of convergence",
+    "Properties of the Z transform",
+    "Inverse ZT –Long division",
+    "Inverse ZT –Partial Fraction methods",
+    "Z-transfer function- Analysis of difference equation of LTI systems",
+    "Mapping of Laplace-domain to Z-domain",
+    "Basic idea on Stability and causality conditions"
+   ]
+  },
+  "23EET402": {
+   "1": [
+    "Three-dimensional Cartesian Coordinate System, Unit Vectors, Differential length, Differential area, Differential volume",
+    "Cylindrical co-ordinate system, Unit Vectors, Differential length, Differential area, Differential volume, Conversion of a point represented in cartesian to cylindrical and vice-versa",
+    "Spherical co-ordinate system, Unit Vectors, Differential length, Differential area, Differential volume, Conversion of a point represented in cartesian to cylindrical and vice-versa",
+    "Transformation of a vector from cartesian to cylindrical and vice-versa",
+    "Transformation of a vector from cartesian to spherical and vice-versa",
+    "Gradient of a Scalar field, Divergence of a Vector field and Curl of a Vector field- their physical interpretation",
+    "Simulation examples to illustrate the physical meaning of Gradient, Divergence and Curl operators",
+    "Divergence theorem and related numerical examples",
+    "Stoke’s theorem and related numerical examples"
+   ],
+   "2": [
+    "Coulomb’s law, Electric field intensity",
+    "Electric Field intensity at a point due to a line charge distribution",
+    "Electric Field intensity at a point due to a surface charge distribution, Electric Flux and Flux Density",
+    "Gauss’s law and its applications",
+    "Electric Potential and Potential Gradient, conservative property of electric field, Equipotential surfaces",
+    "Electric field intensity due to Electric Dipole, Capacitance of co-axial cable",
+    "Capacitance of a two-wire line; Poisson’s and Laplace’s equations"
+   ],
+   "3": [
+    "Biot-Savart’s Law, Magnetic Field intensity due to a finite and infinite wire carrying current",
+    "Magnetic field intensity on the axis of a circular and rectangular loop carrying current",
+    "Magnetic flux Density; Magnetic Vector Potential; Ampere’s circuital law and simple applications",
+    "Boundary conditions for electric fields and magnetic fields",
+    "Conduction current and displacement current densities; Continuity equation for current, Modified form of Ampere’s circuital law",
+    "Faraday's Law and Gauss’s Law. Maxwell’s equations in integral and differential forms"
+   ],
+   "4": [
+    "Wave Equations from Maxwell's Equations; Uniform Plane Waves",
+    "Wave equations in Phasor form; Propagation of Uniform Plane waves in free space",
+    "Propagation of Uniform Plane waves in lossless and lossy dielectrics",
+    "Uniform Plane waves in good conductor; Skin effect and skin depth",
+    "phase velocity and group velocity, Intrinsic Impedance, Attenuation constant and Propagation Constant in all medium",
+    "Poynting Vector and Poynting Theorem"
+   ],
+   "5": [
+    "Transmission line parameters, Derivation of wave equations for transmission lines",
+    "Propagation constants, Characteristic impedance, Wavelength, Velocity of propagation",
+    "Numerical problems related to wave propagation in transmission lines",
+    "Standing Wave Ratio (SWR), impedance matching",
+    "Electromagnetic interference (Basic concepts only)"
+   ]
+  },
+  "23EEP403": {
+   "1": [
+    "Constructional details of dc machines",
+    "Armature winding- single layer winding",
+    "Armature winding- double layer lap winding",
+    "Armature winding- double layer wave winding",
+    "Essence of equalizer rings and dummy Coils",
+    "MMF of a winding",
+    "EMF developed, electromagnetic torque"
+   ],
+   "2": [
+    "DC generators- principle of operation, EMF equation, methods of excitation-separately and self-excited shunt, series, compound machines",
+    "methods of excitation-self-excited shunt, series, compound machines",
+    "Numerical related to DC generator",
+    "Armature reaction effects of armature reaction, demagnetizing and cross magnetizing ampere-turns",
+    "Compensating windings, interpoles",
+    "Numerical",
+    "Parallel operation of DC generator",
+    "Numerical related to parallel operation"
+   ],
+   "3": [
+    "DC motor principle of operation, back emf, classification torque equation",
+    "Starting of DC motors necessity of starters. Four-point starters",
+    "Speed control field control, armature control",
+    "Numerical- speed control, Braking of dc motors(theory)",
+    "Losses and efficiency power flow diagram- Numerical problems",
+    "Testing of DC motor-theoretical details",
+    "Swinburn’s test Numericals"
+   ],
+   "4": [
+    "Transformer - principle of operation, construction, core type and shell type construction",
+    "EMF equation, transformation ratio, ideal transformer, transformer with losses",
+    "phasor diagram - no load and on load operation, Numerical problems",
+    "Equivalent circuit, percentage and per unit impedance",
+    "Voltage regulation, instrument transformer, Numerical problems",
+    "Transformer losses and efficiency, Conditions for maximum efficiency, all- day efficiency, Numerical problems",
+    "Numerical problems- maximum efficiency and all-day efficiency",
+    "kVA rating of transformers, Parallel operation of single-phase transformers",
+    "Dot convention - polarity test, separation of losses(theory)",
+    "Design of single-phase transformer (Case study)"
+   ],
+   "5": [
+    "Autotransformer ratings, saving of copper. Numerical problems",
+    "Numerical problems related to copper saving",
+    "Three-phase transformer construction, three-phase transformer connections",
+    "Power transformer and distribution transformer",
+    "Vector groupings Yy0, Dd0, Yd1, Yd11, Dy1, Dy11",
+    "Three winding transformer tertiary winding. Percentage and per unit impedance. Parallel operation",
+    "Parallel operation of three phase transformer",
+    "On load and off load tap changers, dry-type transformers"
+   ]
+  },
+  "23EEJ404": {
+   "1": [
+    "Review of BJT characteristics- Operating point of a BJT",
+    "Transistor Biasing circuits: Fixed bias, Collector to base bias",
+    "Voltage divider biasing – Numerical Problems",
+    "Derivation of stability factor for voltage divider biasing",
+    "Calculation of amplifier gains and impedances using h parameter equivalent circuit",
+    "Field Effect Transistors: Review of JFET and MOSFET (enhancement mode only)",
+    "MOSFET common source amplifier- Design using voltage divider biasing"
+   ],
+   "2": [
+    "Low frequency response of common emitter amplifier - Role of coupling capacitors and emitter bypass capacitor",
+    "Internal Capacitances at high frequency operations of BJT- Hybrid pi model of BJT",
+    "Gain bandwidth product. Multistage amplifiers: Direct, RC, transformer coupled Amplifiers, Applications",
+    "Class A and Class B power amplifiers",
+    "Class AB power amplifier, Distortion in power amplifiers"
+   ],
+   "3": [
+    "Feedback in Amplifiers-Effect of positive and negative feedbacks",
+    "Oscillators: Barkhausen criterion–RC oscillators (RC Phase shift oscillator)",
+    "Fundamental differential amplifier-Modes of operation",
+    "Properties of ideal and practical Op-amp - Gain, CMRR and Slew rate. Parameters of a typical Op-amp IC 741"
+   ],
+   "4": [
+    "Open loop and Closed loop Configurations, Concept of virtual ground. Negative feedback in Op-amps",
+    "Inverting and non- inverting amplifier circuits",
+    "Summing and difference amplifiers",
+    "Instrumentation amplifier",
+    "Zero crossing detector, LM311 Comparator IC"
+   ],
+   "5": [
+    "Square wave generator using opamp",
+    "Triangular and ramp generator circuits using OPAMP, Effect of slew rate on wave generation",
+    "Timer 555 IC-internal diagram and working",
+    "Introduction to CMOS circuits- Advantages of CMOS – CMOS logic gates",
+    "Basics of CMOS opamp"
+   ]
+  },
+  "23EET501": {
+   "1": [
+    "Introduction to open loop and closed loop control systems – Real time applications of open loop (e.g. Traffic light controller, Fan regulator, automatic coffee maker) and closed loop systems (e.g. Water level control, Air conditioning system, Launch vehicle attitude control). Comparison of open loop and closed loop systems",
+    "Transfer function of LTI systems- Electrical systems",
+    "Transfer function of LTI systems- Mechanical systems",
+    "Transfer function of LTI systems- Electromechanical systems",
+    "Force voltage and Force current analogy",
+    "Block diagram representation - block diagram reduction",
+    "Signal Flow Graph – Mason’s Gain Formula"
+   ],
+   "2": [
+    "Time domain analysis of control systems: Time domain specifications of transient responses",
+    "Steady state specifications",
+    "Impulse and Step responses of first and second order systems",
+    "Stability Analysis: Characteristic Equation - Poles and zeros - Concept of BIBO stability and Asymptotic stability",
+    "Time response for various pole locations- stability of feedback systems",
+    "Routh's stability criterion- Relative stability"
+   ],
+   "3": [
+    "Root locus technique: Construction of Root locus",
+    "Root locus technique: Construction of Root locus (part 2)",
+    "Stability analysis- effect of addition of poles and zeroes",
+    "Design of Compensators: Design of lag",
+    "lead and lag-lead compensators using Root locus technique",
+    "PID controllers: PID tuning using Ziegler-Nichols methods"
+   ],
+   "4": [
+    "Frequency domain specifications",
+    "Correlation between time domain and frequency domain responses",
+    "Bode Plot: Construction- Concepts of gain margin and phase margin",
+    "Bode Plot: stability analysis",
+    "Polar plot: Concepts of gain margin and phase margin",
+    "Polar plot: stability analysis"
+   ],
+   "5": [
+    "Nyquist criterion: Nyquist plot",
+    "Nyquist Stability criterion- Analysis",
+    "Compensator design using Bode plot: Design of lag",
+    "Lead and lag-lead compensator design using Bode plot",
+    "State space model",
+    "Solution of state equations of LTI systems"
+   ]
+  },
+  "23EEJ502": {
+   "1": [
+    "8085 Microprocessor: Architecture, Pin diagram",
+    "Addressing modes, Instruction classification based on Bytes",
+    "Instruction cycles and Timing diagram",
+    "Basic ALPs, Delay Programs"
+   ],
+   "2": [
+    "Programmable Peripheral Interface 8255 – Architecture and Modes of operation",
+    "Interfacing of IO devices - seven segment LED, ADC and DAC",
+    "Introduction to Embedded System, Architecture of Embedded system, Applications",
+    "Embedded system constraints, Hard and soft real time systems",
+    "8051 Microcontroller: Architecture, Pin diagram, Memory organization and SFRs",
+    "Structure of IO port, Addressing modes"
+   ],
+   "3": [
+    "Instruction set- Data transfer, Arithmetic, Logical, Boolean",
+    "Instruction set- Branching – SJMP, AJMP, LJMP",
+    "Basic ALPs in Topics 3.1 -3.2",
+    "Embedded C Programming – Declaring variables, Delay generation and port programming in Embedded C",
+    "ALP: Time delay and I/O port programming"
+   ],
+   "4": [
+    "Theory of Timer – TCON, TMOD",
+    "Timer Modes, Timer/Counter Programming (ALP)",
+    "Serial Port of 8051- SCON, SMOD",
+    "SBUF, and Serial Data transfer modes, Serial Port programming (ALP)",
+    "Interrupts of 8051-IE, IP, Types of Interrupts"
+   ],
+   "5": [
+    "Introduction to ARM7 Micro Controller, comparison between RISC and CICS, ARM7 architecture and flag register",
+    "Sensors, actuators, and other devices employed in IoT, Integration of Sensors and Actuators",
+    "Communication protocols, Security and privacy concerns in IoT",
+    "Overview of design of Embedded Systems and IoT Applications"
+   ]
+  },
+  "23EET503": {
+   "1": [
+    "Introduction to Power Electronics-Scope and applications-power electronics vs signal electronics",
+    "Structure and principle of operation of Power diode, Power MOSFET",
+    "Structure and principle of operation of IGBT",
+    "Basic principles of wideband gap devices SiC, GaN",
+    "SCR- Structure, Static characteristics & Switching (turn-on & turn-off) characteristics",
+    "di/dt& dv/dt protection – Turn-on methods of SCR",
+    "Two transistor analogy- Gate triggering circuits",
+    "Requirements of isolation and synchronization in gate drive circuits- Opto and pulse transformer-based isolation"
+   ],
+   "2": [
+    "Controlled Rectifiers (Single Phase) – Half-wave-controlled rectifier with R load",
+    "Fully controlled and half controlled bridge rectifier with R, RL and RLE loads (continuous & discontinuous conduction) – Output voltage equation",
+    "Controlled Rectifiers (3-Phase) - 3-phase half-wave-controlled rectifier with R load",
+    "Fully controlled bridge converter with RLE load (continuous conduction, ripple free) – Output voltage equation-Waveforms for various triggering angles",
+    "Fully controlled bridge converter with RLE load (continuous conduction, ripple free) – Output voltage equation-Waveforms for various triggering angles (part 2)",
+    "Half controlled bridge converter with RLE load (continuous conduction, ripple free) – Output voltage equation-Waveforms for various triggering angles"
+   ],
+   "3": [
+    "AC voltage controllers (ACVC) – 1-phase full-wave ACVC with R, & RL loads – Waveforms – RMS output voltage, Input power factor with R load",
+    "Inverters – Voltage Source Inverters– 1-phase half-bridge inverter with R and RL loads",
+    "Inverters – Voltage Source Inverters– 1-phase full bridge inverter with R and RL loads- THD in output voltage",
+    "3-phase bridge inverter with R load –180° conduction mode",
+    "3-phase bridge inverter with R load –120° conduction mode",
+    "Pulse width modulation – Single pulse width, Multiple pulse width and",
+    "Pulse width modulation –Sine-triangle PWM (unipolar & bipolar modulation) – Modulation Index - Frequency modulation ratio"
+   ],
+   "4": [
+    "DC-DC converters – Step down and Step up choppers – Single-quadrant, Two-quadrant chopper",
+    "Four quadrant chopper – Pulse width modulation & current limit control in DC-DC converters",
+    "Switching regulators – Buck Converter–Operation with continuous conduction mode – Waveforms – Design of Power circuits",
+    "Switching regulators – Boost Converter–Operation with continuous conduction mode – Waveforms – Design of Power circuits",
+    "Switching regulators –Buck-boost converter –Operation with continuous conduction mode – Waveforms – Design of Power circuits",
+    "Introduction to Cuk Converter- Applications of DC-DC converters"
+   ],
+   "5": [
+    "Isolated DC-DC Converters-Need for isolated DC-DC converters",
+    "Forward Converter-Circuit diagram- working and waveforms",
+    "Flyback converter- Circuit diagram- working and waveforms",
+    "Dual Active Bridge Converter--Circuit diagram- working and waveforms",
+    "Practical applications of isolated DC-DC converters-Introduction to soft switching"
+   ]
+  },
+  "23EEP504": {
+   "1": [
+    "Constructional details of alternators - Types of armature windings- Principle of operation of alternators",
+    "EMF Equation - numerical problems",
+    "EMF Equation - numerical problems (part 2)",
+    "Harmonics- Causes and Suppression",
+    "Armature reaction-Equivalent circuit",
+    "Phasor Diagram-Load characteristics"
+   ],
+   "2": [
+    "Voltage regulation of alternators-EMF, MMF methods",
+    "Voltage regulation of alternators -Potier and ASA methods",
+    "Numerical problems in Potier and ASA methods",
+    "Blondel’s two reaction theory-Phasor diagram",
+    "Regulation of salient pole alternator by slip Test-Power developed",
+    "Load test on alternators Parallel operation of alternators",
+    "Synchronising Power and Torque- Power and Torque equations",
+    "Methods of Synchronisation"
+   ],
+   "3": [
+    "Principle of operation of synchronous motor-Phasor diagram",
+    "Power and Torque Equations- Losses and Efficiency",
+    "V and Inverted V curves",
+    "Three Phase Induction Motors-Constructional features- Principle of Operation",
+    "Power and Torque Equations-Torque Slip Characteristics",
+    "Phasor diagram-Equivalent circuit",
+    "No load and Blocked rotor tests-Numerical problems"
+   ],
+   "4": [
+    "Construction of circle diagram-Numerical problems",
+    "Cogging and Crawling in cage motors",
+    "DOL, Autotransformer, Star-Delta starter & Rotor resistance starter",
+    "Braking of induction motors-Plugging, Dynamic & Regenerative braking"
+   ],
+   "5": [
+    "1 phase induction motors-Principle of operation-Double field revolving theory",
+    "Equivalent circuit parameters -torque slip characteristics",
+    "Types of single-phase induction motors-applications",
+    "Types of single-phase induction motors-applications (part 2)",
+    "Induction generator- -Grid connected operation",
+    "Induction generator- self-excited operation",
+    "Torque slip characteristics-Circle diagram"
+   ]
+  },
+  "23ESP510": {
+   "1": [
+    "Supervised, semi-supervised, unsupervised learning, reinforcement learning",
+    "Maximum likelihood estimation (MLE), Bayesian formulation - example"
+   ],
+   "2": [
+    "Over fitting in regression, Naive Bayes",
+    "Decision trees- ID3 algorithm"
+   ],
+   "3": [
+    "Perceptron, Perceptron Learning",
+    "Introduction, Maximum Margin Hyperplane",
+    "Mathematics behind Maximum Margin Classification"
+   ],
+   "4": [
+    "Similarity measures- Minkowski distance measures (Manhattan, Euclidean)",
+    "Expectation maximization (EM) for soft clustering",
+    "Dimensionality reduction – Principal Component Analysis"
+   ],
+   "5": [
+    "Classification Performance measures",
+    "Cross validation",
+    "Ensemble methods- bagging, boosting"
+   ]
+  },
+  "23EET601": {
+   "1": [
+    "Introduction to Hybrid Electric Vehicles: History of hybrid and electric vehicles, social and environmental importance of hybrid and electric vehicles",
+    "Impact of modern drive-trains on energy supplies",
+    "Conventional Vehicles: Basics of vehicle performance",
+    "Vehicle power source characterization",
+    "Transmission characteristics",
+    "Mathematical models to describe vehicle performance",
+    "Mathematical models to describe vehicle performance (part 2)",
+    "Autonomous Vehicles: Levels of automation, significance & effects of automation in vehicles"
+   ],
+   "2": [
+    "Hybrid Electric Drive-trains: Basic concept of hybrid traction",
+    "Introduction to various hybrid drive-train topologies",
+    "Power flow control in hybrid drive-train topologies",
+    "Electric Drive-trains: Basic concept of electric traction, introduction to various electric drive-train topologies",
+    "Power flow control in electric drive-train topologies",
+    "Hub motors, fuel efficiency analysis"
+   ],
+   "3": [
+    "Electric Propulsion unit: Introduction to electric components used in hybrid and electric vehicles",
+    "Electric Propulsion unit: Introduction to electric components used in hybrid and electric vehicles (part 2)",
+    "DC Drives: Review of Separately excited DC Motor control – Speed and torque equations",
+    "Independent control of orthogonal flux and torque – Closed loop control of speed and torque (block diagram only)",
+    "PMSM Drives: PMSM motor basics – Types of PMSM (SPMSM, IPMSM) Independent control of orthogonal flux and torque (concept only)",
+    "Independent control of orthogonal flux and torque (concept only)",
+    "Field Oriented Control (FOC) of Permanent Magnet Synchronous Motor – Sensored and sensorless control (block diagram only)"
+   ],
+   "4": [
+    "Energy Storage: Introduction to energy storage requirements in Hybrid and Electric Vehicles- Battery based energy storage systems, Battery Management System",
+    "Types of battery-Lithium ion, Lead acid",
+    "Fuel Cell based energy storage systems- Supercapacitors-Hybridization of different energy storage devices",
+    "Overview of Electric Vehicle Battery Chargers – On-board chargers, Electric Vehicle Supply Equipment (EVSE)",
+    "Grid to EVSE to On-board chargers to battery pack power flow block schematic diagrams",
+    "Types of charging stations - AC Level 1 & 2, DC - Level 3",
+    "V2G concept-Types of Connectors - CHAdeMO, CCS Type1 and 2, GB/T - PIN diagrams and differences"
+   ],
+   "5": [
+    "Sizing the drive system: Matching the electric machine and the internal combustion engine (ICE)",
+    "Sizing the propulsion motor",
+    "Sizing the power electronics",
+    "Vehicle Communication protocols: Need and requirements - Functions of Control Pilot (CP) and Proximity Pilot (PP) pins",
+    "Communication Protocols - CAN, LIN, FLEXRAY (Basics only) –Power Line Communication (PLC) in EV"
+   ]
+  },
+  "23EEP602": {
+   "1": [
+    "Introduction to electric drives – block diagram – advantages of electric drives",
+    "dynamics of motor load system, fundamental torque equations, types of load, classification of load torque",
+    "four quadrant operation of drives",
+    "Equivalent values of drive parameters",
+    "steady state stability. Numerical problems"
+   ],
+   "2": [
+    "Rectifier control of DC drives- separately excited DC motor drives using controlled rectifiers",
+    "single-phase fully controlled rectifier fed drives (continuous mode of operation), critical speed",
+    "single-phase semi converter fed drives (continuous mode of operation)",
+    "three-phase semi converter fed drives (continuous mode of operation)",
+    "three-phase fully controlled converter fed drives (continuous mode of operation)",
+    "dual converter control of DC motor - circulating current mode. Numerical problems"
+   ],
+   "3": [
+    "Chopper control of DC drives – single quadrant, two quadrant chopper drives",
+    "four quadrant chopper drives",
+    "chopper fed DC series motor drive",
+    "closed loop speed control for separately excited dc motor. Numerical problems"
+   ],
+   "4": [
+    "3 phase induction motor drives: Stator voltage control, Stator frequency control",
+    "v/f control - below and above base speed",
+    "Voltage Source Inverter (VSI) fed v/f control using sine-triangle PWM",
+    "static rotor resistance speed control employing chopper",
+    "static slip power recovery speed control scheme for three phase induction motor"
+   ],
+   "5": [
+    "Synchronous motor variable speed drives – variable frequency control",
+    "separate controlled mode- self-controlled mode",
+    "Self-controlled synchronous motor drive employing load commutated thyristor inverter and cyclo-converter"
+   ]
+  },
+  "23EEP603": {
+   "1": [
+    "Basic Elements of a DSP system",
+    "Review of Discrete Time LTI Systems- Circular convolution",
+    "Linear Filtering methods based on the DFT",
+    "Linear convolution using circular convolution",
+    "Filtering of long data sequences, overlap save method",
+    "Overlap add methods"
+   ],
+   "2": [
+    "Fast Fourier Transform Algorithms- and Decimation in Frequency FFT Algorithms",
+    "Radix-2 Decimation in Time FFT Algorithm",
+    "Radix-2 Decimation in Time FFT – Numerical Problems",
+    "Radix-2 Decimation in Frequency FFT Algorithm",
+    "Radix-2 Decimation in Frequency FFT – Numerical Problems",
+    "Radix-2 Decimation in Frequency FFT – Numerical Problems (part 2)"
+   ],
+   "3": [
+    "Review of classical analog filters-Butterworth, Chebyshev filters",
+    "Transformation of analog filters into equivalent digital filters using impulse invariant method",
+    "Transformation of analog filters into equivalent digital filters using Bilinear transform method",
+    "Design of IIR Digital filters from Analog Filters"
+   ],
+   "4": [
+    "Amplitude and phase responses of FIR filters",
+    "Linear phase filters",
+    "Windowing techniques for design of Linear phase FIR filters",
+    "Rectangular window",
+    "Hamming window",
+    "Kaiser window",
+    "Frequency sampling techniques"
+   ],
+   "5": [
+    "Computer architecture for signal processing",
+    "Harvard Architecture, pipelining, MAC",
+    "Introduction to TMS320C67xx digital signal processor",
+    "Functional Block Diagram",
+    "Finite word length effects in DSP systems",
+    "Introduction to fixed-point and floating-point DSP arithmetic"
+   ]
+  },
+  "23EEE634": {
+   "1": [
+    "Energy Resources- Overview of World and India's energy scenario - Energy reserves and security - Sankey Diagram",
+    "Country annual energy balances, examples, trends in energy use patterns",
+    "Annual electrical energy usage pattern in India – Energy chain - primary energy analysis",
+    "Life cycle energy assessment - Energy and development linkage",
+    "Economic Analysis- Need for economic analysis, Simple payback period - advantages and limitations",
+    "Time value of money, Return on Investment, Internal Rate of Return - Capital Recovery Factor",
+    "Net Present Value Energy Economics- Life cycle costing - Cost of saved energy, cost of energy generated",
+    "Simple problems about economics of renewable energy systems and energy conservation systems"
+   ],
+   "2": [
+    "Solar PV Technologies; physical characteristics- Monocrystalline Silicon Cell",
+    "Measurement Instruments- Pyranometer, Pyrheliometer- GIS Mapping of Solar Resource Potential",
+    "Polycrystalline Silicon Cell-semiconductor technology-PVCell-Equivalent ckt",
+    "Electrical Characteristics- Short Circuit Current - Open Circuit Voltage - Fill Factor - Efficiency -Module-String-Array",
+    "Cell Mismatch in a Module, Effect of shadowing; Principles of bypass diodes and blocking diodes, PV Components and Standards",
+    "Fundamentals of Solar Radiation- Sun Earth angles- Relevance of Solar Resources Assessment in Solar PV - Plant Implementation-Solar Radiation"
+   ],
+   "3": [
+    "Types of Solar PV Systems-Standalone-grid connected-hybrid (Introduction only), Guidelines for Designing of Stand-Alone Solar PV Systems",
+    "Planning and site survey- Assessment of energy requirement- Assessment of solar resource availability",
+    "System concept development- Sizing of main component of the PV systems- Selection of components of the PV system - Guidelines for selection of PV Modules, battery, Inverter, Protection devices - Factors Affecting PV System Performance- Irradiance- Cell Temperature- Solar Altitude and Solar Spectrum",
+    "Components of Grid connected PV system-Interface Requirements- IEEE 1547 -voltage-frequency-power quality-islanding",
+    "Design of a PV Grid-Connected System- power and energy estimates-PV module sizing-PV array sizing-Inverter sizing-battery sizing-charge controller sizing"
+   ],
+   "4": [
+    "Wind energy- Introduction- Basic principles of Wind Energy Conversion Systems (WECS) wind speed measurement",
+    "Classification of WECS- types of rotors. wind power equation -Betz limit",
+    "Electrical Power Output and Capacity Factor of WECS- Advantages and Disadvantages of WECS -site selection criteria",
+    "Energy from ocean- Ocean Thermal Energy Conversion (OTEC)- Principle of OTEC system",
+    "Open Cycle (Claude cycle), Closed Cycle (Anderson cycle) and Hybrid cycle. Site-selection criteria- Biofouling- Advantages & Limitations of OTEC",
+    "Tidal energy – Principle of Tidal Power- Components of Tidal Power Plant (TPP)",
+    "Classification-single basin- double basin types –Limitations -Environmental impacts"
+   ],
+   "5": [
+    "Biomass energy- Introduction- Biomass Fuels-Biomass conversion technologies –Urban waste to Energy Conversion",
+    "Biomass Gasification- Biomass to Ethanol Production- Biogas production from waste biomass- factors affecting biogas generation",
+    "Types of biogas plants –KVIC and Janata model-Biomass program in India",
+    "Small Hydro Power- Classification as micro, mini and small hydro projects – Basic concepts and types of turbines- selection considerations",
+    "Emerging Technologies- Fuel Cell-principle of operation –classification- conversion efficiency and losses - applications",
+    "Hydrogen energy -hydrogen production -electrolysis -thermo chemical methods -hydrogen storage and utilization"
+   ]
+  },
+  "23EEE615": {
+   "1": [
+    "Definition of Power quality, Power Quality –Voltage & Current Quality, Importance of Power Quality",
+    "Transients, Sources of Transients over voltages, Principles of over voltage Protection, Devices for over voltage Protection",
+    "Utility Capacitor-Switching transients, Long-Duration Voltage Variations, Short- Duration Voltage Variations",
+    "Voltage sag (or dip), Swell, Transients voltage imbalance, waveform distortion, and voltage flicker",
+    "IEEE guide lines, standards and recommended practices",
+    "Harmonics -mechanism of harmonic generation-harmonic indices (THD, TIF, DIN, C) Power Quality Costs Evaluation",
+    "Effects of Power System harmonics on Power System equipment and loads. Legal Responsibility for Damages due to Harmonic Problems"
+   ],
+   "2": [
+    "Overview of mitigation methods – from fault to trip, reducing the number of faults, reducing the fault clearing time",
+    "Installing mitigation equipment, improving equipment immunity",
+    "Different events and mitigation methods",
+    "System equipment interface – voltage source converter",
+    "Series voltage controller, shunt controller, combined shunt and series controller"
+   ],
+   "3": [
+    "Harmonic Distortion, Voltage versus Current Distortion, Harmonics versus Transients",
+    "Harmonic Indexes, Harmonic Sources from Commercial Loads, Harmonic Sources from Industrial Loads",
+    "Locating Harmonic Sources, Effects of Harmonic distortion",
+    "Inter harmonics, Harmonic distortion Evaluations, Principles for Controlling Harmonics",
+    "Harmonic elimination-Types of Filters, Types of Damped Filters",
+    "Design of Single-Tuned Filters, Filter Performance Evaluation",
+    "Design of Damped Filters, Comparison of Tuned and Damped Filters",
+    "Filter Component Ratings, Filter Capacitors, Tuning Reactors, Outline of Filter Design"
+   ],
+   "4": [
+    "Power Monitoring considerations, Historical Perspective of Power quality Measuring Instruments",
+    "Power Quality Measurement Equipment",
+    "Assessment of Power Quality Measurement Data, Application of intelligent Systems",
+    "Power Quality Monitoring Standards",
+    "Power line disturbance analyzer"
+   ],
+   "5": [
+    "Introduction to reliability, Basic reliability concepts",
+    "Reliability block diagrams",
+    "Reliability assessment methods, Performance indices",
+    "Probability and Statistics of reliability analysis",
+    "Risk assessment in Power systems",
+    "Reliability Centered Maintenance (RCM)",
+    "Emerging Technologies of power reliability"
+   ]
+  },
+  "23EEP701": {
+   "1": [
+    "Per unit quantities-single phase and three phase",
+    "Symmetrical components- sequence networks (T)",
+    "Fault calculations-symmetrical and unsymmetrical",
+    "Fault calculations-symmetrical and unsymmetrical (T)",
+    "Fault level of installations- Limiters- Contingency ranking",
+    "Fault level calculations (T)"
+   ],
+   "2": [
+    "Introduction-types-network model formulation and admittance matrix",
+    "Gauss-Siedel Load Flow Algorithm",
+    "Gauss Siedel Load Flow (T)",
+    "Newton-Raphson Load Flow – Derivation of Jacobian",
+    "Fast Decoupled method) - principle of DC load flow - Introduction to distribution flow",
+    "FDLF – DC LF (T)"
+   ],
+   "3": [
+    "Power system stability - steady state, dynamic and transient stability",
+    "power angle curve -steady state stability limit (T)",
+    "mechanics of angular motion-swing equation",
+    "solution of swing equation - Point by Point method - RK method",
+    "Equal area criterion application - methods of improving stability limits",
+    "Stability Limit Calculation (T)",
+    "Phasor Measurement Units- Wide Area Monitoring Systems"
+   ],
+   "4": [
+    "Turbines and speed governors-Inertia",
+    "Automatic Generation Control: Load frequency control: single area",
+    "Automatic Generation Control: Load frequency control: single area and two area systems",
+    "Sub-synchronous Resonance",
+    "Automatic voltage control -Exciter Control",
+    "SCADA systems"
+   ],
+   "5": [
+    "Economic Operation - Distribution of load between units within a plant - Unit commitment:",
+    "Transmission loss as a function of plant generation - distribution of load between plants - method of computing penalty factors and loss coefficients",
+    "Economic Dispatch – problems (T)",
+    "Introduction — constraints on unit commitments: spinning reserve, thermal unit constraints- hydro constraints",
+    "Dynamic Scheduling",
+    "Hybrid Power Source scheduling in Smart Grids"
+   ]
+  },
+  "23EEP702": {
+   "1": [
+    "General awareness of IS Codes - IS 732 - IS 3043 –IS 2026- IS 3646- part1&2 - IS 5216 part 1&2 - Electricity supply code-2014 (Relevance of each code in electrical installation applications only)",
+    "The Electricity Act 2003- General introduction- Distribution of Electricity (Part VI)- Central Electricity Authority (Part IX)- Regulatory Commissions (Part IX)",
+    "National Electric Code (NEC 2011) - Scope – Wiring installation (Section 9)",
+    "National Electric Code (NEC 2011) - Short circuit calculations (Section 10)",
+    "Classification of voltages-standards and specifications, tolerances for voltage and frequency-safety"
+   ],
+   "2": [
+    "Lighting design calculations - Definitions of luminous flux, Lumen, Luminous intensity/illuminance (Lux)",
+    "Illumination calculations, factors affecting Coefficients of Utilisation (CU) - and Light Loss Factor (LLF)",
+    "Benefits of LED lamps over the yesteryear luminaires – Efficacy of present-day LED lamps-Design of illumination systems – Average lumen method -Space to mounting height ratio",
+    "Design of lighting systems for a medium area seminar hall using LED luminaires",
+    "Exterior lighting design- point to point method - road lighting and public area lighting- Space to mounting height ratio",
+    "Selection of luminaires- Metal Halide- High & Low pressure Sodium– LED lamps"
+   ],
+   "3": [
+    "General aspects as per NEC and IS 732 related to the design of domestic dwellings availing single phase supply (LV) and",
+    "General aspects as per NEC and IS 732 related to the design of domestic dwellings availing three phase supply (MV) for a connected load less than 15kW",
+    "Load Survey- common power ratings of domestic gadgets- connected load - diversity factor",
+    "Selection of number of sub circuits (lighting and power)- Selection of MCB distribution boards to provide over load, short circuit and earth leakage protection",
+    "Selection of CBs for protection and grading between major and minor sections",
+    "Selection of wiring cables, conduits as per NEC and IS 732. Design of electrical schematic and physical layout drawings for low and medium class domestic installation",
+    "Preparation of schedule of works and bill of quantities (cost estimation excluded)",
+    "Pre-commissioning tests- Insulation resistance measurement, continuity test",
+    "Polarity test and earth resistance measurement as applicable to domestic installations"
+   ],
+   "4": [
+    "Industrial installations –classifications- Design of electrical distribution systems with main switch board, sub switch boards and distribution boards with ACBs, MCCBs and MCBs as the case may be, for feeding power (mainly motors) and lighting loads of small and medium industries",
+    "Design of electrical distribution systems with main switch board, sub switch boards and distribution boards with ACBs, MCCBs and MCBs as the case may be, for feeding power (mainly motors) and lighting loads of small and medium industries",
+    "Design of electrical distribution systems with main switch board, sub switch boards and distribution boards with ACBs, MCCBs and MCBs as the case may be, for feeding power (mainly motors) and lighting loads of small and medium industries (part 2)",
+    "Selection of armoured power cables (AYFY, A2XFY, YWY) – calculation of ampacity, voltage drop, short circuit withstand capacity etc",
+    "Design of MSB & SSB including Motor Control Centre (MCC) for motor controls - selection of bus bars and switchgears",
+    "Selection of 11kV indoor transformer substations upto 630kVA - Selection of switchgears and protective devices –Preparation of schedule of works and bill of quantities (cost estimation excluded)",
+    "Selection of 11kV outdoor transformer substations upto 630kVA - Selection of switchgears and protective devices –Preparation of schedule of works and bill of quantities (cost estimation excluded)",
+    "Pre-commissioning tests of 11kV indoor/outdoor substation of an HT consumer"
+   ],
+   "5": [
+    "Electrical installations of high-rise buildings: Distribution systems – rising main, cable system- Installation of lifts, standby generators, fire pumps",
+    "Electric schematic drawing",
+    "Selection of standby Diesel Generator set (DG set) –Power rating -Continuous, Prime and Standby power ratings- installation and essential protections",
+    "Introduction to Automatic Mains failure (AMF) systems",
+    "Energy Conservation Techniques in electrical power distribution – Automatic Power Factor Correction (APFC) panel – Principle of operation and advantages",
+    "Introduction to Solar PV Systems, off-grid and on-grid systems, Solar panel efficiencies",
+    "Design of a PV system for domestic application-Selection of battery for off-grid domestic systems"
+   ]
+  }
+ }
+}

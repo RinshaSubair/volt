@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Large documentation & curriculum reference files (kept locally)
+docs/
+
+# Backups & Archives (all grouped in backups/)
+backups/
+*.bak
+*.bak*
+*_bak*
+*backup*
+*full_bak*
+*.zip
+*.tar.gz
+*.7z
+*.rar
+
+# Scratch & Temporary
+scratch/
+temp_*
+*.tmp
+*.temp
+eee-platform-test*.html
+
+# Investigation logs & test outputs
+test_output*.txt
+test_summary*.txt
+test_results*.txt
+*output*.txt
+*inspect*.txt
+*audit*.txt
+*debug*.txt
+*fail*.txt
+*_out.txt
+*out.txt
+user_prompt_*.txt
+*.log
+
+# Databases & local state
+*.db
+*.sqlite3
+
+# OS generated files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini

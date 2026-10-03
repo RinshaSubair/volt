@@ -1,0 +1,2568 @@
+[
+  {
+    "id": "z-breadboard-prototyping",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "f_{\\text{parasitic, max}} = \\frac{1}{2pi \\cdot R_{\\text{source}} \\cdot C_{\\text{stray}}} \\\\ C_{\\text{decoupling}} = \\frac{\\Delta I \\cdot \\Delta t}{\\Delta V_{\\text{allowable}}}$$"
+    ]
+  },
+  {
+    "id": "z-glossary-electronics",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "ext{LSB} = \\frac{V_{\\text{ref}}}{2^N}, \\quad V_{\\text{analog}} = \\text{ADC_Code} \\cdot \\text{LSB} \\\\ V_{\\text{pwm, avg}} = D \\cdot V_{DD} = \\frac{t_{\\text{on}}}{T_{\\text{period}}} \\cdot V_{DD}"
+    ]
+  },
+  {
+    "id": "z-why-neutral-grounded",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "V_{\\text{healthy, grounded}} = V_{ph} = \\frac{V_L}{\\sqrt{3}} \\\\ V_{\\text{healthy, ungrounded}} = V_L = \\sqrt{3} \\cdot V_{ph} \\\\ R_{\\text{NGR}} = \\frac{V_{LN}}{I_{\\text{target, fault}}}$$"
+    ]
+  },
+  {
+    "id": "z-comp-ac-dc-trans",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "P_{\\text{HVDC, max}} = V_{\\text{dc}} \\cdot I_{\\text{dc}} \\\\ \\text{Capacitive Charging Limit (HVAC Cable): } D_{\\text{critical}} = \\frac{I_{\\text{cable ampacity}}}{\\omega \\cdot C_{\\text{km}} \\cdot V_{\\text{ph}}}$$"
+    ]
+  },
+  {
+    "id": "z-opc-ua-mqtt",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "ext{MQTT Topic: } \\text{site/substation_1/transformer_2/temperature} \\\\ \\text{Payload: } { \\text{\"temp\": } 68.5, \\text{\"unit\": \"C\"}, \\text{\"ts\": } 1698765432 }"
+    ]
+  },
+  {
+    "id": "z-smart-sensors-wireless",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "P_{\\text{path loss}} propto \\left( \\frac{4pi d}{lambda} \\right)^2 \\\\ \\text{Battery Life [Years]} = \\frac{C_{\\text{battery [Ah]}}}{I_{\\text{sleep}} \\cdot t_{\\text{sleep}}% + I_{\\text{tx}} \\cdot t_{\\text{tx}}%} \\cdot \\frac{1}{8760}"
+    ]
+  },
+  {
+    "id": "z-vsc-hvdc",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "VSC-HVDC uses Modular Multilevel Converters (MMC) with hundreds of series sub-modules per arm, creating ultra-smooth AC voltage steps. Unlike legacy Line-Commutated Converters (LCC) requiring thyristors and strong grid voltage, VSC can operate in all 4 quadrants (P−Q plane) and black-start dead grids.",
+      "Independent P and Q control in all 4 quadrants."
+    ]
+  },
+  {
+    "id": "z-ev-inverter-foc",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      ") with quadrature-axis current (i"
+    ]
+  },
+  {
+    "id": "z-ev-charging-levels",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "I_{\\text{max, available}} = \\text{Duty Cycle %} \\cdot 0.6 \\quad (\\text{for } 10% le \\text{Duty} le 85%) \\\\ t_{\\text{charge}} = \\frac{E_{\\text{battery}} \\cdot (\\text{SoC}_{\\text{target}} - \\text{SoC}_{\\text{start}})}{P_{\\text{charge}} \\cdot eta}",
+      "Formula: I_{max} = \\text{Duty %} \\times 0.6 = 40 \\times 0.6 = 24\\text{ A}."
+    ]
+  },
+  {
+    "id": "z-demand-response",
+    "patterns": [
+      "cdot",
+      "\\text{"
+    ],
+    "sample": [
+      "P_{\\text{grid, new}} = P_{\\text{baseline}} - P_{\\text{shed}} - P_{\\text{shifted}} \\\\ \\text{Demand Charge} = P_{\\text{max 15-min peak [kW]}} \\cdot R_{\\text{demand [$/kW]}}"
+    ]
+  },
+  {
+    "id": "z-microgrid-control",
+    "patterns": [
+      "cdot",
+      "\\text{"
+    ],
+    "sample": [
+      "f - f_0 = -m_p \\cdot (P - P_0) \\\\ V - V_0 = -n_q \\cdot (Q - Q_0) \\\\ \\text{P}_{\\text{total}} = \\sum P_{\\text{DER}} = P_{\\text{load}}$$"
+    ]
+  },
+  {
+    "id": "z-mppt-algorithms",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "ext{P&O Rule: } \\frac{dP}{dV} = 0 \\quad \\text{at MPP} \\\\ \\text{IncCond Rule: } \\frac{dI}{dV} = -\\frac{I}{V} \\implies \\frac{dP}{dV} = 0 \\\\ \\frac{dI}{dV} > -\\frac{I}{V} \\implies \\text{Left of MPP}, \\quad \\frac{dI}{dV} < -\\frac{I}{V} \\implies \\text{Right of MPP}"
+    ]
+  },
+  {
+    "id": "z-bess-utility",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "A complete BESS container integrates battery racks (typically LFP), Battery Management Systems (BMS), bidirectional Power Conversion Systems (PCS / four-quadrant inverters), HVAC liquid cooling, and NFPA 855 certified fire suppression (Novec 1230 / water mist).",
+      "PCS (Power Conversion System): Four-quadrant bidirectional inverter operating in grid-following or grid-forming mode."
+    ]
+  },
+  {
+    "id": "z-motor-nameplate",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "[Ncdot m]"
+    ]
+  },
+  {
+    "id": "z-breaker-datasheet",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "=4. Busbar short-circuit current I_{sc} = \\frac{I_{\\text{fl}}}{%Z_k} = \\frac{695.6\\text{ A}}{0.04} = 17.39\\text{ kA}."
+    ]
+  },
+  {
+    "id": "z-dmm-usage",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "V_{\\text{measured}} = V_{\\text{source}} \\cdot \\frac{Z_{\\text{in}}}{Z_{\\text{in}} + R_{\\text{source}}} \\\\ \\text{Loading Error %} = \\left(1 - \\frac{Z_{\\text{in}}}{Z_{\\text{in}} + R_{\\text{source}}}\\right) \\cdot 100%"
+    ]
+  },
+  {
+    "id": "z-earth-tester",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "R_E = \\frac{V_{P2 - E}}{I_{C2 - E}} \\quad \\text{at } d_{P2} = 0.62 \\cdot D \\\\ ho_{\\text{soil}} = 2pi \\cdot a \\cdot R \\quad (\\text{Wenner 4-pin method}) \\\\ R_{\\text{rod}} = \\frac{\\rho}{2pi L} \\cdot \\left[ lnleft(\\frac{4L}{r}\\right) - 1 \\right]",
+      "Given: Ground rod length L=3 m, radius r=0.0095 m (3/4 inch), soil resistivity ρ=50 Omegacdotm (moist clay).",
+      "Formula: R = \\frac{\\rho}{2pi L} \\left[ lnleft(\\frac{4L}{r}\\right) - 1 \\right] = \\frac{50}{2pi \\times 3} \\left[ lnleft(\\frac{12}{0.0095}\\right) - 1 \\right] = 2.65 \\times [7.14 - 1] = 2.65 \\times 6.14 = 16.27Omega."
+    ]
+  },
+  {
+    "id": "electric-shock-physiological-effects-body-impedance-dalziel",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "Let-Go Threshold\tHigher (\u0007pprox 60 - 80\\text{ mA})\tLow (\u0007pprox 10 - 20\\text{ mA}, Most Dangerous)\tVery High (>100 mA)",
+      "Total body impedance collapses non-linearly with increasing touch voltage; at 230 V, skin punctures and internal resistance drops to \u0007pprox 1000\\text{ }\\Omega."
+    ]
+  },
+  {
+    "id": "arc-flash-blast-hazards-incident-energy-ieee1584-nfpa70e",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "Safe Boundary\tRestricted Approach Boundary (\u0007pprox 0.3\\text{ m})\tArc Flash Boundary (1.0−5.0 meters)\tControlled by blast containment doors"
+    ]
+  },
+  {
+    "id": "motor-troubleshooting-single-phasing-bearing-insulation-breakdown",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "The percentage temperature rise in the hottest stator winding increases quadratically with unbalance:"
+    ]
+  },
+  {
+    "id": "industrial-fieldbus-networks-modbus-profibus-profinet-ethercat",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "Modbus RTU\tRS-485 (2-wire shielded)\t115.2 kbps\t1200 m at 9.6k\tMulti-drop bus\tLow (Polling, \u0007pprox 50\\text{ ms})",
+      "Modbus TCP\tEthernet (Cat5e, RJ45)\t100 Mbps / 1 Gbps\t100 m per copper segment\tStar / Tree\tMedium (TCP latency \u0007pprox 5-10\\text{ ms})"
+    ]
+  },
+  {
+    "id": "scalar-volts-per-hertz-control-flux-weakening-boost",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "The quadratic V/f profile automatically reduces motor terminal voltage at 35 Hz (70% frequency) to V"
+    ]
+  },
+  {
+    "id": "vector-control-field-oriented-control-direct-torque-control",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "is held constant, electromagnetic torque is strictly linear with respect to quadrature current:",
+      "3. Calculating required quadrature torque current i",
+      "Rotary Optical Encoder Selection: For closed-loop FOC, install an incremental quadrature optical encoder with differential line driver (RS−422, A,",
+      "Scenario 1: Converting Extruder Line from DC Drive to AC Vector Drive: Interview Question: A plastics manufacturing facility plans to replace an obsolete 150 kW DC motor and 4-quadrant thyristor drive on an extruder with an AC induction motor. The process demands ±0.1% speed holding accuracy under violent viscosity shock loads and 150% breakaway torque. Can a standard scalar drive handle this, or is FOC mandatory? Justify with physical principles.",
+      "relating electromagnetic torque to quadrature current (T"
+    ]
+  },
+  {
+    "id": "single-three-phase-controlled-rectifiers-converters",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Freewheeling diode prevents negative output voltage, improves power factor, and eliminates need for inverter-grade thyristors in 1-quadrant drives."
+    ]
+  },
+  {
+    "id": "embedded-interrupt-handling-isr-vectoring-latency",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "MC_{lat} = 3\\text{ (remaining cycles of MUL)} + 3\\text{ (hardware context save & vector fetch)} = 6\\text{ MC}."
+    ]
+  },
+  {
+    "id": "displacement-sensors-lvdt-optical-rotary-encoders",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Incremental Encoders: Generate quadrature square-wave pulses (A,B,Z) to measure relative displacement and direction of rotation. Loses position upon power loss (must re-home).",
+      "electrical phase: Channel A and Channel B output two square waves in **quadrature**:",
+      "Confusing Lines per Revolution with Counts per Revolution (CPR): An incremental encoder with 1000 optical lines produces 1000 complete electrical cycles on channel A and 1000 cycles on channel B. When processed by a 4× quadrature decoder, each cycle provides 4 countable edges. Total resolution is 4×1000=4000 CPR, NOT 1000!",
+      "(quadrature component), which a phase-sensitive demodulator successfully rejects.",
+      "Signal Nature\tAnalog AC differential\tDigital quadrature pulse train\tDigital serial multi-bit word"
+    ]
+  },
+  {
+    "id": "ammeter-shunts-voltmeter-multipliers-range-extension",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "α\tTemperature Coefficient of Manganin\t\\,^\\circ\\text{C}^{-1}\t\\approx 0.00001\\,^\\circ\\text{C}^{-1}"
+    ]
+  },
+  {
+    "id": "instrument-errors-measurement-uncertainty-analysis",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Root-Sum-Square (RSS / Gaussian) Uncertainty Propagation: Under ISO Guide to the Expression of Uncertainty in Measurement (GUM), independent standard uncertainties combine in quadrature:",
+      "Worst-case power error: δP=±5.0%×800 W=±40.0 W. Part (c) Statistical RSS Uncertainty: Using the quadrature combination for independent Gaussian variables:"
+    ]
+  },
+  {
+    "id": "routh-hurwitz-stability-criterion-rh-table",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "- Complex quadruplets symmetrical about origin [Unstable!]"
+    ]
+  },
+  {
+    "id": "circuit-breakers-arc-extinction-sf6-vacuum",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "mbar). In a vacuum, there is no gas medium to ionize; the arc consists purely of metallic vapor boiled off contact surfaces. At current zero, the metal vapor condenses onto surrounding sputter shields within 1 to 2 microseconds, providing astronomical dielectric recovery rates (\u0007pprox 20\\text{ kV/\\mu s})!"
+    ]
+  },
+  {
+    "id": "xfmr-equivalent-circuit-phasor",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "(typically 2% to 5% of full-load current) consisting of two quadrature components:"
+    ]
+  },
+  {
+    "id": "xfmr-losses-allday-efficiency",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "x_{max} = \\sqrt{\\frac{P_i}{P_{cu(FL)}}} = \\sqrt{\\frac{500\\text{ W}}{1500\\text{ W}}} = \\sqrt{\\frac{1}{3}} \\approx 0.5774\\text{ (57.74% load)}"
+    ]
+  },
+  {
+    "id": "dc-machines-construction-armature",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Mine Hoists & Elevators: Ward-Leonard DC drive systems provide precise four-quadrant speed and position control during hoisting and lowering."
+    ]
+  },
+  {
+    "id": "dc-motors-characteristics-speed-control",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Ward-Leonard Drives: Historically used in deep mine winders, elevators, and naval gun turrets for seamless four-quadrant reversible speed control."
+    ]
+  },
+  {
+    "id": "induction-motor-rotating-field-slip",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "s = \\frac{N_s - N}{N_s} = \\frac{1000 - 960}{1000} = \\frac{40}{1000} = \\mathbf{0.040\\text{ (4.0%)}}"
+    ]
+  },
+  {
+    "id": "synchronous-generator-alternator-regulation",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "is perpendicular (in quadrature) to main field flux Φ",
+      "and quadrature-axis reactance X"
+    ]
+  },
+  {
+    "id": "special-machines-bldc-stepper-servo",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "(with quadrature decoding)"
+    ]
+  },
+  {
+    "id": "pn-junction-zener",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "\\frac{\\Delta V_{out}}{\\Delta V_{in}} \\approx \\frac{r_z}{R_s + r_z} = \\frac{5}{110 + 5} = \\frac{5}{115} \\approx 0.0435\\text{ (4.35%)}"
+    ]
+  },
+  {
+    "id": "logic-gates-truth-tables",
+    "patterns": [
+      "cdot",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "This yields a two-level NAND-NAND implementation directly realizable with standard quad-NAND ICs (e.g., 74HC00).",
+      "The Master Answer: In CMOS technology, a NAND gate has NMOS transistors in series (pull-down) and PMOS transistors in parallel (pull-up). A NOR gate has PMOS transistors in series (pull-up) and NMOS transistors in parallel. In silicon crystal, electron mobility in NMOS (\\mu_n \u0007pprox 1350\\text{ cm}^2/\\text{V}\\cdot\\text{s}) is 2.5 to 3 times higher than hole mobility in PMOS (\\mu_p \u0007pprox 480\\text{ cm}^2/\\text{V}\\cdot\\text{s}). Therefore, series PMOS transistors in a NOR gate must be made 2.5 to 3 times wider to achieve equal rise time, dramatically increasing parasitic gate capacitance, silicon die area, and propagation delay! Consequently, CMOS NAND gates are significantly faster, occupy much less silicon area, and consume less dynamic power than CMOS NOR gates."
+    ]
+  },
+  {
+    "id": "boolean-algebra-kmap",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "- The four corners (m0, m2, m8, m10) form a valid group of 4 (quad)!",
+      "Group 2 (Middle 2 Columns, Rows 01 and 11): Notice cells m5,m7,m13,m15 are all '1'. These form a contiguous quad of 4 in columns 01 and 11 across rows 01 and 11. Across rows 01 and 11: B=1 is constant (A changes). Across columns 01 and 11: D=1 is constant (C changes). Term: BD."
+    ]
+  },
+  {
+    "id": "flipflops-registers-counters",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Combinational logic alone cannot remember the past; it cannot count motor revolutions, store intermediate values of a mathematical algorithm, or coordinate operations across synchronized clock steps. Sequential logic introduces memory and time into digital electronics. From the register files inside high-speed DSPs to the hardware quadrature encoder counters tracking robot arm joints, sequential circuits are the temporal clockwork of modern electrical computing."
+    ]
+  },
+  {
+    "id": "two-wattmeter-method-power",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "W_1 = V_L I_L \\cos(30^\\circ - \\phi), \\quad W_2 = V_L I_L \\cos(30^\\circ + \\phi)",
+      "P_{3\\phi} = W_1 + W_2, \\quad Q_{3\\phi} = \\sqrt{3}(W_1 - W_2)",
+      "\\tan\\phi = \\sqrt{3}\\,\\frac{W_1 - W_2}{W_1 + W_2}, \\quad \\cos\\phi = \\frac{1}{\\sqrt{1 + 3\\left(\\frac{W_1 - W_2}{W_1 + W_2}\\right)^2}}"
+    ]
+  },
+  {
+    "id": "pwr-sys-overview",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "ext{Three-Phase Active Power: } P = \\sqrt{3} V_L I_L cosphi",
+      "\\text{Line Current: } I_L = \\frac{P}{\\sqrt{3} V_L cosphi}",
+      "\\text{Three-Phase Conductor Loss: } P_{\\text{loss}} = 3 I_L^2 R = \\frac{P^2 R}{V_L^2 cos^2phi}",
+      "\\text{Loss Ratio vs Voltage: } \\frac{P_{\\text{loss},2}}{P_{\\text{loss},1}} = \\left(\\frac{V_{L,1}}{V_{L,2}}\\right)^2"
+    ]
+  },
+  {
+    "id": "ac-dc-supply",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "\\text{AC Conductor Skin Depth: } \\delta = \\sqrt{\\frac{\\rho}{\\pi f mu_0 mu_r}}",
+      "\\text{AC Cable Capacitive Charging Power: } Q_c = 3 \\omega C V_{\\text{ph}}^2 = \\omega C V_L^2",
+      "\\text{Steady-State DC Reactive Quantities: } X_L = 0, \\quad X_C = \\infty, \\quad Q_{\\text{charging}} = 0",
+      "A: Skin effect is the tendency of alternating current to concentrate near the outer surface of a conductor. It is caused by time-varying internal magnetic flux linking central conductor filaments more than outer filaments, producing higher internal inductive reactance (X_L = 2pi f L_{\\text{\\int}}) that pushes current outward. In DC, the frequency is strictly zero (f=0), so internal inductive reactance is zero. Consequently, DC current distributes with perfectly uniform current density across the entire conductor cross-section, eliminating skin effect."
+    ]
+  },
+  {
+    "id": "1ph-3ph-supply",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "\\text{Instantaneous Power Sum: } p_{\\text{total}}(t) = v_R i_R + v_Y i_Y + v_B i_B = 3 V_{\\text{ph}} I_{\\text{ph}} cosphi = \\text{Constant}",
+      "\\text{Rotating Magnetic Field Magnitude: } B_{\\text{net}} = 1.5 B_m",
+      "\\text{Conductor Volume Ratio: } \\frac{\\text{Volume}_{3phi}}{\\text{Volume}_{1phi}} = 0.75 \\quad (25% \\text{ copper saving})"
+    ]
+  },
+  {
+    "id": "phase-neutral-earth",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "ext{Healthy Single-Phase KCL: } I_{\\text{Phase}} + I_{\\text{Neutral}} = 0 \\implies I_{\\text{Neutral}} = -I_{\\text{Phase}}, \\quad I_{\\text{Earth}} = 0",
+      "\\text{Earth Fault Loop Current: } I_{\\text{fault}} = \\frac{V_{\\text{ph}}}{Z_s} = \\frac{V_{\\text{ph}}}{R_{\\text{phase}} + R_{\\text{earth_path}} + R_{\\text{transformer}}}",
+      "\\text{Touch Voltage on Un-earthed Chassis: } V_{\\text{touch}} = V_{\\text{ph}} \\approx 230\\text{ V (Lethal)}",
+      "\\text{Touch Voltage on Earthed Chassis: } V_{\\text{touch}} = I_{\\text{fault}} \\times R_{\\text{chassis-to-earth}} ll 50\\text{ V (Safe trip)}"
+    ]
+  },
+  {
+    "id": "line-phase-quantities",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "ext{Star Connection: } V_L = \\sqrt{3} V_{\\text{ph}}, \\quad I_L = I_{\\text{ph}}",
+      "\\text{\\Delta Connection: } V_L = V_{\\text{ph}}, \\quad I_L = \\sqrt{3} I_{\\text{ph}}",
+      "\\text{Nominal LV Values (India/Europe): } V_L = 415\\text{ V} \\implies V_{\\text{ph}} = \\frac{415}{\\sqrt{3}} = 239.6\\text{ V} \\approx 240\\text{ V}",
+      "\\text{Total 3-Phase Apparent Power: } S = \\sqrt{3} V_L I_L = 3 V_{\\text{ph}} I_{\\text{ph}}"
+    ]
+  },
+  {
+    "id": "star-delta-connections",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "ext{Star Voltage & Current: } V_{\\text{ph}} = \\frac{V_L}{\\sqrt{3}}, \\quad I_L = I_{\\text{ph}}",
+      "\\text{\\Delta Voltage & Current: } V_{\\text{ph}} = V_L, \\quad I_L = \\sqrt{3} I_{\\text{ph}}",
+      "\\text{Power Ratio for Identical Impedances: } \\frac{P_{\\text{\\delta}}}{P_{\\text{star}}} = 3.0",
+      "\\text{Star-\\Delta Motor Starting Reduction: } I_{\\text{start, star}} = \\frac{1}{3} I_{\\text{start, \\delta}}, \\quad T_{\\text{start, star}} = \\frac{1}{3} T_{\\text{start, \\delta}}"
+    ]
+  },
+  {
+    "id": "three-phase-power",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "ext{Active Power: } P = \\sqrt{3} V_L I_L cosphi \\quad [\\text{kW}]",
+      "\\text{Reactive Power: } Q = \\sqrt{3} V_L I_L sinphi \\quad [\\text{kVAR}]",
+      "\\text{Apparent Power: } S = \\sqrt{3} V_L I_L = \\sqrt{P^2 + Q^2} \\quad [\\text{kVA}]",
+      "\\text{Power Factor: } cosphi = \\frac{P}{S} = \\frac{P}{\\sqrt{3} V_L I_L}, \\quad anphi = \\frac{Q}{P}"
+    ]
+  },
+  {
+    "id": "power-factor-practical",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "ext{Power Factor Definition: } PF = cosphi = \\frac{P}{S} = \\frac{P}{\\sqrt{3} V_L I_L}",
+      "\\text{Line Current vs Power Factor: } I_L = \\frac{P}{\\sqrt{3} V_L cosphi}",
+      "\\text{Required Capacitor Bank kVAR: } Q_c = P ( anphi_1 - anphi_2)",
+      "\\text{Per-Phase Capacitance (\\Delta Bank): } C_{\\text{ph}} = \\frac{Q_c}{3 \\times 2pi f V_L^2}"
+    ]
+  },
+  {
+    "id": "electrical-frequency",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "\\text{Frequency-Speed Relation: } f = \\frac{P \\cdot N_s}{120} \\quad \\iff \\quad N_s = \\frac{120 f}{P}",
+      "\\text{Period and Angular Velocity: } T = \\frac{1}{f}, \\quad \\omega = 2\\pi f",
+      "\\text{Governor Droop Characteristic: } R = \\frac{(f_{\\text{no-load}} - f_{\\text{full-load}})/f_{\\text{rated}}}{(P_{\\text{full-load}} - 0)/P_{\\text{rated}}} \\times 100\\%",
+      "\\text{Rate of Change of Frequency (ROCOF): } \\frac{df}{dt} = \\frac{f_0 \\cdot \\Delta P}{2 H S_{\\text{base}}}"
+    ]
+  },
+  {
+    "id": "voltage-levels-change",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "\\text{Approximate Voltage Drop: } \\Delta V = I_L (R \\cos\\phi \\pm X_L \\sin\\phi) \\quad (+\\text{ for lag}, -\\text{ for lead})",
+      "\\text{Voltage Regulation: } \\%VR = \\frac{V_{R,\\text{no-load}} - V_{R,\\text{full-load}}}{V_{R,\\text{full-load}}} \\times 100\\%",
+      "\\text{Ferranti Voltage Rise: } \\Delta V_{\\text{Ferranti}} \\approx \\frac{V_S \\cdot \\omega^2 L C l^2}{2} = \\frac{V_S \\cdot v^2 l^2}{2 c^2}",
+      "\\text{Conductor Volume Scaling: } V_{\\text{material}} \\propto \\frac{1}{V_L^2 \\cos^2\\phi}"
+    ]
+  },
+  {
+    "id": "distribution-transformer",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "\\text{All-Day Efficiency: } \\eta_{\\text{all-day}} = \\frac{\\text{Energy Output (kWh)}}{\\text{Energy Output (kWh)} + \\text{Total Daily Losses (kWh)}} \\times 100\\%",
+      "\\text{Daily Core Loss Energy: } E_{\\text{core}} = P_i \\times 24\\text{ hours}",
+      "\\text{Daily Copper Loss Energy: } E_{cu} = \\sum_{k=1}^{n} \\left[\\left(\\frac{S_k}{S_{\\text{rated}}}\\right)^2 P_{cu,\\text{FL}} \\times t_k\\right]",
+      "\\text{Secondary Full-Load Current: } I_{L2} = \\frac{S_{\\text{rated}}}{\\sqrt{3} \\cdot V_{L2}} = \\frac{S_{\\text{kVA}} \\times 1000}{\\sqrt{3} \\times 415}"
+    ]
+  },
+  {
+    "id": "domestic-supply-path",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "\\text{RCCB Differential Trip Condition: } |I_{\\text{Phase}} - I_{\\text{Neutral}}| \\ge I_{\\Delta n} \\quad (I_{\\Delta n} = 30\\text{ mA})",
+      "\\text{Touch Voltage on Appliance Metal Frame: } V_{\\text{touch}} = I_{\\text{fault}} \\times R_{\\text{earth}} \\quad (\\text{Safe limit: } \\le 50\\text{ V AC})",
+      "\\text{Branch Circuit Load Current: } I_{\\text{branch}} = \\frac{P_{\\text{connected}}}{V \\cdot \\cos\\phi}",
+      "\\text{Cable Selection Criterion: } I_{\\text{cable,ampacity}} > I_{\\text{MCB,rating}} \\ge I_{\\text{load,max}}"
+    ]
+  },
+  {
+    "id": "basic-sld",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "\\text{Transformer Full-Load Secondary Current: } I_{\\text{FL}} = \\frac{S_{\\text{kVA}} \\times 1000}{\\sqrt{3} \\cdot V_{\\text{sec}}}",
+      "\\text{Transformer Symmetrical Short-Circuit Fault Current: } I_{\\text{sc}} = \\frac{I_{\\text{FL}}}{Z_{\\text{pu}}} = \\frac{I_{\\text{FL}}}{\\%Z / 100}",
+      "\\text{Short-Circuit MVA Rating: } \\text{SC MVA} = \\frac{\\text{Base MVA}}{Z_{\\text{pu}}} = \\sqrt{3} \\cdot V_{\\text{kV}} \\cdot I_{\\text{sc,kA}}",
+      "\\text{CT Secondary Output: } I_{\\text{sec}} = I_{\\text{prim}} \\times \\left(\\frac{I_{\\text{sec,rated}}}{I_{\\text{prim,rated}}}\\right)"
+    ]
+  },
+  {
+    "id": "domestic-industrial-supply",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "\\text{Apparent Demand: } S_{\\text{kVA}} = \\frac{P_{\\text{kW}}}{\\cos\\phi}",
+      "\\text{Industrial Two-Part Bill: } \\text{Bill} = (C_{\\text{demand}} \\times S_{\\text{max,kVA}}) + (C_{\\text{energy}} \\times E_{\\text{kWh}}) \\pm \\text{Adjustment}",
+      "\\text{Required Capacitor Bank Rating: } Q_C = P_{\\text{kW}} (\\tan\\phi_1 - \\tan\\phi_2)",
+      "\\text{Line Current Reduction via PF Correction: } \\frac{I_2}{I_1} = \\frac{\\cos\\phi_1}{\\cos\\phi_2}"
+    ]
+  },
+  {
+    "id": "load-and-demand",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "\\text{Demand Factor: } DF = \\frac{MD}{CL} \\le 1.0",
+      "\\text{Diversity Factor: } DivF = \\frac{\\sum MD_i}{MD_{\\text{coincident}}} \\ge 1.0",
+      "\\text{Average Load: } P_{\\text{avg}} = \\frac{\\text{Total Energy in Period } T}{T}",
+      "\\text{Load Factor: } LF = \\frac{P_{\\text{avg}}}{MD} = \\frac{\\text{Energy (kWh)}}{MD \\times T}",
+      "\\text{Plant Capacity Factor: } CF = \\frac{P_{\\text{avg}}}{\\text{Installed Plant Capacity}}"
+    ]
+  },
+  {
+    "id": "energy-units-billing",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "\\text{Energy Consumed (kWh): } E = \\frac{P_{\\text{Watts}} \\times t_{\\text{hours}}}{1000}",
+      "\\text{1 Board of Trade Unit: } 1\\text{ unit} = 1\\text{ kWh} = 3.6 \\times 10^6\\text{ Joules}",
+      "\\text{Total Energy Cost: } C_{\\text{energy}} = \\sum_{i=1}^{m} (U_i \\times R_i) \\quad (U_i = \\text{units in slab } i)",
+      "\\text{Monthly Bill Total: } \\text{Bill} = F_{\\text{fixed}} + C_{\\text{energy}} + (E_{\\text{total}} \\times \\text{FCA}) + \\text{Taxes}",
+      "\\text{Simple Payback Period: } \\text{Payback (years)} = \\frac{\\text{Incremental Capital Cost}}{\\text{Annual Energy Bill Savings}}"
+    ]
+  },
+  {
+    "id": "current",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Problems testing the effect of stretching a wire on electron drift velocity (stretching doubles length and halves area, quadrupling current density and doubling drift velocity for constant current)."
+    ]
+  },
+  {
+    "id": "resistance",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "Resistivity (ρ): An intrinsic material property representing resistance of a specimen having unit length and unit cross-sectional area (Omegacdotm).",
+      "Omegacdotm (Highest electrical conductivity)",
+      "Omegacdotm (Industry workhorse)",
+      "Omegacdotm (61% copper conductivity, but 30% weight: favored for overhead grid lines)",
+      "Omegacdotm (65× copper resistivity: ideal for toaster and oven heating elements)"
+    ]
+  },
+  {
+    "id": "ohms-law",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "=dV/dI) and remains constant across all operating quadrants (e.g., carbon resistors, metallic wires)."
+    ]
+  },
+  {
+    "id": "series-parallel",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      ") yields the quadratic R"
+    ]
+  },
+  {
+    "id": "phasors-impedance",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "v(t) = \\text{Re}\\left{(V_m e^{jphi}) e^{jomega t}\\right}"
+    ]
+  },
+  {
+    "id": "power-triangle",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "). Apparent power must always be computed via quadrature: S"
+    ]
+  },
+  {
+    "id": "rlc-resonance",
+    "patterns": [
+      "frac{",
+      "\\frac{"
+    ],
+    "sample": [
+      "mathbf{Z} = R + jleft(\\omega L - \\frac{1}{\\omega C}\\right)"
+    ]
+  },
+  {
+    "id": "superposition",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Common mistake: applying superposition to power directly — power is a quadratic (non-linear) function of current/voltage (P = I²R), so you cannot simply sum the individual powers from each source; you must first superpose the linear quantity (current or voltage), then compute power from the total."
+    ]
+  },
+  {
+    "id": "dc-emf-torque",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "through distributed rotor conductors establishes an armature Magnetomotive Force (MMF) wave. This MMF wave has a distinct triangular spatial distribution whose peak is fixed along the quadrature (interpolor) axis, directly producing the phenomenon of armature reaction.",
+      "/A, the peak armature MMF occurring at the brush axis (quadrature axis) is:",
+      "The main field MMF is directed along the direct (d) axis, while armature MMF is directed along the quadrature (q) axis (90",
+      "Armature MMF has a triangular wave distribution peaking at the quadrature axis with value AT"
+    ]
+  },
+  {
+    "id": "dc-gen-armature-reaction",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      ", the current-carrying armature conductors set up an independent Magnetomotive Force (MMF) directed along the quadrature (q) axis (90"
+    ]
+  },
+  {
+    "id": "dc-gen-parallel-operation",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "=240×0.025=6.0 VcdotOmega",
+      "=235×0.02=4.7 VcdotOmega",
+      "=1500×0.02×0.025=1500×0.0005=0.75 VcdotOmega"
+    ]
+  },
+  {
+    "id": "dc-motor-starters-braking",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "In the four-quadrant speed-torque plane:"
+    ]
+  },
+  {
+    "id": "dc-motor-losses-efficiency",
+    "patterns": [
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "P_{\\text{conv, developed}} = P_{\\text{elec, input}} - (\\text{Armature & Field Copper Losses}) = E_b I_a",
+      ", and then gradually droops at heavy overloads because variable losses scale quadratically (I"
+    ]
+  },
+  {
+    "id": "xfmr-principle-emf",
+    "patterns": [
+      "frac{",
+      "\\frac{"
+    ],
+    "sample": [
+      "e_1(t) = -N_1 \\frac{dphi}{dt} = -N_1 \\frac{d}{dt}[Phi_m sin(\\omega t)] = -N_1 \\omega Phi_m cos(\\omega t) = N_1 \\omega Phi_m sinleft(\\omega t - \\frac{\\pi}{2}\\right)",
+      "e_2(t) = -N_2 \\frac{dphi}{dt} = N_2 \\omega Phi_m sinleft(\\omega t - \\frac{\\pi}{2}\\right)"
+    ]
+  },
+  {
+    "id": "xfmr-3ph-groupings-parallel",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Circulating Voltage for Mismatched Groups: \\Delta V = 2 V_L sinleft(\\frac{\\Delta\\theta}{2}\\right) \\quad (\\text{V})"
+    ]
+  },
+  {
+    "id": "xfmr-3ph-power-distribution",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "\\frac{S_{VV}}{S_{DeltaDelta}} = \\frac{V_L I_L}{\\sqrt{3} V_L I_L} = \\frac{1}{\\sqrt{3}} \\approx 0.57735 \\implies mathbf{57.7%}",
+      "\\frac{S_{VV}}{2 S_{\\text{unit}}} = \\frac{\\sqrt{3} V_L I_{\\text{unit}}}{2 V_L I_{\\text{unit}}} = \\frac{\\sqrt{3}}{2} \\approx 0.866 \\implies mathbf{86.6% \\text{ utilization factor}}",
+      "S_{VV} / (2 S_{\\text{unit}}) = mathbf{86.6%} (utilization relative to the two remaining units).",
+      "Trap 2: Scott connection teaser turns: N_{\\text{teaser}} = \\frac{\\sqrt{3}}{2} N_{\\text{main}} \\approx mathbf{86.6%}, NOT 50! The center tap on the main transformer is at 50, but the teaser winding itself has 86.6 turns."
+    ]
+  },
+  {
+    "id": "xfmr-tap-changers-dry-type",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Let tap step voltage be V_{\\text{step}} = \\frac{\\Delta V %}{100} \\cdot V_{\\text{rated}} and rated load current be I",
+      "Tap Step Voltage: V_{\\text{step}} = \\frac{% \\text{ Step}}{100} \\cdot V_{\\text{rated}} \\quad (\\text{V})"
+    ]
+  },
+  {
+    "id": "sig-classification-operations",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{"
+    ],
+    "sample": [
+      "Unit Ramp Function\t(r(t) = tcdot u(t))\t(r[n] = ncdot u[n])\tIntegral of step: (r(t) = int_{-infty}^t u( au)d au); (\frac{dr(t)}{dt} = u(t)); Models linear mechanical ramp position inputs.",
+      "x(at - b) = xleft(a \\left(t - \\frac{b}{a}\\right)\\right)"
+    ]
+  },
+  {
+    "id": "sig-system-properties",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "In systems engineering, a system is a mathematical operator or physical transformation (mathcal{T}{cdot}) that maps an excitation input signal (x(t)) or (x[n]) into a resulting response output signal (y(t)) or (y[n]). To design feedback controllers, DSP filters, and power grid automation, engineers classify systems by foundational operational properties: Memory (Static vs. Dynamic), Invertibility, Causality, Linearity (Superposition), Time-Invariance, and BIBO (Bounded-Input Bounded-Output) Stability. Systems satisfying both linearity and time-invariance (LTI) form the analytical cornerstone of electrical engineering.",
+      "))(Static: e.g. y(t)=Rcdotx(t),;y(t)=[x(t)]",
+      "A system with coefficients that vary with time (e.g. (y(t) = t cdot x(t)) or (y(t) = cos(100t) x(t))) is time-variant."
+    ]
+  },
+  {
+    "id": "emt-coordinate-systems",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "Vector analysis in Euclidean 3-space (mathbb{R}^3) relies on orthogonal curvilinear coordinates ((u_1, u_2, u_3)). In an orthogonal system, the coordinate surfaces (u_i = ext{constant}) intersect at mutually perpendicular angles, meaning the unit base vectors satisfy (mathbf{a}_{u_i} cdot mathbf{a}_{u_j} = delta_{ij}) (Kronecker delta) and form a right-handed triad (mathbf{a}_{u_1} imes mathbf{a}_{u_2} = mathbf{a}_{u_3}).",
+      "Cylindrical coordinates represent a point by the radial distance ( ho) from the (z)-axis, the azimuthal angle (phi) measured from the (+x)-axis in the (xy)-plane, and the axial height (z). The coordinate ranges are: [ 0 le ho < infty, quad 0 le phi < 2pi, quad -infty < z < infty ] The scale factors are (h_ ho = 1), (h_phi = ho), and (h_z = 1). Crucially, the unit vectors (mathbf{a}_ ho) and (mathbf{a}_phi) vary with position: [ rac{partial mathbf{a}_ ho}{partial phi} = mathbf{a}_phi, quad rac{partial mathbf{a}_phi}{partial phi} = -mathbf{a}_ ho ] The position vector in cylindrical coordinates is (mathbf{r} = homathbf{a}_ ho + zmathbf{a}_z) (note that (mathbf{a}_phi) does not appear explicitly because (mathbf{r}) is in the meridian plane containing the point).",
+      "Spherical coordinates describe a point by the radial distance (r) from the origin, the polar/colatitude angle ( heta) from the (+z)-axis, and the azimuthal angle (phi) from the (+x)-axis in the (xy)-plane: [ 0 le r < infty, quad 0 le heta le pi, quad 0 le phi < 2pi ] The scale factors are (h_r = 1), (h_ heta = r), and (h_phi = rsin heta). The position vector is simply: [ mathbf{r} = rmathbf{a}_r ] All three unit vectors (mathbf{a}_r, mathbf{a}_ heta, mathbf{a}_phi) are functions of spatial position (( heta, phi)).",
+      "Cartesian to Cylindrical: ( ho = sqrt{x^2 + y^2}), (phi = \u0007rctan(y/x)), (z = z).",
+      "Cartesian to Spherical: (r = sqrt{x^2 + y^2 + z^2}), ( heta = \u0007rccos(z/r) = \u0007rctan(sqrt{x^2+y^2}/z)), (phi = \u0007rctan(y/x))."
+    ]
+  },
+  {
+    "id": "emt-vector-calculus",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "Vector calculus constitutes the operational language of classical electrodynamics. Electric and magnetic fields are spatial vector fields whose fundamental sources (charges and currents) and spatial variations are mathematically governed by differential operators: the gradient (( abla V)) which converts scalar potentials into force fields, the divergence (( abla cdot mathbf{D})) which maps net field expansion to enclosed sources, and the curl (( abla imes mathbf{H})) which characterizes field circulation driven by vortex sources. Gauss's Divergence Theorem and Stokes' Theorem form the exact mathematical bridges that link local differential equations to macroscopic integral formulations.",
+      "The gradient of a scalar field (V) represents the maximum rate of spatial change of (V) per unit distance, and points in the direction of maximum spatial increase: [ dV = abla V cdot dmathbf{l} = | abla V|, dl cos\u0007lpha ] Thus, (dV/dl) is maximized when (\u0007lpha = 0), proving that ( abla V) is orthogonal to equipotential surfaces (V(x,y,z) = ext{constant}). In electrostatics, the electric field is the negative gradient of electric potential: [ mathbf{E} = - abla V ] The negative sign signifies that electric flux lines naturally point from regions of higher potential toward regions of lower potential.",
+      "3. Divergence of a Vector Field ( abla cdot mathbf{A}) & Physical Meaning",
+      "The divergence of a vector field (mathbf{A}) at point (P) is defined as the net outward flux of (mathbf{A}) per unit volume as the volume shrinks to zero: [ abla cdot mathbf{A} = lim_{Delta v o 0} rac{oint_S mathbf{A} cdot dmathbf{S}}{Delta v} ] Physical Interpretation:",
+      "( abla cdot mathbf{A} > 0): Point (P) is a source (net positive field lines diverge outward, e.g., positive electric charge ( abla cdot mathbf{D} = ho_v))."
+    ]
+  },
+  {
+    "id": "emt-coulombs-law-fields",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "Electrostatic analysis requires mastering vector addition, the principle of linear superposition, and spatial integration over curves, surfaces, and volumes. The fundamental position vector from source charge at (mathbf{r}'(x', y', z')) to observation field point at (mathbf{r}(x, y, z)) is the separation vector: [ mathbf{R} = mathbf{r} - mathbf{r}', quad R = |mathbf{R}| = sqrt{(x-x')^2 + (y-y')^2 + (z-z')^2} ] The unit vector directed from source to field point is (mathbf{a}_R = rac{mathbf{R}}{R} = rac{mathbf{r} - mathbf{r}'}{|mathbf{r} - mathbf{r}'|}).",
+      "The Electric Field Intensity (mathbf{E}) at an observation point is the force experienced per unit positive test charge (q_t) as (q_t o 0): [ mathbf{E} = lim_{q_t o 0} rac{mathbf{F}}{q_t} = rac{Q}{4piepsilon R^2}mathbf{a}_R quad [ ext{V/m or N/C}] ] For an assembly of (N) discrete point charges (Q_k) located at (mathbf{r}_k), the total field is obtained by the superposition principle: [ mathbf{E}(mathbf{r}) = sum_{k=1}^N rac{Q_k (mathbf{r} - mathbf{r}_k)}{4piepsilon |mathbf{r} - mathbf{r}_k|^3} ]",
+      "For a straight line charge of uniform density ( ho_L) extending along the (z)-axis from (z = A) to (z = B), observing at point (P( ho, phi, 0)): [ E_ ho = rac{ ho_L}{4piepsilon ho}(sin\u0007lpha_2 - sin\u0007lpha_1), quad E_z = - rac{ ho_L}{4piepsilon ho}(cos\u0007lpha_2 - cos\u0007lpha_1) ] where (\u0007lpha_1) and (\u0007lpha_2) are the subtended angles from the observation normal to the endpoints of the wire. As the line becomes infinitely long ((\u0007lpha_1 o -pi/2, \u0007lpha_2 o +pi/2)), (E_z o 0) and (E_ ho = rac{ ho_L}{2piepsilon ho}).",
+      "Michael Faraday introduced the concept of electric flux (Psi) (measured in Coulombs) originating from positive charges and terminating on negative charges. Faraday proved that one Coulomb of charge emits exactly one Coulomb of electric flux: [ Psi = Q ] The Electric Flux Density (or electric displacement) (mathbf{D}) is the vector flux per unit surface area: [ Psi = int_S mathbf{D} cdot dmathbf{S} ] In a linear, isotropic medium: [ mathbf{D} = epsilon mathbf{E} = epsilon_0epsilon_r mathbf{E} quad [ ext{C/m}^2] ] Crucially, (mathbf{D}) depends only on the charge configuration and geometry, and is independent of the dielectric medium permittivity (epsilon), whereas (mathbf{E}) decreases inversely with relative permittivity (epsilon_r).",
+      "2. Compute (mathbf{E}): [ mathbf{E} = rac{ ho_L}{2piepsilon_0 ho}mathbf{a}_ ho = rac{25 imes 10^{-9}}{2pi imes (8.854 imes 10^{-12}) imes 2}mathbf{a}_x = rac{25 imes 10^{-9}}{1.1126 imes 10^{-10}}mathbf{a}_x = 224.7mathbf{a}_x ext{ V/m} ] Using the constant ( rac{1}{4piepsilon_0} = 9 imes 10^9 ext{ N}cdot ext{m}^2/ ext{C}^2): [ mathbf{E} = 2 imes (9 imes 10^9) imes rac{25 imes 10^{-9}}{2}mathbf{a}_x = 225mathbf{a}_x ext{ V/m} ]"
+    ]
+  },
+  {
+    "id": "emt-gauss-law-potential",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "Gauss's Law requires an understanding of closed surface integrals and spatial symmetry. Electric potential requires line integration of conservative vector fields. If a vector field satisfies (oint_L mathbf{E} cdot dmathbf{l} = 0), the line integral between two points (A) and (B) is path-independent: [ V_{AB} = V_B - V_A = -int_A^B mathbf{E} cdot dmathbf{l} ] The negative sign represents the external work required to move a positive unit test charge against the electric field.",
+      "Integral Form: The net outward electric flux (Psi) passing through any closed Gaussian surface (S) is equal to the total net charge enclosed within that surface: [ oint_S mathbf{D} cdot dmathbf{S} = Q_{ ext{encl}} = int_v ho_v, dv ] Applying the Divergence Theorem to the left-hand side: [ oint_S mathbf{D} cdot dmathbf{S} = int_v ( abla cdot mathbf{D}), dv = int_v ho_v, dv ] Since this equality holds for an arbitrary volume (v), the integrands must be identical at every point in space: [ abla cdot mathbf{D} = ho_v quad ext{(Maxwell's First Equation)} ] In a linear, homogeneous, and isotropic medium where (mathbf{D} = epsilonmathbf{E}): [ abla cdot mathbf{E} = rac{ ho_v}{epsilon} ]",
+      "To apply Gauss's Law analytically, a symmetric Gaussian surface is chosen such that (mathbf{D}) is everywhere either strictly normal to the surface (with constant magnitude) or strictly tangential ((mathbf{D} cdot dmathbf{S} = 0)):",
+      "Point Charge (Q): Concentric spherical Gaussian surface of radius (r). [ D_r (4pi r^2) = Q implies mathbf{D} = rac{Q}{4pi r^2}mathbf{a}_r, quad mathbf{E} = rac{Q}{4piepsilon r^2}mathbf{a}_r ]",
+      "Because electrostatic Coulomb forces are central and obey inverse-square laws, moving a charge in a complete closed loop returns it to its initial state with zero net energy change: [ oint_L mathbf{E} cdot dmathbf{l} = 0 ] Applying Stokes' Theorem: [ oint_L mathbf{E} cdot dmathbf{l} = int_S ( abla imes mathbf{E}) cdot dmathbf{S} = 0 implies abla imes mathbf{E} = mathbf{0} ] Thus, all electrostatic fields are strictly conservative and irrotational."
+    ]
+  },
+  {
+    "id": "emt-dipole-capacitance-poisson",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "An electric dipole consists of two point charges (+q) and (-q) separated by distance (d) aligned along the (z)-axis, centered at the origin. The Electric Dipole Moment vector is defined as: [ mathbf{p} = qmathbf{d} = q dmathbf{a}_z quad [ ext{C}cdot ext{m}] ] In the far field ((r gg d)), the distance from the charges to the observation point approximates as (r_1 \u0007pprox r - rac{d}{2}cos heta) and (r_2 \u0007pprox r + rac{d}{2}cos heta).",
+      "Electric Potential: [ V(r, heta) = rac{q}{4piepsilon}left( rac{1}{r_1} - rac{1}{r_2} ight) \u0007pprox rac{q dcos heta}{4piepsilon r^2} = rac{mathbf{p} cdot mathbf{a}_r}{4piepsilon r^2} ] Electric Field Intensity: Taking (mathbf{E} = - abla V) in spherical coordinates: [ E_r = - rac{partial V}{partial r} = rac{2pcos heta}{4piepsilon r^3}, quad E_ heta = - rac{1}{r} rac{partial V}{partial heta} = rac{psin heta}{4piepsilon r^3}, quad E_phi = 0 ] [ mathbf{E}(r, heta) = rac{p}{4piepsilon r^3}left(2cos hetamathbf{a}_r + sin hetamathbf{a}_ heta ight) ] Notice that the dipole electric field decays as (1/r^3), one order faster than a monopole point charge ((1/r^2)).",
+      "Net mechanical torque: [ mathbf{T} = mathbf{p} imes mathbf{E}_{ ext{ext}} quad [ ext{N}cdot ext{m}] ] The torque acts to align the dipole moment parallel with the applied field.",
+      "Potential energy stored in dipole orientation: [ U = -mathbf{p} cdot mathbf{E}_{ ext{ext}} quad [ ext{J}] ] Minimum energy occurs when (mathbf{p}) is fully aligned with (mathbf{E}) (( heta = 0)).",
+      "Capacitance (C) is the ratio of the magnitude of charge (Q) on either conductor of a two-conductor system to the potential difference (V) between them: [ C = rac{Q}{V} = rac{oint_S epsilon mathbf{E} cdot dmathbf{S}}{-int_-^+ mathbf{E} cdot dmathbf{l}} quad [ ext{Farads, F}] ] Capacitance depends solely on the physical geometry (dimensions, shapes, spacing) and the permittivity (epsilon) of the separating dielectric, and is completely independent of charge (Q) or voltage (V)."
+    ]
+  },
+  {
+    "id": "emt-biot-savart-ampere",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "Magnetostatics investigates constant magnetic fields produced by steady, time-invariant electric currents (direct current (partial mathbf{J}/partial t = mathbf{0})). Discovered experimentally by Jean-Baptiste Biot and Félix Savart in 1820, the Biot-Savart Law provides the fundamental differential building block linking current elements to magnetic field intensity (mathbf{H}) and magnetic flux density (mathbf{B}). For highly symmetric geometries, Ampère's Circuital Law provides a powerful line-integral technique directly analogous to Gauss's Law in electrostatics. Introducing the magnetic vector potential (mathbf{A}) enforces the physical truth that magnetic monopoles do not exist (( abla cdot mathbf{B} = 0)).",
+      "The Biot-Savart Law states that the differential magnetic field intensity (dmathbf{H}) produced at an observation point (P) by a differential current element (I dmathbf{l}') located at source point (mathbf{r}') is: [ dmathbf{H} = rac{I dmathbf{l}' imes mathbf{a}_R}{4pi R^2} = rac{I dmathbf{l}' imes (mathbf{r} - mathbf{r}')}{4pi |mathbf{r} - mathbf{r}'|^3} quad [ ext{A/m}] ] where (mathbf{R} = mathbf{r} - mathbf{r}') is the displacement vector from source to field point. For continuous current configurations:",
+      "Infinitely Long Straight Wire: As (A o -infty) ((\u0007lpha_1 o 0)) and (B o +infty) ((\u0007lpha_2 o pi)): [ cos(0) - cos(pi) = 1 - (-1) = 2 ] [ mathbf{H} = rac{I}{2pi ho}mathbf{a}_phi quad [ ext{A/m}] ] [ mathbf{B} = rac{mu_0 I}{2pi ho}mathbf{a}_phi quad [ ext{T}] ] The magnetic field lines form concentric circles centered on the wire, obeying the right-hand thumb rule.",
+      "Consider a circular loop of radius (a) in the (xy)-plane carrying steady current (I). We observe at point (P(0, 0, h)) on the (z)-axis: By symmetry, components of (dmathbf{H}) perpendicular to the (z)-axis ((dmathbf{H}_ ho)) cancel across diametrically opposite elements. Only the axial component (d H_z = d H sin\u0007lpha = d H rac{a}{sqrt{a^2 + h^2}}) survives: [ H_z = int_0^{2pi} rac{I (a, dphi')}{4pi (a^2 + h^2)} rac{a}{sqrt{a^2 + h^2}} = rac{I a^2 (2pi)}{4pi (a^2 + h^2)^{3/2}} ] [ mathbf{H}(0, 0, h) = rac{I a^2}{2(a^2 + h^2)^{3/2}}mathbf{a}_z quad [ ext{A/m}] ] Special Cases:",
+      "For a rectangular loop with sides (2a) (along (x)) and (2b) (along (y)) carrying current (I), the magnetic field at the center of the loop ((z = 0)) is obtained by summing the contributions of the four straight segments: [ H_z = rac{2 I}{pi}left( rac{sqrt{a^2 + b^2}}{a b} ight)mathbf{a}_z ] For a square loop of side (L) ((2a = 2b = L)): [ H_z = rac{2sqrt{2} I}{pi L}mathbf{a}_z ] On the axis at distance (h) above the center of a square loop of side (L): [ H_z = rac{2 I L^2}{pi (L^2 + 4h^2)sqrt{L^2 + 2h^2}} ]"
+    ]
+  },
+  {
+    "id": "emt-maxwell-boundary-conditions",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "The principle of conservation of electric charge dictates that the net electric current flowing out of any closed surface must equal the time rate of decrease of charge enclosed within the volume: [ I_{ ext{out}} = oint_S mathbf{J} cdot dmathbf{S} = - rac{dQ_{ ext{encl}}}{dt} = - rac{d}{dt}int_v ho_v, dv = -int_v rac{partial ho_v}{partial t}, dv ] Applying the Divergence Theorem to the left-hand side: [ int_v ( abla cdot mathbf{J}), dv = -int_v rac{partial ho_v}{partial t}, dv ] Since this holds for an arbitrary volume, the differential Continuity Equation is: [ abla cdot mathbf{J} = - rac{partial ho_v}{partial t} ] In steady DC conditions where (partial ho_v/partial t = 0), ( abla cdot mathbf{J} = 0), which is Kirchhoff's Current Law in field form.",
+      "Consider the divergence of Ampère's static law: ( abla cdot ( abla imes mathbf{H}) = abla cdot mathbf{J}). Because the divergence of any curl is identically zero, this requires ( abla cdot mathbf{J} = 0). However, by the continuity equation, ( abla cdot mathbf{J} = -partial ho_v/partial t). This is an explicit mathematical contradiction for time-varying fields!",
+      "To resolve this contradiction, Maxwell substituted Gauss's Law (( ho_v = abla cdot mathbf{D})): [ abla cdot mathbf{J} = - rac{partial}{partial t}( abla cdot mathbf{D}) = - abla cdot left( rac{partial mathbf{D}}{partial t} ight) implies abla cdot left(mathbf{J} + rac{partial mathbf{D}}{partial t} ight) = 0 ] Maxwell recognized that the total current density consists of two distinct components: [ mathbf{J}_{ ext{total}} = mathbf{J}_c + mathbf{J}_d ] where:",
+      "This yields the celebrated Maxwell-Ampère Equation: [ abla imes mathbf{H} = mathbf{J} + rac{partial mathbf{D}}{partial t} ] In integral form: [ oint_L mathbf{H} cdot dmathbf{l} = int_S mathbf{J} cdot dmathbf{S} + int_S rac{partial mathbf{D}}{partial t} cdot dmathbf{S} = I_c + I_d ]",
+      "Michael Faraday discovered that a time-varying magnetic flux induces an electromotive force (EMF) around a closed circuit: [ ext{EMF} = oint_L mathbf{E} cdot dmathbf{l} = - rac{dPhi}{dt} = - rac{d}{dt}int_S mathbf{B} cdot dmathbf{S} ] The negative sign expresses Lenz's Law: the induced current creates a magnetic field that opposes the original change in flux. Applying Stokes' Theorem: [ int_S ( abla imes mathbf{E}) cdot dmathbf{S} = -int_S rac{partial mathbf{B}}{partial t} cdot dmathbf{S} ] For stationary contours, the point form is: [ abla imes mathbf{E} = - rac{partial mathbf{B}}{partial t} quad ext{(Maxwell's Third Equation)} ] Crucial Insight: In time-varying fields, ( abla imes mathbf{E} e mathbf{0})! The electric field is no longer conservative; voltage between two points becomes path-dependent."
+    ]
+  },
+  {
+    "id": "emt-uniform-plane-waves",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "Wave propagation analysis requires mastering the vector identity: [ abla imes ( abla imes mathbf{A}) = abla( abla cdot mathbf{A}) - abla^2 mathbf{A} ] In the frequency domain with harmonic time dependence (e^{jomega t}), temporal derivatives become algebraic: ( rac{partial}{partial t} o jomega) and ( rac{partial^2}{partial t^2} o -omega^2).",
+      "Substitute the vector identity ( abla imes ( abla imes mathbf{E}) = abla( abla cdot mathbf{E}) - abla^2 mathbf{E}). Since ( ho_v = 0), ( abla cdot mathbf{E} = 0), so the left side is (- abla^2 mathbf{E}).",
+      "Substitute Maxwell-Ampère's Law ( abla imes mathbf{H} = sigma mathbf{E} + epsilon rac{partial mathbf{E}}{partial t}) on the right side: [ - abla^2 mathbf{E} = -mu rac{partial}{partial t}left(sigma mathbf{E} + epsilon rac{partial mathbf{E}}{partial t} ight) ] [ abla^2 mathbf{E} - musigma rac{partial mathbf{E}}{partial t} - muepsilon rac{partial^2 mathbf{E}}{partial t^2} = mathbf{0} quad ext{(General Wave Equation for E)} ]",
+      "Following an identical procedure for (mathbf{H}): [ abla^2 mathbf{H} - musigma rac{partial mathbf{H}}{partial t} - muepsilon rac{partial^2 mathbf{H}}{partial t^2} = mathbf{0} quad ext{(General Wave Equation for H)} ]",
+      "In a lossless medium ((sigma = 0)): [ abla^2 mathbf{E} - muepsilon rac{partial^2 mathbf{E}}{partial t^2} = mathbf{0} ] Comparing with the classical wave equation ( abla^2 psi - rac{1}{u^2} rac{partial^2 psi}{partial t^2} = 0), the wave propagation velocity is: [ u = rac{1}{sqrt{muepsilon}} ] In free space ((mu = mu_0, epsilon = epsilon_0)): [ c = rac{1}{sqrt{mu_0epsilon_0}} = rac{1}{sqrt{(4pi imes 10^{-7})(8.854 imes 10^{-12})}} \u0007pprox 2.9979 imes 10^8 ext{ m/s} \u0007pprox 3 imes 10^8 ext{ m/s} ]"
+    ]
+  },
+  {
+    "id": "emt-poynting-wave-parameters",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "Poynting's Theorem requires taking the divergence of the cross product of field vectors using the vector identity: [ abla cdot (mathbf{E} imes mathbf{H}) = mathbf{H} cdot ( abla imes mathbf{E}) - mathbf{E} cdot ( abla imes mathbf{H}) ] Phasor power calculations in electrodynamics parallel AC circuit analysis: instantaneous power oscillates at twice the source frequency ((2omega)), while time-average power is computed via half the real part of the product with the complex conjugate.",
+      "Dot multiply the first equation by (mathbf{H}) and the second by (mathbf{E}): [ mathbf{H} cdot ( abla imes mathbf{E}) = -mu mathbf{H} cdot rac{partial mathbf{H}}{partial t} = - rac{partial}{partial t}left( rac{1}{2}mu |mathbf{H}|^2 ight) ] [ mathbf{E} cdot ( abla imes mathbf{H}) = mathbf{E} cdot mathbf{J} + epsilon mathbf{E} cdot rac{partial mathbf{E}}{partial t} = mathbf{E} cdot mathbf{J} + rac{partial}{partial t}left( rac{1}{2}epsilon |mathbf{E}|^2 ight) ]",
+      "Subtract the second equation from the first and apply the vector identity: [ abla cdot (mathbf{E} imes mathbf{H}) = -mathbf{E} cdot mathbf{J} - rac{partial}{partial t}left( rac{1}{2}epsilon |mathbf{E}|^2 + rac{1}{2}mu |mathbf{H}|^2 ight) ]",
+      "Integrate over a volume (v) bounded by closed surface (S) and apply the Divergence Theorem: [ oint_S (mathbf{E} imes mathbf{H}) cdot dmathbf{S} = -int_v mathbf{E} cdot mathbf{J}, dv - rac{partial}{partial t}int_v left( rac{1}{2}epsilon |mathbf{E}|^2 + rac{1}{2}mu |mathbf{H}|^2 ight), dv ]",
+      "Rearranging into the standard conservation-of-energy statement: [ -oint_S mathbf{S} cdot dmathbf{S} = int_v mathbf{E} cdot mathbf{J}, dv + rac{partial}{partial t}int_v (w_E + w_M), dv ]"
+    ]
+  },
+  {
+    "id": "emt-transmission-lines",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "These four parameters are completely determined by line geometry and materials: For coaxial line: (L' = rac{mu}{2pi}ln(b/a)), (C' = rac{2piepsilon}{ln(b/a)}), (G' = rac{2pisigma}{ln(b/a)}). Notice that for all TEM transmission lines in a homogeneous medium: [ L' C' = muepsilon = rac{1}{u^2}, quad rac{G'}{C'} = rac{sigma}{epsilon} ]",
+      "Consider an incremental line section between (z) and (z + Delta z): Applying Kirchhoff's Voltage Law to the loop: [ v(z, t) - R'Delta z, i(z, t) - L'Delta z rac{partial i(z, t)}{partial t} - v(z + Delta z, t) = 0 ] Dividing by (Delta z) and taking the limit (Delta z o 0): [ - rac{partial v(z, t)}{partial z} = R' i(z, t) + L' rac{partial i(z, t)}{partial t} quad ext{(First Telegrapher Equation)} ] Applying Kirchhoff's Current Law to the node: [ i(z, t) - G'Delta z, v(z + Delta z, t) - C'Delta z rac{partial v(z + Delta z, t)}{partial t} - i(z + Delta z, t) = 0 ] Dividing by (Delta z) as (Delta z o 0): [ - rac{partial i(z, t)}{partial z} = G' v(z, t) + C' rac{partial v(z, t)}{partial t} quad ext{(Second Telegrapher Equation)} ]",
+      "Assuming sinusoidal steady state (( rac{partial}{partial t} o jomega)): [ - rac{d V(z)}{dz} = (R' + jomega L') I(z) = Z' I(z) ] [ - rac{d I(z)}{dz} = (G' + jomega C') V(z) = Y' V(z) ] where (Z' = R' + jomega L') is the series impedance per unit length and (Y' = G' + jomega C') is the shunt admittance per unit length. Differentiating the voltage equation with respect to (z) and substituting the current derivative: [ - rac{d^2 V(z)}{dz^2} = Z' rac{d I(z)}{dz} = Z' (-Y' V(z)) ] [ rac{d^2 V(z)}{dz^2} - gamma^2 V(z) = 0 ] Similarly for current: [ rac{d^2 I(z)}{dz^2} - gamma^2 I(z) = 0 ] where (gamma) is the complex Propagation Constant of the line: [ gamma = \u0007lpha + j\beta = sqrt{Z' Y'} = sqrt{(R' + jomega L')(G' + jomega C')} ]",
+      "Substituting (V(z)) back into the first Telegrapher equation: [ - rac{dV}{dz} = gamma V_0^+ e^{-gamma z} - gamma V_0^- e^{+gamma z} = Z' I(z) ] [ I(z) = rac{gamma}{Z'} V_0^+ e^{-gamma z} - rac{gamma}{Z'} V_0^- e^{+gamma z} ] The ratio of forward voltage to forward current is defined as the Characteristic Impedance (Z_0): [ Z_0 = rac{V_0^+}{I_0^+} = rac{Z'}{gamma} = rac{R' + jomega L'}{sqrt{(R' + jomega L')(G' + jomega C')}} = sqrt{ rac{R' + jomega L'}{G' + jomega C'}} quad [Omega] ] For the reflected wave, the current is reversed in direction: (I_0^- / V_0^- = -1/Z_0). Thus: [ I(z) = rac{V_0^+}{Z_0} e^{-gamma z} - rac{V_0^-}{Z_0} e^{+gamma z} ]",
+      "For an ideal lossless line ((R' = 0, G' = 0)): [ gamma = sqrt{(jomega L')(jomega C')} = jomegasqrt{L'C'} ] [ \u0007lpha = 0 quad ( ext{Zero attenuation}) ] [ \beta = omegasqrt{L'C'} quad [ ext{rad/m}] ] [ Z_0 = sqrt{ rac{L'}{C'}} quad [Omega] quad ( ext{Purely real and resistive}) ] Velocity of propagation: [ u_p = rac{omega}{\beta} = rac{1}{sqrt{L'C'}} = rac{1}{sqrt{muepsilon}} = rac{c}{sqrt{mu_repsilon_r}} ] Wavelength on the line: [ lambda = rac{u_p}{f} = rac{2pi}{\beta} ] Notice that for a lossless line, (Z_0) and (u_p) are completely independent of frequency!"
+    ]
+  },
+  {
+    "id": "emt-swr-impedance-emi",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "The input impedance (Z_{ ext{in}}) looking into a lossless transmission line of length (l) terminated in load (Z_L) is: [ Z_{ ext{in}}(l) = rac{V(l)}{I(l)} = Z_0 left[ rac{Z_L + j Z_0 an(\beta l)}{Z_0 + j Z_L an(\beta l)} ight] quad [Omega] ] Special Line Lengths:",
+      "Quarter-Wave Transformer: To match a real load resistance (R_L) to a transmission line of characteristic impedance (Z_0), insert a section of lossless line of length (l = lambda/4) with characteristic impedance: [ Z_{0, ext{trans}} = sqrt{Z_0 R_L} ] This eliminates reflections at the design frequency (f_0).",
+      "1. Reflection Coefficient (Gamma_L): [ Gamma_L = rac{Z_L - Z_0}{Z_L + Z_0} = rac{(100 - j50) - 50}{(100 - j50) + 50} = rac{50 - j50}{150 - j50} ] Divide numerator and denominator by 50: [ Gamma_L = rac{1 - j1}{3 - j1} = rac{sqrt{2}\u0007ngle -45^circ}{sqrt{10}\u0007ngle -18.435^circ} = rac{1.4142\u0007ngle -45^circ}{3.1623\u0007ngle -18.435^circ} \u0007pprox 0.4472\u0007ngle -26.565^circ ] Magnitude: (|Gamma_L| = rac{sqrt{2}}{sqrt{10}} = rac{1}{sqrt{5}} \u0007pprox 0.4472). Phase: ( heta_L = -45^circ - (-18.435^circ) = -26.565^circ).",
+      "4. Quarter-Wave Transformer Design: For (Z_0 = 50 Omega) and (R_L = 200 Omega): Characteristic impedance of the transformer: [ Z_{0, ext{trans}} = sqrt{Z_0 R_L} = sqrt{50 imes 200} = sqrt{10000} = 100 Omega ] Length in free space ((c = 3 imes 10^8 ext{ m/s})): [ lambda = rac{c}{f} = rac{3 imes 10^8}{10^9} = 0.30 ext{ m} = 30 ext{ cm} ] [ l = rac{lambda}{4} = rac{30 ext{ cm}}{4} = 7.5 ext{ cm} ] A (100 Omega) line section of length (7.5 ext{ cm}) provides perfect matching ((S = 1.0)) at (1 ext{ GHz}).",
+      "Quarter-Wave Line: (Z_{ ext{in}} = rac{Z_0^2}{Z_L}); Transformer: (Z_{0, ext{trans}} = sqrt{Z_0 R_L})"
+    ]
+  },
+  {
+    "id": "sse-feedback-oscillators",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Modern mixed-signal silicon systems replace discrete analog RC and LC oscillators with integrated Phase-Locked Loops (PLLs) driven by sub-micron CMOS Ring Oscillators and Digitally Controlled Oscillators (DCOs). For ultra-low jitter audio conversion (e.g., in high-end Delta-Sigma DACs), Quadrature Voltage-Controlled Oscillators (QVCOs) synthesize clean in-phase (I) and quadrature (Q) clocks with phase noise lower than −150 dBc/Hz, maintaining strict frequency stability via fractional-N frequency synthesizers."
+    ]
+  },
+  {
+    "id": "sse-differential-opamp-fundamentals",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "quad"
+    ],
+    "sample": [
+      "i_{c1} - i_{c2} = \\alpha I_{EE} anhleft(\\frac{v_d}{2V_T}\\right) \\approx g_m v_d, \\quad g_m = \\frac{I_{C1}}{V_T} = \\frac{I_{EE}}{2 V_T}"
+    ]
+  },
+  {
+    "id": "sse-opamp-linear-amplifiers",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "I_{\\text{\\sum}} = I_1 + I_2 + I_3 = 25 - 24 + 20 = 21\\text{ }\\mu\\text{A}",
+      "v_o = -I_{\\text{\\sum}} \\cdot R_f = -(21 \\times 10^{-6}\\text{ A}) \\cdot (100 \\times 10^3\\text{ }\\Omega) = -2.1\\text{ V}",
+      "v_o = -1.0left(v_{cm} - \\frac{v_d}{2}\\right) + 1.004975left(v_{cm} + \\frac{v_d}{2}\\right) = 1.002488 v_d + 0.004975 v_{cm}"
+    ]
+  },
+  {
+    "id": "sse-waveform-generators-555",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "t = \\tau lnleft( \\frac{V_{\\text{final}} - V_{\\text{initial}}}{V_{\\text{final}} - V(t)} \\right)",
+      "e^{T_1 / (R_f C)} = \\frac{1 + \\beta}{1 - \\beta} \\implies T_1 = R_f C lnleft( \\frac{1 + \\beta}{1 - \\beta} \\right)",
+      "T = 2 R_f C lnleft( \\frac{1 + \\beta}{1 - \\beta} \\right) = 2 R_f C lnleft( 1 + \\frac{2 R_1}{R_2} \\right), \\quad f_0 = \\frac{1}{T}",
+      "(or β=0.462), lnleft(\\frac{1+\\beta}{1-\\beta}\\right) = ln(2.718) = 1, yielding the classic simplification T=2R",
+      "Op-Amp Square-Wave Multivibrator Period: T = 2 R_f C lnleft( \\frac{1+\\beta}{1-\\beta} \\right) = 2 R_f C lnleft( 1 + \\frac{2 R_1}{R_2} \\right)"
+    ]
+  },
+  {
+    "id": "sig-laplace-analysis",
+    "patterns": [
+      "cdot",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "\\begin{aligned} \\textbf{Causality Condition:} & \\quad \\text{The ROC is of the form } \\text{Re}{s} > sigma_{max} \\text{ (right-half plane beyond rightmost pole).} \\ \\textbf{BIBO Stability Condition:} & \\quad \\text{The ROC must contain the imaginary } jomega\\text{-axis (i.e. } \\text{Re}{s} = 0\\text{).} \\ \\textbf{Causal + Stable LTI System:} & \\quad \\textbf{All poles of } H(s) \\textbf{ must lie strictly in the open left-half of the } s\\textbf{-plane (OLHP)!}",
+      "Compute output in s-domain: (Y(s) = H(s) cdot X(s)).",
+      "Invert term-by-term using standard Laplace transform pairs: [ mathcal{L}^{-1}left{\frac{1}{s + a} ight} = e^{-at}u(t), qquad mathcal{L}^{-1}left{\frac{omega_d}{(s+alpha)^2 + omega_d^2} ight} = e^{-alpha t}sin(omega_d t)u(t) ]"
+    ]
+  },
+  {
+    "id": "sig-time-domain-electrical-networks",
+    "patterns": [
+      "sqrt{"
+    ],
+    "sample": [
+      "Overdamped\t(zeta > 1)\tTwo distinct real negative poles (s_{1,2} = -alpha pm sqrt{alpha^2 - omega_n^2})\tSum of two decaying real exponentials: (A_1 e^{s_1 t} + A_2 e^{s_2 t}); sluggish, non-oscillatory.",
+      "Placement Trap — The Critical Damping Resistance Ratio: In campus placement interviews (Tata Motors, Schneider, L&T), interviewers ask: \"A series RLC circuit has critical resistance (R_s = 200;Omega). If the exact same inductor and capacitor are reconnected in PARALLEL, what is the critical damping resistance (R_p)?\" Students reflexively answer (200;Omega). In series RLC: (R_s = 2sqrt{L/C}). In parallel RLC: (R_p = \frac{1}{2}sqrt{L/C}). Therefore, (R_p = R_s / 4 = 200 / 4 = 50;Omega)! They differ by a factor of 4 and move in completely opposite directions!",
+      "Damping: (alpha = R/(2L)) (series) vs (1/(2RC)) (parallel); (omega_n = 1/sqrt{LC}); (zeta = alpha / omega_n).",
+      "Underdamped ((zeta < 1)): (s_{1,2} = -alpha pm jomega_d) gives decaying oscillations at (omega_d = omega_nsqrt{1-zeta^2})."
+    ]
+  },
+  {
+    "id": "sig-continuous-fourier-series",
+    "patterns": [
+      "sqrt{"
+    ],
+    "sample": [
+      "Total Harmonic Distortion (THD) Measurement: Grid codes (IEEE 519) mandate measuring voltage THD: [ ext{THD}_V = \frac{sqrt{sum_{n=2}^{infty} V_n^2}}{V_1} imes 100% le 5.0% ]"
+    ]
+  },
+  {
+    "id": "sig-continuous-fourier-transform",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "Convolution in Time\t(x(t) * h(t))\t(X(jomega) cdot H(jomega))\tTransforms convolution into simple pointwise multiplication.",
+      "Multiplication in Time\t(x_1(t) cdot x_2(t))\t(\frac{1}{2pi} [X_1(jomega) * X_2(jomega)])\tTime-domain windowing corresponds to spectral convolution.",
+      "Rectangular Pulse\t( ext{rect}(t/T) = 1; (|t| < T/2))\t(T cdot ext{sinc}left(\frac{omega T}{2pi} ight) = T \frac{sin(omega T / 2)}{omega T / 2})",
+      "Placement Trap — The Time-Bandwidth Uncertainty Product: In core interviews at Qualcomm, Texas Instruments, and Cisco: \"If a pulsed laser signal duration (Delta t) is compressed by a factor of 10, how does its spectral bandwidth (Delta omega) change?\" By the scaling property (x(10t) leftrightarrow \frac{1}{10}X(jomega/10)), compressing the time pulse by 10 expands its frequency spectrum by 10. The time-bandwidth product (Delta t cdot Delta omega ge \frac{1}{2}) is an invariant physical limit."
+    ]
+  },
+  {
+    "id": "sig-sampling-reconstruction-zoh-foh",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Nyquist Rate ((f_{N})): The minimum theoretical sampling frequency required to completely reconstruct the original signal without aliasing: [ f_{N} = 2 f_m qquad ext{(or } omega_N = 2omega_m ext{)} ]",
+      "|H_{\\text{foh}}(jomega)| = T_s \\sqrt{1 + (\\omega T_s)^2} \\cdot \\text{sinc}^2left(\\frac{\\omega T_s}{2pi}\\right)"
+    ]
+  },
+  {
+    "id": "sig-discrete-lti-system-realization",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Figure: Canonical Direct Form II block diagram for a second-order IIR biquad utilizing a single shared delay spine.",
+      "In high-order filters (e.g. (N = 6) or (8)), Direct Form II suffers from severe coefficient quantization sensitivity: a tiny 16-bit truncation in a high-order polynomial coefficient causes massive pole displacement into the unstable region ((|z| > 1)). To eliminate this, the transfer function (H(z)) is factored into a product of first- and second-order sections (Biquads):",
+      "Each biquad is realized using Direct Form II, and the sections are connected in series. This confines pole sensitivity strictly within each independent quadratic section.",
+      "Digital Hearing Aids & Audio Equalizers: Cascade biquad IIR filters are universally implemented in low-power audio DSP chips (such as TI TMS320C67xx) because cascaded 2nd-order sections are highly resilient to fixed-point arithmetic limit cycles.",
+      "Cascade Form: Decomposes (H(z)) into factored biquad product (prod H_k(z)); minimizes coefficient quantization sensitivity."
+    ]
+  },
+  {
+    "id": "sig-discrete-fourier-series",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "quad"
+    ],
+    "sample": [
+      "\\begin{aligned} \\textbf{Analysis (DFS Coefficients):} & \\quad ilde{X}[k] = sum_{n=0}^{N-1} ilde{x}[n] W_N^{k n} = sum_{n=0}^{N-1} ilde{x}[n] e^{-j \\frac{2pi}{N} k n} \\ \\textbf{Synthesis (Sequence Recovery):} & \\quad ilde{x}[n] = \\frac{1}{N} sum_{k=0}^{N-1} ilde{X}[k] W_N^{-k n} = \\frac{1}{N} sum_{k=0}^{N-1} ilde{X}[k] e^{j \\frac{2pi}{N} k n}",
+      "Periodic Convolution\t( ilde{x}_1[n] circledast ilde{x}_2[n] = sum_{m=0}^{N-1} ilde{x}_1[m] ilde{x}_2[n - m])\t( ilde{X}_1[k] cdot ilde{X}_2[k])",
+      "Periodic Modulation\t( ilde{x}_1[n] cdot ilde{x}_2[n])\t(\frac{1}{N} ilde{X}_1[k] circledast ilde{X}_2[k])",
+      "Problem Statement: Compute the DFS coefficients ( ilde{X}[k]) for the periodic sequence ( ilde{x}[n]) with fundamental period (N = 4), where one period is given by: [ ilde{x}[n] = {1, 2, 0, 1} quad ext{for } n = 0, 1, 2, 3. ]"
+    ]
+  },
+  {
+    "id": "sig-dtft-frequency-response",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "Linear Convolution\t(x[n] * h[n])\t(X(e^{jomega}) cdot H(e^{jomega}))",
+      "Windowing / Modulation\t(x_1[n] cdot x_2[n])\t(\frac{1}{2pi} int_{-pi}^{pi} X_1(e^{j heta}) X_2(e^{j(omega - heta)}),d heta)"
+    ]
+  },
+  {
+    "id": "sig-discrete-convolution",
+    "patterns": [
+      "cdot",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Let an LTI system operator be denoted by (mathcal{T}{cdot}), with unit impulse response defined as (h[n] = mathcal{T}{delta[n]}).",
+      "Applying system operator (mathcal{T}{cdot}) to both sides:",
+      "\\begin{aligned} \\textbf{Starting Index:} & \\quad n_{\\text{start}} = N_1 + M_1 \\ \\textbf{Ending Index:} & \\quad n_{\\text{end}} = N_2 + M_2 \\ \\textbf{Total Length of } y[n]: & \\quad L_y = L_x + L_h - 1",
+      "Area Check: (sum y[n] = left(sum x[n] ight) cdot left(sum h[n] ight)). Indispensable sanity check."
+    ]
+  },
+  {
+    "id": "sig-z-transform-properties-inverse",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "Convolution\t(x_1[n] * x_2[n])\t(X_1(z) cdot X_2(z))\tAt least ( ext{ROC}_1 cap ext{ROC}_2)"
+    ]
+  },
+  {
+    "id": "sig-z-transfer-function-stability-mapping",
+    "patterns": [
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Inspecting magnitude and angle: [ |z| = e^{sigma T_s}, qquad angle z = omega T_s ] This relationship establishes a direct geometric mapping between the continuous (s)-plane and the discrete (z)-plane:",
+      "\\begin{aligned} \\textbf{Discrete Causality:} & \\quad \\text{The ROC extends outward from the outermost pole to infinity: } |z| > r_{max}. \\ \\textbf{Discrete BIBO Stability:} & \\quad \\text{The ROC must contain the Unit Circle } |z| = 1. \\ \\textbf{Causal + Stable LTI System:} & \\quad \\textbf{All poles of } H(z) \\textbf{ must lie strictly INSIDE the Unit Circle: } |p_k| < 1."
+    ]
+  },
+  {
+    "id": "lr-num-series",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "indicatesquadraticpolynomial"
+    ]
+  },
+  {
+    "id": "apt-problems-on-numbers",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Placement Tip: For number problems with multiple conditions, substitute the 4 options into the statement conditions rather than setting up quadratic systems. Verification is 3× faster."
+    ]
+  },
+  {
+    "id": "apt-odd-man-out-series",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Placement Tip: Calculate the first and second differences between successive terms. If second differences are constant, the sequence is quadratic (an² + bn + c). If ratios are constant, it is geometric."
+    ]
+  },
+  {
+    "id": "lr-non-verbal",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Placement Tip: Focus on a single distinct asymmetrical feature (e.g., an arrow head or shaded quadrant). Eliminate the 2 or 3 choices that fail to reflect that specific feature correctly."
+    ]
+  },
+  {
+    "id": "cse-stability-routh",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "• Cause: Symmetrically placed roots (±σ, ±jω, or quad ±σ±jω).",
+      "Common mistake: Assuming that an all-zero row in the Routh array always means the system is marginally stable. An auxiliary polynomial A(s) can contain real root pairs (s = ±σ) or complex quadruplets (s = ±σ ± jω). In both cases, roots exist in the right-half plane, meaning the system is unstable, not marginally stable! Always factor A(s) completely to classify the symmetric roots."
+    ]
+  },
+  {
+    "id": "ct-complex-power",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "|S|² = P² + Q². For an inductive load Q > 0, S lies in the first quadrant (lagging). For a capacitive load Q < 0, S lies in the fourth quadrant (leading)."
+    ]
+  },
+  {
+    "id": "de-boolean-algebra-sop-pos",
+    "patterns": [
+      "overline{",
+      "bar{",
+      "\\bar{",
+      "cdot",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "overline{A \\cdot B} = \\bar{A} + \\bar{B} \\qquad \\text{(NAND gate equivalent to Bubbled OR)}",
+      "overline{A + B} = \\bar{A} \\cdot \\bar{B} \\qquad \\text{(NOR gate equivalent to Bubbled AND)}",
+      "cdotsx",
+      "+cdots+"
+    ]
+  },
+  {
+    "id": "de-kmap-minimization",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "are all 1s. They wrap horizontally and vertically to form a quad: rows 00,10 eliminate A (leaves",
+      "combine with row 01 (A=0,B=1) to form a quad with m",
+      "BD. Better: quad m",
+      "(1) form a quad! Rows 01,11 eliminate A (leaves B); columns 11,10 eliminate D (leaves C). Term = BC."
+    ]
+  },
+  {
+    "id": "de-adders-subtractors",
+    "patterns": [
+      "overline{",
+      "bar{",
+      "\\bar{"
+    ],
+    "sample": [
+      "B_{out} = \\bar{A}B + \\bar{A}B_{in} + BB_{in} = \\bar{A}B + B_{in}overline{(A oplus B)}"
+    ]
+  },
+  {
+    "id": "de-parallel-cla-adders",
+    "patterns": [
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "G_i = A_i B_i \\qquad \\text{(Carry Generate — stage produces carry regardless of incoming carry)}",
+      "P_i = A_i oplus B_i \\qquad \\text{(Carry Propagate — stage propagates incoming carry to output)}"
+    ]
+  },
+  {
+    "id": "mi-induction-energy-meters-calibration",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "irc quadrature."
+    ]
+  },
+  {
+    "id": "mi-oscilloscopes-cro-dso",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "=5.0,cm. The major axis lies in the first and third quadrants. Calculate the phase angle phi. (b) An oscilloscope has an input resistance of 1,MΩ and capacitance of 25,pF. The probe cable adds 75,pF. Calculate the required probe capacitance C"
+    ]
+  },
+  {
+    "id": "mi-strain-gauge-piezoelectric-loadcell",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Full Bridge: 4 active gauges (2 tension, 2 compression). Cancels thermal drift, rejects bending/axial crosstalk, and quadruples output voltage (V"
+    ]
+  },
+  {
+    "id": "eps-transmission-parameters-effects",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      ",Omegacdotm and relative permeability mu"
+    ]
+  },
+  {
+    "id": "eps-line-inductance-capacitance",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "The total flux linkages of a cylindrical conductor carrying current I consist of internal linkages psi_{\\text{\\int}} and external linkages psi",
+      "psi_{\\text{\\int}} = \\frac{mu_0 I}{8pi} \\quad \\text{(H/m)}",
+      "psi_{\\text{ext}} = \\frac{mu_0 I}{2pi} lnleft(\\frac{D}{r}\\right)",
+      "L = 2 \\times 10^{-7} lnleft(\\frac{D}{r'}\\right) \\quad \\text{(H/m/conductor)}",
+      "L_n = 2 \\times 10^{-7} lnleft(\\frac{D}{r'}\\right) \\quad \\text{(H/m/phase)}"
+    ]
+  },
+  {
+    "id": "eps-insulators-string-efficiency-corona",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "V_d = 21.2 \\cdot m_0 \\cdot \\delta \\cdot r \\cdot lnleft(\\frac{D}{r}\\right) \\quad (\\text{kV RMS/phase})"
+    ]
+  },
+  {
+    "id": "eps-underground-cables-insulation",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "lnleft(\\frac{R}{r}\\right) = 1 \\implies \\frac{R}{r} = e \\approx 2.718, \\qquad g_{max,min} = \\frac{V}{r}",
+      "R_{\\text{ins}} = \\frac{\\rho}{2pi l} lnleft(\\frac{R}{r}\\right) \\quad (\\text{Ohms})"
+    ]
+  },
+  {
+    "id": "psd-drives-intro",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Four-quadrant capability\tMotoring and braking in both directions, with regeneration back to the supply"
+    ]
+  },
+  {
+    "id": "psd-dynamics-quadrants",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "◆ Four-quadrant operation",
+      "Quadrants II and IV are the braking quadrants: the machine acts as a generator and the drive must have somewhere to put that energy — back into the supply (regenerative braking), into a resistor (dynamic braking), or into the motor's own losses (plugging, which is wasteful and thermally harsh).",
+      "\"An overhead crane lowers a heavy load. Which quadrant is the drive in, and what happens to the energy?\" — Quadrant IV: speed is negative (lowering) while torque stays positive (holding the load back). Gravity does the work, so the machine generates. That energy must go somewhere — returned to the supply by a regenerative converter, burned in a braking resistor, or the drive will see a rising DC-link voltage and trip."
+    ]
+  },
+  {
+    "id": "evt-vehicle-performance",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Two conclusions that shape all EV design. First, cruising a car takes only about 10 kW — the 100 kW+ rating exists for acceleration and gradients, not for cruising. Second, at 90 km/h aerodynamic drag has already overtaken rolling resistance, and because it grows as v² the crossover moves the whole energy picture: doubling speed roughly quadruples the drag force and octuples the drag power."
+    ]
+  },
+  {
+    "id": "evt-hev-history-transmission",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "Conventional Internal Combustion Engines (ICEs) suffer from severe thermodynamic and mechanical limitations: (1) zero static torque at zero RPM, requiring an idle speed (600–900 RPM) and a slipping friction clutch, (2) an extremely narrow thermal efficiency sweet spot (typically 25%–38% peak efficiency over a narrow speed-load envelope), and (3) complete inability to recapture kinetic energy during braking. Electric traction motors, conversely, produce full maximum torque from zero speed, operate at 90%–96% efficiency across broad speed-torque quadrants, and readily reverse power flow for regenerative braking.",
+      "In contrast, an electric traction motor delivers maximum constant torque from 0 to base speed (omega_b) (e.g., 0 to 4500 RPM), followed by a broad constant power field-weakening region extending up to maximum speed (omega_{max}) (e.g., 14,000–18,000 RPM). A speed ratio (omega_{max} / omega_b) of 3 to 4 allows a single-speed fixed-ratio reduction gearbox (typically (i_g cdot i_0 = 8:1) to (10:1)) to satisfy both maximum gradeability (launch acceleration) and top cruising speed requirements, eliminating synchronizers, clutch plates, shift solenoids, and 80% of driveline friction losses.",
+      "Problem: An electric vehicle of total mass (M = 1500; ext{kg}) has a wheel rolling radius of (r_w = 0.32; ext{m}). The vehicle is powered by a permanent magnet motor coupled via a single-speed gearbox with total transmission ratio (i_t = i_g cdot i_0 = 8.5) and mechanical transmission efficiency (eta_t = 0.94). The motor delivers a maximum stall torque of (T_m = 280; ext{N}cdot ext{m}). (1) Calculate the maximum tractive force developed at the wheel contact patch. (2) If rolling resistance force is (F_{rr} = 220; ext{N}) and aerodynamic drag is negligible at launch on level asphalt, calculate the initial acceleration of the vehicle.",
+      "(F_t = \frac{T_m cdot i_t cdot eta_t}{r_w} = \frac{280 imes 8.5 imes 0.94}{0.32} = \frac{2237.2}{0.32} = 6991.25; ext{N}).",
+      "From Newton's second law: (F_{ ext{net}} = M cdot delta_m cdot a)."
+    ]
+  },
+  {
+    "id": "evt-dc-drives-propulsion",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "In vehicular traction, the drive must operate seamlessly across all four quadrants of the speed-torque plane: forward motoring (accelerating uphill), forward regenerative braking (decelerating downhill or slowing to a halt), reverse motoring (backing up), and reverse regenerative braking. The vehicle dynamics demand instantaneous torque response (< 10 ms) to suppress wheel slip on ice/rain, hold the vehicle on steep inclines without rollback, and maximize kinetic energy regeneration back into the battery pack.",
+      "At high vehicular speeds above base speed (omega_b), the motor terminal voltage reaches the DC battery pack ceiling (V_{ ext{bat}}). To accelerate further without exceeding inverter voltage limits, the field flux is reduced: (Phi(omega_m) = Phi_{ ext{rated}} cdot (omega_b / omega_m)). This allows the vehicle to reach high highway cruising speeds at constant power ((P = T_e cdot omega_m = ext{constant})), while the available acceleration torque tapers inversely with speed.",
+      "Working: Armature current: (I_a = T_e / (K_m Phi) = 120 / 1.2 = 100; ext{A}). Terminal voltage: (V_a = delta cdot V_{ ext{bat}} = 0.60 imes 300 = 180; ext{V}). Back EMF: (E_b = V_a - I_a R_a = 180 - 100 imes 0.1 = 180 - 10 = 170; ext{V}). Angular velocity: (omega_m = E_b / (K_m Phi) = 170 / 1.2 = 141.67; ext{rad/s}). Speed in RPM: (N = \frac{141.67 imes 60}{2pi} = 1352.8; ext{RPM}).",
+      "Master the four-quadrant speed-torque plane, cascaded PI control architecture, inner current vs outer speed bandwidths, field weakening principles, and regenerative braking battery constraints."
+    ]
+  },
+  {
+    "id": "evt-pmsm-foc-propulsion",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "Surface Permanent Magnet Synchronous Motor (SPMSM): Magnets are bonded directly onto the cylindrical rotor outer surface. The magnetic permeability of NdFeB magnets is nearly identical to air ((mu_r approx 1.05)). Consequently, the effective magnetic air gap is uniform around the circumference. The direct-axis inductance (L_d) and quadrature-axis inductance (L_q) are equal ((L_d = L_q)), meaning the machine exhibits zero magnetic saliency. Torque is purely electromagnetic (magnet alignment torque).",
+      "Where (P) is the number of pole pairs, (lambda_{pm}) is the permanent magnet flux linkage, (i_d) is direct-axis current, and (i_q) is quadrature-axis current. The torque consists of two components:",
+      "Synchronous Magnet Alignment Torque: (T_{ ext{mag}} = \frac{3}{2} P lambda_{pm} i_q), proportional directly to quadrature current (i_q).",
+      "Where ( heta_e = P cdot heta_m) is the instantaneous electrical rotor angle measured by a high-resolution shaft position sensor (resolver or optical encoder).",
+      "Problem: A 6-pole IPMSM traction motor has a permanent magnet flux linkage of (lambda_{pm} = 0.12; ext{Wb}), direct-axis inductance (L_d = 1.2; ext{mH}), and quadrature-axis inductance (L_q = 2.8; ext{mH}). Under maximum acceleration, the motor operates at a current of 200 A with a current angle of (\beta = 35^circ) leading the q-axis (such that (i_d = -I_s sin\beta) and (i_q = I_s cos\beta)). Calculate: (1) The direct-axis and quadrature-axis currents. (2) The magnetic alignment torque. (3) The reluctance torque. (4) The total electromagnetic torque developed."
+    ]
+  },
+  {
+    "id": "evt-battery-energy-storage",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "Terminal voltage drop: (Delta V = I_{ ext{pack}} cdot R_{ ext{pack}} = 200 imes 0.050 = 10.0; ext{V}).",
+      "Internal heat generation rate: (P_{ ext{loss}} = I_{ ext{pack}}^2 cdot R_{ ext{pack}} = (200)^2 imes 0.050 = 40000 imes 0.050 = 2000; ext{W}) (2.0 kW heat load on liquid cooling system)."
+    ]
+  },
+  {
+    "id": "evt-ev-chargers-charging-standards",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "Charging Infrastructure Formula Bank: (P_{\\text{AC,1Phi}} = V_L I_L cosphi) (P_{\\text{AC,3Phi}} = \\sqrt{3} V_L I_L cosphi) (P_{\\text{DC}} = V_{\\text{pack}} \\cdot I_{\\text{pack}} (t_{\\text{charge}} = \\frac{\\Delta \\text{SoC} \\cdot E_{\\text{nominal}}}{P_{\\text{effective}}}) (\\text{Max Current from Pilot: } I_{max} = \\text{DutyCycle (%)} \\times 0.6)",
+      "Working: (P = sqrt{3} V_L I_L cosphi = sqrt{3} imes 400 imes 32 imes 1.0 = 1.732 imes 12800 = 22,170; ext{W} = 22.17; ext{kW})."
+    ]
+  },
+  {
+    "id": "evt-drivetrain-sizing",
+    "patterns": [
+      "sqrt{"
+    ],
+    "sample": [
+      "The DC-link capacitor in the traction inverter must be sized to absorb the high RMS ripple current generated by SVPWM switching: (I_{c, ext{rms}} approx I_{ ext{phase}} sqrt{2 m_a left(\frac{sqrt{3}}{4pi} + left(\frac{sqrt{3}}{pi} - \frac{9}{16} m_a ight) cos^2phi ight)}). Low-ESR polypropylene film capacitors are specified for longevity under high temperatures."
+    ]
+  },
+  {
+    "id": "evt-vehicle-communication-protocols",
+    "patterns": [
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Automotive Communication Formula Bank: (V_{\\text{diff}} = V_{\\text{CAN_H}} - V_{\\text{CAN_L}}) (\\text{Dominant (0): } V_{\\text{diff}} \\approx 2.0;\\text{V} \\quad (3.5\\text{ V} - 1.5\\text{ V})) (\\text{Recessive (1): } V_{\\text{diff}} \\approx 0.0;\\text{V} \\quad (2.5\\text{ V} - 2.5\\text{ V})) (R_{\\text{term,eq}} = 120;\\Omega \\parallel 120;\\Omega = 60;\\Omega) (I_{max,\\text{pilot}} = \\text{DutyCycle (%)} \\times 0.6)"
+    ]
+  },
+  {
+    "id": "pq-interruption-mitigation-immunity",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "(|Z_{ ext{fault}}| = sqrt{1.6^2 + 1.6^2} = sqrt{5.12} = 2.263;Omega).",
+      "(|Z_{ ext{total}}| = sqrt{1.6^2 + 2.4^2} = sqrt{2.56 + 5.76} = sqrt{8.32} = 2.884;Omega).",
+      "Interruption & Voltage Sag Formula Bank: (\\text{Voltage Divider Sag: } V_{\\text{sag}} = V_s \\frac{Z_{\\text{fault}}}{Z_s + Z_{\\text{fault}}}) (\\text{SEMI F47 Limits: } 50% \\text{ for } 0.2;\\text{s}, ; 70% \\text{ for } 0.5;\\text{s}, ; 80% \\text{ for } 1.0;\\text{s}) (\\text{Energy Required for Sag Ride-Through: } E = int_0^{t_{\\text{sag}}} (P_{\\text{load}} - P_{\\text{grid}}(t)) , dt)"
+    ]
+  },
+  {
+    "id": "pq-custom-power-dvr-statcom-upqc",
+    "patterns": [
+      "sqrt{"
+    ],
+    "sample": [
+      "Nominal phase voltage: (V_{ ext{load,ph}} = \frac{415}{sqrt{3}} = 239.6; ext{V}).",
+      "Full load line current: (I_L = \frac{S}{sqrt{3} V_L} = \frac{500,000}{sqrt{3} imes 415} = \frac{500,000}{718.8} = 695.6; ext{A}).",
+      "Working: Reactive power formula: (Q = sqrt{3} V_L I_{ ext{comp}} implies I_{ ext{comp}} = \frac{Q}{sqrt{3} V_L} = \frac{150,000}{sqrt{3} imes 400} = \frac{150,000}{692.82} = 216.51; ext{A})."
+    ]
+  },
+  {
+    "id": "pq-harmonic-sources-indices-evaluation",
+    "patterns": [
+      "sqrt{"
+    ],
+    "sample": [
+      "(I_h = sqrt{I_5^2 + I_7^2 + I_{11}^2} = sqrt{36^2 + 24^2 + 12^2} = sqrt{1296 + 576 + 144} = sqrt{2016} = 44.90; ext{A}).",
+      "1. Neutral Conductor Sizing: Single-phase SMPS loads draw massive 3rd harmonics that add directly in the neutral wire. Under high non-linear loading, neutral current can reach (sqrt{3} imes I_{ ext{phase}} approx 173%), destroying standard 100% rated neutral conductors.",
+      "3. Power Factor Penalty: Total power factor equals displacement PF times distortion PF: ( ext{PF} = \frac{cos(phi_1)}{sqrt{1 + ext{THD}_I^2}}). Adding capacitor banks only corrects displacement PF and can trigger destructive parallel resonance.",
+      "Working: Distortion power factor: ( ext{PF}_{ ext{dist}} = \frac{1}{sqrt{1 + ext{THD}_I^2}} = \frac{1}{sqrt{1 + 0.35^2}} = \frac{1}{sqrt{1 + 0.1225}} = \frac{1}{sqrt{1.1225}} = \frac{1}{1.0595} = 0.9439). True power factor: ( ext{PF} = ext{PF}_{ ext{disp}} imes ext{PF}_{ ext{dist}} = 0.95 imes 0.9439 = 0.8967) (approx 0.90)."
+    ]
+  },
+  {
+    "id": "pq-harmonic-filter-design-tuned-damped",
+    "patterns": [
+      "cdot",
+      "sqrt{"
+    ],
+    "sample": [
+      "(Z_{ ext{parallel}}(h) = \frac{Z_{ ext{grid}}(h) cdot Z_F(h)}{Z_{ ext{grid}}(h) + Z_F(h)})",
+      "At the parallel resonant frequency (h_p), the denominator approaches minimum, causing (|Z_{ ext{parallel}}|) to peak sharply. In an un-detuned capacitor bank, (h_p = sqrt{S_{SC} / Q_C}). In a properly designed single-tuned filter, (h_p) is deliberately shifted safely below the lowest generated harmonic (e.g., parallel resonance placed at (h = 4.2) for a filter tuned to (h_0 = 4.8)), ensuring that no harmonic ever lands near the amplification peak!",
+      "Phase voltage: (V_{ ext{ph}} = 415 / sqrt{3} = 239.6; ext{V}).",
+      "Since (h_0 = sqrt{X_C / X_L} = 4.8 implies X_L = \frac{X_C}{4.8^2} = \frac{X_C}{23.04} = 0.0434 X_C).",
+      "Equivalent line-to-line capacitor voltage: (V_{C,LL} = sqrt{3} imes 250.48 = 433.8; ext{V})."
+    ]
+  },
+  {
+    "id": "pq-monitoring-instrumentation-standards",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Power Quality Monitoring Formula Bank: (\\text{Class A Time Window: } 10 \\text{ cycles (50 Hz)} \\approx 200;\\text{ms}, \\quad 12 \\text{ cycles (60 Hz)} \\approx 200;\\text{ms}) (\\text{U_rms(1/2) Resolution: } \\text{Updated every half-cycle, computed over 1 full cycle}) (\\text{Long-Term Flicker: } P_{\\text{lt}} = \\sqrt[3]{\\frac{1}{12} sum_{i=1}^{12} P_{\\text{st},i}^3}) (\\text{Total Harmonic Current: } I_h = \\sqrt{sum_{h=2}^{50} I_h^2})"
+    ]
+  },
+  {
+    "id": "pq-reliability-indices-markov-rbd",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "(R_s(t) = prod_{i=1}^n R_i(t) implies lambda_{ ext{eq}} = sum_{i=1}^n lambda_i, quad A_{ ext{sys}} = prod_{i=1}^n A_i)"
+    ]
+  },
+  {
+    "id": "pq-risk-assessment-rcm-smartgrid",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Core RCM & Risk Metrics: (\\text{Asset Risk Index: } R_i = \\text{PoF}_i \\times (C_{\\text{financial}} + C_{\\text{safety}} + C_{\\text{regulatory}})) (\\text{Loss of Load Expectation (LOLE): } \\text{LOLE} = sum_{i=1}^{365} P_i(L_i > C_i) \\quad [\\text{days/year or hours/year}]) (\\text{Loss of Energy Expectation (LOEE): } \\text{LOEE} = sum_{k} E_k \\cdot P_k \\quad [\\text{MWh/year}])",
+      "RCM & Risk Formula Bank: (\\text{Quantitative Risk: } \\text{Risk} = \\text{PoF} \\times \\text{CoF}) (\\text{FLISR Interruption Savings: } \\Delta \\text{SAIDI} = \\frac{\\sum (r_{\\text{manual}} - r_{\\text{auto}}) \\times N_{\\text{restored}}}{N_T}) (\\text{LOLE: } \\text{LOLE} = sum_{d=1}^{365} P(L_d > C_d)) (\\text{Degree of Polymerization (DP): } \\frac{1}{\\text{DP}_t} - \\frac{1}{\\text{DP}_0} = k \\cdot t)"
+    ]
+  },
+  {
+    "id": "dsp-overlap-methods",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "Overlap Block Sizing & Linear Convolution Equivalence: (\\text{DFT Size: } N ge L + M - 1) (\\text{Overlap-Add: Input block length } L, \\text{ zero-padded to } N; \\text{ output blocks overlap by } M - 1 \\text{ samples (added).}) (\\text{Overlap-Save: Input blocks of length } N \\text{ overlap by } M - 1; \\text{ discard first } M - 1 \\text{ corrupted samples, save remaining } L = N - M + 1.)"
+    ]
+  },
+  {
+    "id": "dsp-elements-sampling-quantization",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "(p(e) = \frac{1}{Delta}, quad -\frac{Delta}{2} le e le \frac{Delta}{2})",
+      "( ext{SQNR} = \frac{P_s}{sigma_e^2} = \frac{V_{FS}^2 / 8}{(V_{FS} / 2^B)^2 / 12} = \frac{3}{2} cdot 2^{2B})"
+    ]
+  },
+  {
+    "id": "dsp-dif-fft-algorithms-numericals",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "Since (W_N^{(n + N/2)k} = W_N^{nk} cdot W_N^{Nk/2} = W_N^{nk} cdot (-1)^k):",
+      "(X[2m] = sum_{n=0}^{N/2 - 1} left[ x[n] + x[n + N/2] ight] W_{N/2}^{nm}, quad m = 0, 1, dots, \frac{N}{2} - 1)",
+      "Odd Frequency Bins ((k = 2m + 1)): Since ((-1)^{2m+1} = -1) and (W_N^{n(2m+1)} = W_N^n cdot W_{N/2}^{nm}):",
+      "(X[2m+1] = sum_{n=0}^{N/2 - 1} left[ (x[n] - x[n + N/2]) W_N^n ight] W_{N/2}^{nm}, quad m = 0, 1, dots, \frac{N}{2} - 1)",
+      "Problem: Compute the first stage of an 8-point DIF FFT for the sequence (x[n] = {1, 2, 3, 4, 4, 3, 2, 1}). Show the 8 outputs after Stage 1, using Twiddle factors (W_8^0 = 1), (W_8^1 = \frac{1}{sqrt{2}} - j\frac{1}{sqrt{2}} = 0.707 - j0.707), (W_8^2 = -j), (W_8^3 = -\frac{1}{sqrt{2}} - j\frac{1}{sqrt{2}} = -0.707 - j0.707)."
+    ]
+  },
+  {
+    "id": "dsp-fir-linear-phase-windows",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "(h[n] = h_d[n] cdot w[n], quad 0 le n le M - 1)",
+      "Kaiser\t(I_0left(\beta sqrt{1 - (2n/(M-1) - 1)^2} ight) / I_0(\beta))\tAdjustable via (\beta)\t((A - 7.95) / (14.36 M))\tArbitrary (Adjustable)",
+      "Windowed coefficients (h[n] = h_d[n] cdot w[n]):"
+    ]
+  },
+  {
+    "id": "dsp-fir-frequency-sampling",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Frequency Sampling Formula Bank: (\\text{Sampling Frequencies: } omega_k = \\frac{2pi k}{N}, \\quad k = 0, 1, dots, N-1) (\\text{Linear Phase Sample: } H[k] = |H[k]| \\cdot e^{-j \\frac{\\pi k (N - 1)}{N}}) (\\text{Real Type I IDFT Formula: } h[n] = \\frac{1}{N} \\left[ H[0] + 2 sum_{k=1}^{(N-1)/2} |H[k]| cosleft(\\frac{2pi k(n - \\alpha)}{N}\\right) \\right]) (\\text{Interpolation Reconstruction: } H(e^{jomega}) = sum_{k=0}^{N-1} H[k] \\frac{sin[N(\\omega - 2pi k/N)/2]}{N sin[(\\omega - 2pi k/N)/2]} e^{-j \\alpha (\\omega - 2pi k/N)})",
+      "Working: The delay is (alpha = (N-1)/2 = 7/2 = 3.5). The phase angle for index (k) is (angle H[k] = -alpha cdot \frac{2pi k}{N} = -3.5 cdot \frac{2pi (1)}{8} = -3.5 cdot \frac{pi}{4} = -\frac{7pi}{8} = -157.5^circ)."
+    ]
+  },
+  {
+    "id": "dsp-finite-wordlength-arithmetic",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "The Universal Architectural Remedy: High-order IIR filters must NEVER be implemented in Direct Form. They must always be decomposed into a cascade or parallel arrangement of Second-Order Sections (Biquads):",
+      "In a biquad, the roots are isolated to single conjugate pairs, completely decoupling pole sensitivity from overall filter order.",
+      "Avionics Fly-by-Wire Control: Flight control IIR digital filters use saturation arithmetic and paired biquad cascades to guarantee that finite word length cannot trigger overflow instabilities during flight maneuvers.",
+      "Cascade of Biquads: Lowers coefficient sensitivity from (O(N!)) to second order."
+    ]
+  },
+  {
+    "id": "re-solar-radiation-instruments-resource-assessment",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "I_{on} = I_{sc} \\left[ 1 + 0.033 cosleft( \\frac{360^{circ} \\cdot n}{365} \\right) \\right] \\quad \\text{[W/m}^2\\text{]}",
+      "\\delta = 23.45^{circ} sinleft( \\frac{360^{circ}}{365}(284 + n) \\right) \\quad [-23.45^{circ} le \\delta le +23.45^{circ}]",
+      "Diffuse Horizontal Irradiance (DHI): Solar radiation scattered by atmospheric molecules and particulates arriving equally from all quadrants of the sky hemisphere."
+    ]
+  },
+  {
+    "id": "re-ocean-energy-otec-tidal-systems",
+    "patterns": [
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "): Energy scales with the square of tidal range R. Doubling the tidal range quadruples available energy output! Sites with R<5 m are generally economically unviable.",
+      "OTEC exploits the \\Delta T \u0007pprox 20^{circ}\\text{C} between tropical surface (26",
+      "Carnot limit \u0007pprox 7%; practical net electrical efficiency eta_{\\text{net}} \u0007pprox 3%."
+    ]
+  },
+  {
+    "id": "re-fuel-cells-hydrogen-energy-systems",
+    "patterns": [
+      "cdot",
+      "\\text{"
+    ],
+    "sample": [
+      "Ohmic Loss (eta_{\\text{ohmic}} = i \\cdot R_{\\text{\\int}}): Linear voltage drop caused by ionic resistance of the polymer electrolyte membrane and electronic resistance of electrodes/bipolar plates.",
+      "Fuel cells bypass Carnot limits; maximum theoretical thermodynamic efficiency eta_{\\text{therm}} = rac{\\Delta G}{\\Delta H} \u0007pprox 83%."
+    ]
+  },
+  {
+    "id": "psd-rectifier-dc-drives",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Prerequisite: Drive dynamics and four-quadrant operation, DC motor back EMF and torque.",
+      "A semi-converter (half-controlled: two thyristors and two diodes instead of four thyristors) is cheaper and simpler, but it cannot produce negative output voltage — it has no inversion mode and therefore cannot regenerate. During the interval when the SCR conducts but the diode freewheels, the load current is diverted through a diode path instead of the supply, which improves the input current waveform and power factor compared with a full converter at the same firing angle, but at the cost of losing the fourth-quadrant capability.",
+      "A dual converter connects two full converters in anti-parallel across the motor, one firing to conduct positive current and the other negative, giving true four-quadrant operation without physically reversing any connections. In the circulating-current mode, both converters are kept gated on simultaneously (with their firing angles related by α₁ + α₂ = 180° so their average DC outputs match), and a reactor between them limits the resulting AC ripple current that circulates between the two bridges even when the load itself is not calling for a current reversal. The benefit is instant, bump-free reversal — the alternative, circulating-current-free operation, must detect the zero crossing and blank one converter before firing the other, which is simpler but slower to reverse."
+    ]
+  },
+  {
+    "id": "psd-threephase-dual-converter-dc-drives",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "In heavy industry, reversing the direction of motor rotation and recovering kinetic energy during deceleration (regenerative braking) is essential. A single converter only allows current to flow in one direction (due to the unidirectional conduction of thyristors). To achieve full four-quadrant operation without mechanical reversing contactors, two back-to-back connected converters—termed a Dual Converter—are employed. The dual converter can supply bidirectional armature voltage and bidirectional armature current with sub-cycle dynamic reversal times.",
+      "Where (V_{mL} = sqrt{2} V_L) is the peak line-to-line voltage. The motor speed (omega_m) is governed by the DC motor armature balance equation:",
+      "In contrast, the 3-phase semi-converter incorporates freewheeling diodes (or diode-thyristor freewheeling paths). The terminal voltage cannot drop below zero because the freewheeling action clamps (V_a ge 0). Thus, the semi-converter operates strictly in Quadrant I (single quadrant: positive voltage, positive current) and cannot support regenerative braking.",
+      "Paper and Textile Slitter Rewinders: Demands continuous tension control across wide speed ranges with four-quadrant operation during spool start and emergency stops.",
+      "For a 3-phase full converter: (V_a = \frac{3sqrt{2} V_L}{pi} cosalpha = 1.35 V_L cosalpha)."
+    ]
+  },
+  {
+    "id": "psd-chopper-dc-drives-multiquadrant",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Prerequisite: Drive dynamics and four-quadrant operation, DC-DC converters.",
+      "Choppers are classified based on the quadrants of the (V_a - I_a) plane in which they operate:",
+      "Battery Electric Forklifts & AGVs: Class C two-quadrant choppers deliver precise crawling speed, zero standby idle losses, and battery charging whenever lowering loads or decelerating.",
+      "Electric Vehicle Powertrains: Four-quadrant H-bridge drives allow electronic reversing and smooth hill-holding torque at zero RPM without engaging friction brakes.",
+      "Master the four quadrant plane: Q1 (motoring, (V>0, I>0)), Q2 (regen braking, (V>0, I<0)), Q3 (reverse motoring, (V<0, I<0)), Q4 (reverse regen, (V<0, I>0)). Ensure full understanding of series motor field reversal requirements during regenerative braking."
+    ]
+  },
+  {
+    "id": "psd-closed-loop-dc-drives",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "Problem: A 220 V, 1000 RPM, 50 A separately excited DC motor has (R_a = 0.5;Omega) and (K_m Phi = 1.95; ext{V}/( ext{rad/s})). It is operated in a closed-loop speed control scheme with an inner current limiter set at 150% of rated current. Total inertia referred to motor shaft is (J = 0.5; ext{kg}cdot ext{m}^2). (1) Find the motor back EMF and developed torque at rated full load. (2) If the motor is running at 1000 RPM and a step speed command of 1200 RPM is applied, determine the initial acceleration of the motor assuming load torque remains at rated value.",
+      "Rated electromagnetic torque: (T_{e, ext{rated}} = K_m Phi I_{a, ext{rated}} = 1.95 imes 50 = 97.5; ext{N}cdot ext{m}).",
+      "Rated load torque: (T_L = T_{e, ext{rated}} = 97.5; ext{N}cdot ext{m}).",
+      "Maximum developed accelerating torque: (T_e = K_m Phi I_{a,max} = 1.95 imes 75 = 146.25; ext{N}cdot ext{m}).",
+      "Armature current is transduced using Hall-effect closed-loop current sensors providing galvanic isolation and microsecond response times. Motor speed feedback is measured via optical incremental encoders (1024–4096 pulses per revolution) feeding DSP quadrature encoder pulse (QEP) hardware peripherals, or brushless resolvers in harsh environmental conditions."
+    ]
+  },
+  {
+    "id": "psd-im-stator-voltage-frequency-vbyf",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "Above Base Speed (Constant Power / Field Weakening Region, (f > f_{ ext{base}})): The inverter terminal voltage reaches its maximum allowable ceiling (V_{1,max} = V_{ ext{rated}}) due to DC bus voltage limits and motor winding insulation ratings. Frequency (f) is increased above 50 Hz, causing air-gap flux to weaken ((Phi_m propto 1/f)). Consequently, maximum available motor torque decreases inversely with the square of frequency ((T_{max} propto 1/f^2)), while maximum power remains constant ((P_{max} = T_e cdot omega_m = ext{constant})).",
+      "2. Slip vs Slip Speed Fallacy: When frequency is reduced under constant torque, per-unit slip (s) increases ((s_2 = s_1 cdot f_1/f_2)), but slip speed (Delta N = N_s - N_r) remains constant!",
+      "Working: At 25 Hz with constant V/f: (T_{max}) remains constant = 250 N·m. At 75 Hz (above base): (T_{max} propto 1/f^2 implies T_{max} = 250 imes (50/75)^2 = 250 imes (2/3)^2 = 250 imes 4/9 = 111.1; ext{N}cdot ext{m})."
+    ]
+  },
+  {
+    "id": "psd-im-rotor-resistance-slip-power-recovery",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "2. Chopper Resistance Scaling: In static rotor resistance control, remember that effective resistance varies as (R(1 - delta)), NOT (R cdot delta). When (delta = 1) (fully on), resistance is shorted out."
+    ]
+  },
+  {
+    "id": "psd-synchronous-motor-variable-speed-drives",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "Developed torque: (T_e = \frac{P_e}{omega_s} = \frac{3,354,150}{104.72} = 32,030; ext{N}cdot ext{m} = 32.03; ext{kN}cdot ext{m})."
+    ]
+  },
+  {
+    "id": "pe-power-diode-mosfet",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "1. On-state behaviour is resistive. A MOSFET in conduction behaves as a resistance R_DS(on), so its drop is I·R_DS(on) and its conduction loss is I²·R_DS(on) — quadratic in current.",
+      "Common mistake: treating a MOSFET's on-state as a fixed voltage drop like a diode or an IGBT. It is a resistance, so the loss is I²R — doubling the current quadruples the conduction loss, while for an IGBT it only doubles."
+    ]
+  },
+  {
+    "id": "psa-newton-raphson",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Newton-Raphson has quadratic convergence near the solution — roughly speaking, the number of correct digits doubles each iteration. Practically, a well-conditioned load flow converges in 3 to 5 iterations essentially independently of system size.",
+      "Common mistake: assuming the Jacobian is computed once and reused. It is a matrix of partial derivatives evaluated at the current operating point, so it changes every iteration and must be rebuilt. (Holding it constant is a legitimate variant — the \"dishonest\" or very-fast-decoupled Newton — but it costs you quadratic convergence, and you must be able to say that explicitly.)"
+    ]
+  },
+  {
+    "id": "pe-3ph-bridge",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Full converter: large DC motor drives needing four-quadrant operation (with a dual converter), excitation systems, HVDC converter stations, high-current electrolysis."
+    ]
+  },
+  {
+    "id": "ac-alt-potier-asa",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "The EMF and MMF methods of the previous lesson both fail for the same underlying reason: they cannot tell the two very different things inside the synchronous reactance apart. Armature leakage reactance X_L is a genuine voltage drop (I·X_L, in phase-quadrature with the current) that exists whatever the iron is doing. Armature reaction is a magnetomotive-force effect: the armature current's mmf opposes or aids the field mmf and must be balanced by extra field current. The EMF method treats everything as a voltage; the MMF method treats everything as an mmf. Neither is right, and neither can allow properly for saturation. The Potier (zero-power-factor, ZPF) method separates the two using one extra test. The ASA method keeps the MMF method's simplicity but adds an explicit correction for saturation."
+    ]
+  },
+  {
+    "id": "ac-alt-blondel-two-reaction",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "X_ad and X_aq are the armature-reaction reactances on the two axes and X_l is the armature leakage reactance, which is the same on both. Because the quadrature path crosses the long inter-pole gap, a given mmf makes much less flux there, so X_aq is smaller than X_ad. X_q is commonly quoted as roughly 0.6 to 0.7 of X_d for salient-pole machines. That is a rule of thumb; real values are measured (the slip test, which is the next syllabus row). In a cylindrical-rotor machine the gap is uniform, so X_d and X_q are nearly equal and both collapse to the single synchronous reactance X_s of the earlier lessons."
+    ]
+  },
+  {
+    "id": "ac-alt-slip-test-power",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Because the second term is negative beyond 90° and X_q < X_d, the sum reaches its maximum before 90°. Setting dP/dδ = 0, that is (E_f V/X_d) cos δ + V²(1/X_q − 1/X_d) cos 2δ = 0, and writing cos 2δ = 2cos²δ − 1 gives a quadratic in cos δ. The larger the excitation compared with V, the closer the peak moves to 90°."
+    ]
+  },
+  {
+    "id": "ac-sync-motor-v-inverted-curves",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Unlike static capacitor banks whose reactive power output drops quadratically during voltage dips (Qcap ∝ V2), a synchronous condenser inherently provides dynamic reactive current boost during grid faults and provides rotating physical inertia to stabilize grid frequency."
+    ]
+  },
+  {
+    "id": "ac-ind-motor-circle-diagram",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "No-Load Test\tRated line voltage (V_0), no-load line current (I_0), no-load input power (W_0)\tPhase angle (phi_0 = arccosleft(\frac{W_0}{sqrt{3} V_0 I_0} ight)), constant iron and friction losses (P_{core+fw} = W_0)",
+      "Blocked-Rotor Test\tReduced line voltage (V_{sc}), short-circuit line current (I_{sc,test}), input power (W_{sc,test})\tScaled current (I_{sc} = I_{sc,test} \frac{V_1}{V_{sc}}), scaled power (W_{sc} = W_{sc,test} left(\frac{V_1}{V_{sc}} ight)^2), (phi_{sc} = arccosleft(\frac{W_{sc}}{sqrt{3} V_1 I_{sc}} ight))",
+      "Input Power: (P_{in} = sqrt{3} V_L imes PS imes ext{Power scale})",
+      "Net Mechanical Power Output: (P_{out} = sqrt{3} V_L imes PQ imes ext{Power scale})",
+      "Rotor Copper Loss: (P_{cu,rotor} = sqrt{3} V_L imes QR imes ext{Power scale})"
+    ]
+  },
+  {
+    "id": "ac-ind-motor-cogging-crawling",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "5th Harmonic ((n=5))\t(6(1) - 1)\tBackward / Reverse ((-N_{s1}/5))\t-300 rpm\tBraking / generating torque in forward motoring quadrant",
+      "Physical Mechanism: When the number of stator slots (S_s) is equal to or an integral multiple of the number of rotor slots (S_r) ((S_s = m cdot S_r)), every stator tooth is simultaneously aligned directly opposite a rotor tooth at specific angular intervals. In this aligned position:",
+      "Judicious Slot Number Selection\tDesigners enforce strict slot combination inequalities: [ S_s e S_r, quad S_s - S_r e pm 1, pm 2, pm P, pm 2P ]\tPrevents cogging, sub-synchronous crawling, and unbalanced magnetic pull (UMP)."
+    ]
+  },
+  {
+    "id": "ac-ind-motor-starters",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "where (I_{st}) is the actual motor starting current per phase, (I_{fl}) is the full-load operating current per phase, and (s_{fl}) is the rated full-load slip (typically 2% to 5%). This quadratic current relationship dictates that reducing starting voltage to curtail current will quadratically reduce developed starting torque.",
+      "Starting Phase: Windings connected in Star. Phase voltage is reduced to (V_{ph} = V_L / sqrt{3}).",
+      "Starting Current: Phase current is (I_{ph,Y} = I_{ph,Delta} / sqrt{3}). Because line current in star equals phase current, whereas line current in delta is (sqrt{3} I_{ph,Delta}):",
+      "A three-phase tapped autotransformer steps down the voltage applied to the stator terminals during starting to (x cdot V_1) (where tapping (x) is typically 0.50, 0.65, or 0.80):",
+      "Current Suppression: Adding external resistance (R_{ext}) increases total rotor impedance (Z_2 = sqrt{(R_2 + R_{ext})^2 + X_2^2}), dramatically reducing starting current."
+    ]
+  },
+  {
+    "id": "ac-ind-motor-braking",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Scope boundary: This lesson covers electrical braking methods for fixed-frequency and line-connected three-phase induction motors. Four-quadrant active front-end (AFE) regenerative converters and dynamic braking chopper resistor networks are treated in Advanced Power Electronics and Electric Drives."
+    ]
+  },
+  {
+    "id": "ac-spim-types-split-cap",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Because a pure single-phase stator winding produces zero starting torque, every practical single-phase induction motor must be equipped with an auxiliary starting mechanism that creates a temporary two-phase system during startup. By placing an auxiliary (starting) winding in space-quadrature (90° electrical) with the main (running) winding on the stator core and introducing a phase displacement angle α between their currents, a revolving magnetic field is synthesized. The magnitude of the resulting starting torque is governed by the relation T_st ∝ I_m · I_a · sin α. The two most common workhorses utilizing this principle in residential appliances and light industrial machinery are the resistance split-phase motor and the capacitor-start induction motor.",
+      "To maximize starting torque per ampere of starting current, the phase angle α should ideally approach 90° (time-quadrature), where sin α = 1.0.",
+      "α = 90° (quadrature)",
+      "Figure 3: Phasor comparison of starting currents. In the capacitor-start motor, the series capacitor causes auxiliary current I_a to lead voltage V, establishing perfect 90° time quadrature (sin α = 1.0) and maximum starting torque.",
+      "To find the optimum capacitor value that maximizes starting torque per ampere of total starting current, the quadrature condition α = 90° is enforced. Since φ_a = 90° − φ_m:"
+    ]
+  },
+  {
+    "id": "ac-spim-types-permcap-shaded",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Near-Circular Field at Full Load: The capacitor is sized to produce exact 90° time quadrature between main and auxiliary currents at rated running load. This eliminates the backward revolving field, dramatically reducing rotor copper losses and acoustic hum.",
+      "During starting, both capacitors are connected in parallel (C_total = C_s + C_r), drawing large leading auxiliary current that produces 90° quadrature and 300% to 400% full-load starting torque. At 75% to 80% speed, the centrifugal switch disconnects the starting capacitor C_s, while C_r remains permanently in circuit to maintain a circular field, high power factor, and high efficiency under load."
+    ]
+  },
+  {
+    "id": "ac-ig-torque-slip-circle",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "An induction machine is a truly versatile electromechanical energy conversion device that operates seamlessly across three distinct quadrants depending on its rotor speed: Motoring (0 < s < 1), Generating (s < 0), and Braking / Plugging (s > 1). When designing wind turbine drive trains and hydro-electric governor controls, engineers must evaluate the generator's peak breakdown torque to prevent turbine runaway during severe wind gusts. Analytically and geometrically, the complete behavior of an induction machine in generating mode is captured by extending the classical Heyland-Behrend Circle Diagram into the lower half-plane (Quadrant IV). This provides a comprehensive graphical determination of electrical power output, mechanical input, stator and rotor copper losses, operating power factor, and generator efficiency without solving tedious non-linear complex phasor networks.",
+      "The induction machine operates in three quadrants: Motoring (0 < s < 1), Generating (s < 0), and Plugging (s > 1)."
+    ]
+  },
+  {
+    "id": "es-8085-basic-alps-delay-programs",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Total T-states: [T_{total} = 10 + ( ext{COUNT} - 1) imes 24 + 21 + 10 = 24 imes ext{COUNT} + 17 ext{ T-states}] Operating at (3.072 ext{ MHz}), setting ( ext{COUNT} = 0000H) (65,536 iterations) produces a maximum single-call delay of: [T_{delay} = rac{24 imes 65536 + 17}{3.072 imes 10^6} \u0007pprox 0.512 ext{ s} quad (512 ext{ ms})]"
+    ]
+  },
+  {
+    "id": "es-system-constraints-realtime",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Placement Trap — Real-Time Speed Fallacy: A system is not \"real-time\" simply because it runs on a high-speed clock (e.g. 3.0 GHz quad-core CPU). If that CPU runs an operating system with non-deterministic thread preemption, garbage collection pauses, or dynamic page faults, it CANNOT be used for hard real-time control. Determinism (guaranteed latency bounds), not raw clock speed, defines real-time capability."
+    ]
+  },
+  {
+    "id": "es-embedded-iot-app-design",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "This assumption causes field failures! Over a 10-minute cycle (600 seconds), 10 μA over 599.9 seconds accounts for 599.9 \\times 0.01\\text{ mA} \u0007pprox 6.0\\text{ mAs}, while the active burst consumes 0.1×50 mA=5.0 mAs. In low-duty-cycle nodes, sleep current frequently dominates total energy consumption! LDO quiescent current, capacitor leakage, and pull-up resistor values must be analyzed with microampere precision."
+    ]
+  },
+  {
+    "id": "pe-1ph-acvc",
+    "patterns": [
+      "frac{",
+      "\\frac{"
+    ],
+    "sample": [
+      "alpha_{min} = phi = arctanleft(\\frac{\\omega L}{R}\\right)"
+    ]
+  },
+  {
+    "id": "pe-1ph-full-bridge-inverter",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "sqrt{"
+    ],
+    "sample": [
+      "THD = \\sqrt{\\frac{\\pi^2}{8} - 1} = \\sqrt{1.23370 - 1} = \\sqrt{0.23370} \\approx 0.4834 \\implies mathbf{48.34%}"
+    ]
+  },
+  {
+    "id": "pe-pwm-spw-mpw",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "sin(ncdotd)]sin(nomegat)",
+      "sin(ncdotd)"
+    ]
+  },
+  {
+    "id": "pe-choppers-step-down-step-up",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "RMS Output Voltage: (V_{or} = sqrt{\frac{1}{T_s} int_0^{T_{on}} V_s^2 , dt} = sqrt{D} cdot V_s$$",
+      "Class D: Two-quadrant (Q1 + Q4); Reversible Vo, Io > 0",
+      "Class C: Two-quadrant (Q1 + Q2); Reversible Io, Vo > 0"
+    ]
+  },
+  {
+    "id": "pe-choppers-four-quadrant-control",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "The Class E four-quadrant chopper consists of four fully controllable semiconductor switches ((S_1, S_2, S_3, S_4)) and four anti-parallel fast-recovery diodes ((D_1, D_2, D_3, D_4)) arranged in an H-bridge configuration around a DC motor load with armature resistance (R_a), inductance (L_a), and back-EMF (E_b)."
+    ]
+  },
+  {
+    "id": "pe-isolated-dcdc-intro",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Unilateral Excitation (Single-Ended Converters): Operates strictly in the first quadrant of the B-H loop ((Delta B = B_{max} - B_{rem})). Examples: Forward Converter and Flyback Converter. Requires a mandatory reset mechanism every cycle. Core utilization is inherently lower.",
+      "Bilateral Excitation (Double-Ended Converters): Operates across both positive and negative quadrants of the B-H loop ((Delta B = 2 B_{max})). Examples: Push-Pull, Half-Bridge, Full-Bridge, and Dual Active Bridge (DAB). Core utilization is doubled, resulting in smaller core sizes for the same power throughput."
+    ]
+  },
+  {
+    "id": "pe-flyback-converter",
+    "patterns": [
+      "sqrt{"
+    ],
+    "sample": [
+      "Output voltage in DCM depends on load resistance (R): (V_o = V_s D sqrt{\frac{R T_s}{2 L_m}})."
+    ]
+  },
+  {
+    "id": "ml-mle-map-bayesian",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "[ p(x_i | mu, sigma^2) = \frac{1}{sqrt{2pisigma^2}} expleft(-\frac{(x_i - mu)^2}{2sigma^2} ight) ]",
+      "Gaussian Prior (implies) (L_2) Regularization (Ridge): If we place a zero-mean Gaussian prior (p( heta) = mathcal{N}(0, sigma_0^2 mathbf{I})) on the weights, (ln p( heta) = -\frac{1}{2sigma_0^2} | heta|_2^2 + ext{const}). Maximizing the posterior corresponds directly to minimizing Mean Squared Error with an (L_2) penalty (Weight Decay): [ J( heta) = ext{MSE}( heta) + lambda | heta|_2^2, quad ext{where } lambda = \frac{sigma^2}{sigma_0^2} ]"
+    ]
+  },
+  {
+    "id": "ml-regression-overfitting-naivebayes",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Underfitting (High Bias): The hypothesis class is too simplistic (e.g., fitting a straight line to a quadratic physical process). The model exhibits large errors on both training and test data.",
+      "Lasso Regression ((L_1) Regularization): Adds the absolute sum of weights: [ J_ ext{Lasso}( heta) = \frac{1}{2m} |X heta - y|_2^2 + \frac{lambda}{m} sum_{j=1}^d | heta_j| ] Because the (L_1) norm constraint contour possesses sharp diamond vertices, the quadratic error contours frequently intersect at the coordinate axes, forcing non-informative feature weights strictly to zero (producing sparse models for automated feature selection)."
+    ]
+  },
+  {
+    "id": "ml-decision-trees-id3",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Multi-Valued Attribute Bias: Attributes with many unique values (e.g., Customer ID, Timestamp, or Serial Number) partition the data into numerous singleton subsets containing exactly 1 sample each. Because each singleton subset has (H(S_v) = 0), the weighted child entropy is 0, producing artificially maximal Information Gain! This results in an overfitted tree with zero generalization power. Quinlan resolved this in C4.5 by replacing Information Gain with the Gain Ratio: [ ext{GainRatio}(S, A) = \frac{ ext{Gain}(S, A)}{ ext{SplitInfo}(S, A)}, quad ext{where } ext{SplitInfo}(S, A) = -sum_{v} \frac{|S_v|}{|S|} log_2left(\frac{|S_v|}{|S|} ight) ]"
+    ]
+  },
+  {
+    "id": "ml-perceptron-learning-rule",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "Iterate through the training instances. A sample ((x_i, y_i)) is misclassified if: [ y_i cdot (w^T x_i + b) le 0 ]",
+      "[ y_i (w^{*T} x_i) ge gamma, quad \forall i in {1, dots, N} ]",
+      "[ \frac{partial mathcal{L}}{partial w_{ij}^{(l)}} = \frac{partial mathcal{L}}{partial z_j^{(l)}} cdot \frac{partial z_j^{(l)}}{partial w_{ij}^{(l)}} = delta_j^{(l)} cdot a_i^{(l-1)} ]",
+      "[ delta_j^{(l)} = left( sum_k w_{jk}^{(l+1)} delta_k^{(l+1)} ight) cdot f'(z_j^{(l)}) ]"
+    ]
+  },
+  {
+    "id": "ml-svm-maximum-margin-hyperplane",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "[ w^T x_i + b ge +1 quad ext{for } y_i = +1 ] [ w^T x_i + b le -1 quad ext{for } y_i = -1 ]",
+      "Objective: Maximizing margin (2/|w|) is equivalent to convex quadratic minimization: (min \frac{1}{2}|w|^2)."
+    ]
+  },
+  {
+    "id": "ml-svm-mathematics-duality-kernels",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Finding the maximum margin hyperplane for a linearly separable dataset is formulated as a constrained convex quadratic optimization problem:",
+      "[ min_{w, b} \frac{1}{2} |w|_2^2 quad ext{subject to } y_i(w^T x_i + b) ge 1, quad \forall i = 1, dots, N ]",
+      "This is known as the Primal Problem. Because the objective function (\frac{1}{2}|w|^2) is strictly convex quadratic and the constraints are linear inequalities, a unique global minimum is guaranteed to exist with zero duality gap (Slater's condition).",
+      "[ max_alpha mathcal{Q}(alpha) = sum_{i=1}^N alpha_i - \frac{1}{2} sum_{i=1}^N sum_{j=1}^N alpha_i alpha_j y_i y_j (x_i^T x_j) ] [ ext{subject to } alpha_i ge 0, quad \forall i=1,dots,N quad ext{and} quad sum_{i=1}^N alpha_i y_i = 0 ]",
+      "Complementary Slackness: [ alpha_i^* left[ y_i(w^{*T} x_i + b^*) - 1 ight] = 0, quad \forall i=1,dots,N ]"
+    ]
+  },
+  {
+    "id": "ml-similarity-minkowski-distances",
+    "patterns": [
+      "cdot",
+      "sqrt{"
+    ],
+    "sample": [
+      "Euclidean Distance ((p = 2), (L_2) Norm): The ordinary straight-line geometric ruler distance: [ D_2(x, y) = sqrt{sum_{j=1}^d (x_j - y_j)^2} ] Rotationally invariant (isotropic). Squares differences, making it sensitive to extreme coordinate outliers.",
+      "[ ext{Cosine Similarity}(x, y) = cos( heta) = \frac{x cdot y}{|x|_2 |y|_2} = \frac{sum_{j=1}^d x_j y_j}{sqrt{sum x_j^2} sqrt{sum y_j^2}} ]",
+      "Cosine Similarity: ((x cdot y) / (|x| |y|)); measures orientation angle independent of magnitude."
+    ]
+  },
+  {
+    "id": "ml-em-algorithm-gaussian-mixtures",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "(pi_k = P(z = k)): Mixing coefficient (prior weight) of component (k), satisfying: [ 0 le pi_k le 1 quad ext{and} quad sum_{k=1}^K pi_k = 1 ]"
+    ]
+  },
+  {
+    "id": "ml-classification-performance-roc-auc",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "[ F_1 = 2 cdot \frac{ ext{Precision} cdot ext{Recall}}{ ext{Precision} + ext{Recall}} = \frac{2 , ext{TP}}{2, ext{TP} + ext{FP} + ext{FN}} ]",
+      "[ F_\beta = (1 + \beta^2) \frac{ ext{Precision} cdot ext{Recall}}{\beta^2 , ext{Precision} + ext{Recall}} ]",
+      "Placement Trap: In technical interviews, candidates are often asked: \"How do you choose the optimal operational threshold ( au^*) from an empirical ROC curve?\" The standard mathematical approach is Youden's (J) Statistic, which finds the point maximizing vertical clearance above the random diagonal: (J = ext{TPR} - ext{FPR} = ext{Sensitivity} + ext{Specificity} - 1). Alternatively, if the economic cost of a false negative ((C_ ext{FN})) and false positive ((C_ ext{FP})) are known, the threshold is selected to minimize total expected financial cost: (min_ au [ C_ ext{FP} cdot ext{FP}( au) + C_ ext{FN} cdot ext{FN}( au) ]).",
+      "(F_1)-Score: Harmonic mean (2 cdot (P cdot R) / (P + R)); penalizes imbalance between precision and recall."
+    ]
+  },
+  {
+    "id": "ml-cross-validation-resampling",
+    "patterns": [
+      "sqrt{"
+    ],
+    "sample": [
+      "[ ext{SE}( ext{CV}) = \frac{sigma_E}{sqrt{K}} = sqrt{\frac{\frac{1}{K-1} sum_{k=1}^K (E_k - ext{CV})^2}{K}} ]"
+    ]
+  },
+  {
+    "id": "ml-ensemble-bagging-boosting",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "[ m = lfloor sqrt{d} floor quad ext{(for classification)}, quad m = lfloor d/3 floor quad ext{(for regression)} ]",
+      "Random Forests: Bagging + random feature subsampling (m = sqrt{d}) to decorrelate individual trees."
+    ]
+  },
+  {
+    "id": "cse-root-locus-fundamentals",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "irc (or ±π radians): [ angle G(s)H(s) = sum_{j=1}^m angle(s - z_j) - sum_{i=1}^n angle(s - p_i) = pm (2q + 1)180^circ, quad q in {0, 1, 2, dots} ]",
+      "of these asymptotes with respect to the positive real axis are: [ heta_a = \frac{(2q + 1)180^circ}{n - m}, quad q = 0, 1, 2, dots, (n - m - 1) ]"
+    ]
+  },
+  {
+    "id": "cse-root-locus-advanced-construction",
+    "patterns": [
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "Method B: Direct Substitution (s=jomega). Substitute s=jomega into the characteristic equation 1+G(jomega)H(jomega)=0. Separate the expression into real and imaginary parts: [ ext{Re}{P(jomega)} = 0 quad ext{and} quad ext{Im}{P(jomega)} = 0 ] Equating both parts simultaneously to zero yields omega",
+      "Angle of Departure: phi_d = 180^circ - \\sum \u0007ngle(p - \\text{poles}) + \\sum \u0007ngle(p - \\text{zeros}).",
+      "Angle of Arrival: phi_a = 180^circ - \\sum \u0007ngle(z - \\text{zeros}) + \\sum \u0007ngle(z - \\text{poles})."
+    ]
+  },
+  {
+    "id": "cse-root-locus-stability-poles-zeros",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "[ \u0007ngle(s_d - z_c) - \u0007ngle(s_d - p_c) \u0007pprox 0^circ, quad rac{|s_d - z_c|}{|s_d - p_c|} \u0007pprox 1 ]"
+    ]
+  },
+  {
+    "id": "cse-lag-compensator-root-locus",
+    "patterns": [
+      "sqrt{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "[ G_c(s) = rac{s + rac{1}{T}}{s + rac{1}{\beta T}} = \beta rac{1 + sT}{1 + s\beta T}, quad \beta > 1 ]",
+      ", locate the desired dominant closed-loop poles: [ s_d = -zeta omega_n pm jomega_n sqrt{1 - zeta^2} ] Confirm that s",
+      "Dipole Placement: Placed near origin (z_c \u0007pprox 0.05 |\\text{Re}(s_d)|), ensuring |s_d + z_c|/|s_d + p_c| \u0007pprox 1."
+    ]
+  },
+  {
+    "id": "cse-lead-lag-lead-compensator-root-locus",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "[ G_c(s) = rac{s + rac{1}{T}}{s + rac{1}{\u0007lpha T}} = rac{1}{\u0007lpha} rac{1 + sT}{1 + s\u0007lpha T}, quad 0 < \u0007lpha < 1 ]",
+      "occurring at the geometric mean frequency omega_m = 1/(Tsqrt{\u0007lpha}): [ sin(phi_m) = rac{1 - \u0007lpha}{1 + \u0007lpha} ]",
+      "): [ s_d = -zeta omega_n + jomega_n sqrt{1 - zeta^2} ]",
+      ": [ K = rac{prod |s_d - p_i| cdot |s_d - p_c|}{prod |s_d - z_j| cdot |s_d - z_c|} ]",
+      "[ G_c(s) = left( rac{s + rac{1}{T_1}}{s + rac{1}{\u0007lpha T_1}} ight) left( rac{s + rac{1}{T_2}}{s + rac{1}{\beta T_2}} ight), quad \u0007lpha < 1, ; \beta > 1, ; \u0007lpha\beta = 1 ]"
+    ]
+  },
+  {
+    "id": "cse-freq-domain-specs",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "[ M(u) = \frac{1}{sqrt{(1 - u^2)^2 + (2zeta u)^2}}, quad heta(u) = - an^{-1}left( \frac{2zeta u}{1 - u^2} ight) ]",
+      "back gives: [ M_r = \frac{1}{2zeta sqrt{1 - zeta^2}}, quad ext{valid for } 0 < zeta le \frac{1}{sqrt{2}} approx 0.707 ] For zeta>0.707, the term 1−2zeta",
+      "occurs: [ omega_r = omega_n sqrt{1 - 2zeta^2} ] Note that omega",
+      "yields: [ omega_b = omega_n left[ (1 - 2zeta^2) + sqrt{(1 - 2zeta^2)^2 + 1} ight]^{1/2} ] Bandwidth is the definitive frequency-domain measure of system speed of response: a wider bandwidth corresponds to a faster rise time and higher speed of response."
+    ]
+  },
+  {
+    "id": "cse-time-freq-correlation",
+    "patterns": [
+      "cdot",
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "[ M_p = e^{-\frac{pi zeta}{sqrt{1 - zeta^2}}} imes 100% ]",
+      "): [ M_r = \frac{1}{2zeta sqrt{1 - zeta^2}} ] Both M",
+      "): For a canonical second-order system, the open-loop phase margin is related to zeta by: [ ext{PM} = an^{-1}left( \frac{2zeta}{sqrt{sqrt{1 + 4zeta^4} - 2zeta^2}} ight) ] For damping ratios in the practical design range 0.1lezetale0.6, this exact transcendental function is exceptionally well approximated by the famous linear rule of thumb: [ ext{PM} approx 100zeta quad ( ext{or } zeta approx \frac{ ext{PM}}{100}) ] For example, a phase margin of PM=50",
+      "[ t_r approx \frac{pi - cos^{-1}(zeta)}{omega_n sqrt{1 - zeta^2}} = \frac{pi - \beta}{omega_d}, quad t_s approx \frac{4}{zeta omega_n} ; (2% ext{ criterion}) ]",
+      "[ omega_b = omega_n sqrt{(1 - 2zeta^2) + sqrt{(1 - 2zeta^2)^2 + 1}} ]"
+    ]
+  },
+  {
+    "id": "cse-bode-plot-construction",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Encountering a quadratic pole pair: change slope by −40 dB/dec."
+    ]
+  },
+  {
+    "id": "cse-bode-plot-stability",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "Phase Margin: \\text{PM} = 180^circ + \u0007ngle G(jomega_{gc}). Must be >0"
+    ]
+  },
+  {
+    "id": "cse-polar-plot-construction",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      ")∣ be the distance from the origin to this crossing. Then the Gain Margin (GM) is: [ ext{GM} = rac{1}{a} = rac{1}{|G(jomega_{pc})|}, quad ext{GM}_{ ext{dB}} = 20 log_{10}left( rac{1}{a} ight) = -20log_{10}(a) ] If the crossing point lies inside the unit circle (a<1), then GM>1 (>0 dB), and the system is stable.",
+      ") in the transfer function. The polar plot of the hydraulic turbine dips into the fourth quadrant before sweeping through the third and second quadrants. Polar plot analysis allows hydro governor designers to ensure adequate gain and phase margins despite the destabilizing right-half plane zero."
+    ]
+  },
+  {
+    "id": "cse-nyquist-contour-mapping",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "maps this detour into an infinite circular arc: [ lim_{epsilon o 0} G(epsilon e^{j heta}) = lim_{epsilon o 0} \frac{K}{epsilon^N} e^{-j N heta} = infty cdot e^{-j N heta} ] with radius ∞, sweeping clockwise through an angle of N×180"
+    ]
+  },
+  {
+    "id": "cse-nyquist-stability-criterion",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "[ N = -P quad ( ext{for closed-loop stability}) ]"
+    ]
+  },
+  {
+    "id": "cse-lag-compensator-bode",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "[ G_c(jomega) = \frac{1 + jomega T}{1 + jomega \beta T}, quad \beta > 1 ]"
+    ]
+  },
+  {
+    "id": "cse-lead-lag-lead-bode",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "[ G_c(jomega) = \frac{1 + jomega T}{1 + jomega alpha T}, quad 0 < alpha < 1 ]",
+      "): Occurs at the geometric mean of the two corner frequencies: [ omega_m = \frac{1}{T sqrt{alpha}} ] The maximum phase lead angle phi",
+      ": At the frequency of maximum phase lead, the compensator magnitude is: [ |G_c(jomega_m)| = \frac{1}{sqrt{alpha}} implies |G_c(jomega_m)|_{ ext{dB}} = 20 log_{10}left(\frac{1}{sqrt{alpha}} ight) = 10 log_{10}left(\frac{1}{alpha} ight) ext{ dB} ] Notice that the lead compensator introduces a positive gain of +10log",
+      "Step 5: Calculate Compensator Parameters. [ T = \frac{1}{omega_m sqrt{alpha}} ] Compensator zero: omega",
+      "[ G_c(s) = left( \frac{1 + sT_1}{1 + s\beta T_1} ight) left( \frac{1 + sT_2}{1 + salpha T_2} ight), quad \beta > 1, ; alpha < 1 ]"
+    ]
+  },
+  {
+    "id": "cse-state-space-modelling",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "[ dot{x} = \begin{bmatrix} 0 & 1 & 0 & dots & 0 \\ 0 & 0 & 1 & dots & 0 \\ \u000bdots & \u000bdots & \u000bdots & ddots & \u000bdots \\ 0 & 0 & 0 & dots & 1 \\ -a_0 & -a_1 & -a_2 & dots & -a_{n-1} end{bmatrix} x + \begin{bmatrix} 0 \\ 0 \\ \u000bdots \\ 0 \\ 1 end{bmatrix} u, quad y = \begin{bmatrix} b_0 & 0 & dots & 0 end{bmatrix} x ]"
+    ]
+  },
+  {
+    "id": "cse-state-transition-solution",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "[ dot{x}(t) = A x(t), quad x(0) = x_0 ]"
+    ]
+  },
+  {
+    "id": "psa-fault-level-limiters-contingency",
+    "patterns": [
+      "cdot",
+      "sqrt{"
+    ],
+    "sample": [
+      "[ ext{Fault MVA} = sqrt{3} cdot V_{L, ext{pre-fault}} cdot I_{f, ext{sym}} = \frac{ ext{Base MVA}}{X_{th, ext{pu}}} ] [ I_{f, ext{sym}} = \frac{I_{ ext{base}}}{X_{th, ext{pu}}} = \frac{ ext{Base MVA}}{sqrt{3} cdot V_L cdot X_{th, ext{pu}}} ]",
+      "): The maximum instantaneous peak value of current the breaker can close against under severe DC offset (doubling effect): [ I_{make} = sqrt{2} imes 1.8 imes I_{b} approx 2.55 , I_{b} ] Here"
+    ]
+  },
+  {
+    "id": "psa-swing-solution-point-by-point-rk",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "[ k_1 = Delta t cdot Delta omega_n, quad l_1 = Delta t cdot f(delta_n, Delta omega_n) ] [ k_2 = Delta t cdot left(Delta omega_n + \frac{l_1}{2} ight), quad l_2 = Delta t cdot fleft(delta_n + \frac{k_1}{2}, Delta omega_n + \frac{l_1}{2} ight) ] [ k_3 = Delta t cdot left(Delta omega_n + \frac{l_2}{2} ight), quad l_3 = Delta t cdot fleft(delta_n + \frac{k_2}{2}, Delta omega_n + \frac{l_2}{2} ight) ] [ k_4 = Delta t cdot (Delta omega_n + l_3), quad l_4 = Delta t cdot f(delta_n + k_3, Delta omega_n + l_3) ] [ delta_{n+1} = delta_n + \frac{1}{6} (k_1 + 2k_2 + 2k_3 + k_4) ] [ Delta omega_{n+1} = Delta omega_n + \frac{1}{6} (l_1 + 2l_2 + 2l_3 + l_4) ]"
+    ]
+  },
+  {
+    "id": "psa-turbines-governors-inertia",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "[ H = \frac{ ext{Stored Kinetic Energy at Synchronous Speed}}{ ext{Machine MVA Rating}} = \frac{\frac{1}{2} J omega_s^2}{S_{ ext{base}}} quad [ ext{MJ/MVA or seconds}] ]",
+      "[ left. \frac{df}{dt} ight|_{t=0^+} = -\frac{f_0 cdot Delta P_L}{2 H_{sys} cdot S_{sys}} quad [ ext{Hz/s}] ]"
+    ]
+  },
+  {
+    "id": "psa-agc-single-area",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "[ D = \frac{partial P_L}{partial f} approx \frac{% ext{ change in load}}{% ext{ change in frequency}} quad [ ext{p.u. MW / p.u. Hz}] ]",
+      "[ Delta f_{ss} = lim_{s o 0} s left[ \frac{-G_{ps}(s)}{1 + G_{ps}(s) cdot G_t(s) cdot G_g(s) cdot \frac{1}{R}} cdot \frac{Delta P_L}{s} ight] = \frac{-Delta P_L}{D + \frac{1}{R}} = -\frac{Delta P_L}{\beta} ]"
+    ]
+  },
+  {
+    "id": "psa-agc-two-area",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "[ Delta P_{tie1, ext{pu}} = \frac{2pi T_{12}}{s} [Delta f_1(s) - Delta f_2(s)] ] [ Delta P_{tie2, ext{pu}} = -a_{12} Delta P_{tie1, ext{pu}} quad ext{where } a_{12} = \frac{P_{r1}}{P_{r2}} ]",
+      "[ B_1 = \beta_1 = D_1 + \frac{1}{R_1}, quad B_2 = \beta_2 = D_2 + \frac{1}{R_2} ]"
+    ]
+  },
+  {
+    "id": "psa-subsynchronous-resonance",
+    "patterns": [
+      "sqrt{",
+      "quad"
+    ],
+    "sample": [
+      "[ f_{er} = \frac{1}{2pi sqrt{L C}} = f_0 sqrt{\frac{X_C}{X_L}} ]",
+      "[ f_{er} < f_0 quad ( ext{typically } 15 ext{ Hz to } 40 ext{ Hz in a } 50 ext{ Hz grid}) ]"
+    ]
+  },
+  {
+    "id": "psa-automatic-voltage-control-exciter",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "(0.01 to 0.05 s): [ G_R(s) = \frac{K_R}{1 + sT_R} quad (K_R approx 1.0) ]",
+      "[ G_{PSS}(s) = K_{stab} cdot \frac{s T_w}{1 + s T_w} cdot left( \frac{1 + s T_1}{1 + s T_2} ight) cdot left( \frac{1 + s T_3}{1 + s T_4} ight) ]"
+    ]
+  },
+  {
+    "id": "psa-economic-dispatch-units",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "The relationship between the heat energy input (in MBtu/h or kcal/h) and electrical power output (P_i) (in MW) is termed the heat rate curve. Multiplying the heat energy input by the unit cost of fuel yields the operating fuel cost curve (C_i(P_i)) (in Rs/h or $/h). For conventional thermal generators, this input-output characteristic is practically modeled as a convex quadratic function:",
+      "[ C_i(P_i) = a_i P_i^2 + b_i P_i + c_i quad [ ext{Rs/h}] ]",
+      "[ IC_i = \frac{dC_i}{dP_i} = 2 a_i P_i + b_i quad [ ext{Rs/MWh}] ]",
+      "[ \frac{partial mathcal{L}}{partial P_i} = \frac{dC_i}{dP_i} - lambda = 0 implies \frac{dC_i}{dP_i} = lambda quad \forall i = 1, 2, dots, N ]",
+      "For (N) quadratic unconstrained units with (IC_i = 2a_i P_i + b_i = lambda), the individual output is (P_i = \frac{lambda - b_i}{2 a_i}). Summing over all (N) units yields:"
+    ]
+  },
+  {
+    "id": "psa-transmission-losses-b-coefficients",
+    "patterns": [
+      "cdot",
+      "m_i",
+      "quad"
+    ],
+    "sample": [
+      "To incorporate transmission network losses into the economic dispatch formulation without solving a full AC load flow at every iteration, Gabriel Kron developed a quadratic loss approximation. Under the engineering assumptions that line (X/R) ratios are high, bus voltage magnitudes remain near nominal (1.0 p.u.), and load bus currents vary proportionally with total system load current, the total active power transmission loss (P_L) is expressed as a quadratic function of generator active power outputs:",
+      "[ P_L = sum_{i=1}^N sum_{j=1}^N P_i B_{ij} P_j + sum_{i=1}^N B_{i0} P_i + B_{00} quad [ ext{MW}] ]",
+      "For systems where no-load losses and linear terms are negligible, the formula simplifies to the standard quadratic form: (P_L = sum_i sum_j P_i B_{ij} P_j). For a 2-plant network, this expands explicitly as:",
+      "[ \frac{dC_i}{dP_i} left( \frac{1}{1 - \frac{partial P_L}{partial P_i}} ight) = lambda quad implies quad \frac{dC_i}{dP_i} cdot L_i = lambda ]",
+      "Kron's loss formula models network active power losses as a quadratic function of generator outputs using (B)-coefficients."
+    ]
+  },
+  {
+    "id": "psa-economic-dispatch-numerical",
+    "patterns": [
+      "m_i",
+      "quad"
+    ],
+    "sample": [
+      "For each generator (i), calculate the trial active power output (P_i) from the coordination equation: [ P_i = \frac{lambda - b_i}{2 a_i} quad ext{(without losses)} ]",
+      "Calculate total system transmission loss (P_L = sum_i sum_j P_i B_{ij} P_j) (if losses are considered).",
+      "[ C_1(P_1) = 0.008 P_1^2 + 8.0 P_1 + 100 quad [ ext{Rs/h}], quad 50 le P_1 le 300 ext{ MW} ] [ C_2(P_2) = 0.009 P_2^2 + 7.2 P_2 + 120 quad [ ext{Rs/h}], quad 50 le P_2 le 250 ext{ MW} ]",
+      "[ P_1 = \frac{11.4352 - 8.0}{0.016} = \frac{3.4352}{0.016} = 214.70 ext{ MW} quad (50 le 214.70 le 300 implies ext{VALID}) ] [ P_2 = \frac{11.4352 - 7.2}{0.018} = \frac{4.2352}{0.018} = 235.30 ext{ MW} quad (50 le 235.30 le 250 implies ext{VALID}) ]",
+      "[ IC_1 = lambda left( 1 - \frac{partial P_L}{partial P_1} ight) quad ext{and} quad IC_2 = lambda left( 1 - \frac{partial P_L}{partial P_2} ight) ]"
+    ]
+  },
+  {
+    "id": "psa-unit-commitment-constraints",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "[ [X_i(t-1) - t_{up}] cdot [u_i(t-1) - u_i(t)] ge 0 ]"
+    ]
+  },
+  {
+    "id": "psa-dynamic-scheduling",
+    "patterns": [
+      "cdot",
+      "quad"
+    ],
+    "sample": [
+      "[ maxleft( P_{i,min}, P_i(t-1) - DR_i cdot Delta t ight) le P_i(t) le minleft( P_{i,max}, P_i(t-1) + UR_i cdot Delta t ight) ]",
+      "[ E_{b,min} le E_b(t) le E_{b,max} ] [ 0 le P_{ch}(t) le P_{ch,max}, quad 0 le P_{dis}(t) le P_{dis,max} ]"
+    ]
+  },
+  {
+    "id": "esd-is-codes-standards",
+    "patterns": [
+      "cdot",
+      "frac{",
+      "\\frac{",
+      "\\text{",
+      "quad"
+    ],
+    "sample": [
+      "R = \\frac{\\rho}{2pi L} lnleft(\\frac{4L}{d}\\right) \\quad [\\Omega]",
+      "Consider a 2-metre long, 50 mm diameter G.I. pipe electrode installed in clay soil of resistivity ρ=30 Omegacdotm. The estimated single electrode earth resistance is:",
+      "R = \\frac{30}{2pi \\times 2} lnleft(\\frac{4 \\times 2}{0.05}\\right) = \\frac{30}{12.566} ln(160) = 2.387 \\times 5.075 = 12.11\\text{ }\\Omega"
+    ]
+  },
+  {
+    "id": "esd-nec-wiring-installation",
+    "patterns": [
+      "frac{",
+      "\\frac{",
+      "\\text{"
+    ],
+    "sample": [
+      "\\text{Conduit Fill (%)} = \\frac{sum_{i=1}^n \\frac{\\pi}{4} d_i^2}{\\frac{\\pi}{4} D_{\\text{\\int}}^2} \\times 100 = \\frac{\\sum d_i^2}{D_{\\text{\\int}}^2} \\times 100 le 40%"
+    ]
+  },
+  {
+    "id": "esd-voltage-classification-tolerances",
+    "patterns": [
+      "cdot"
+    ],
+    "sample": [
+      "is the resistivity of the surface gravel layer (typically 3000 Omegacdotm) and C"
+    ]
+  },
+  {
+    "id": "esd-mcc-busbars-switchgear",
+    "patterns": [
+      "quad"
+    ],
+    "sample": [
+      "Busbar Spacing Trap: Spacing busbars wide apart to reduce electric field intensity without verifying support spacing. While force decreases with distance (1/d), increasing insulator pitch L increases the mechanical bending moment quadratically (M=FL/12). Failing to run short-circuit electrodynamic deflection calculations causes busbars to buckle and smash into enclosure walls during high faults."
+    ]
+  },
+  {
+    "id": "esd-apfc-panels-power-factor",
+    "patterns": [
+      "sqrt{",
+      "\\text{"
+    ],
+    "sample": [
+      "=0.07): Resonant frequency f_r = 50 / \\sqrt{0.07} \u0007pprox 189\\text{ Hz}. Protects against 5th and higher harmonics.",
+      "p=5.67: f_r \u0007pprox 210\\text{ Hz}. Highly effective in low-order harmonic networks.",
+      "p=14: f_r \u0007pprox 134\\text{ Hz}. Essential when 3rd harmonics (150 Hz) are present."
+    ]
+  },
+  {
+    "id": "esd-solar-pv-domestic-battery-design",
+    "patterns": [
+      "\\text{"
+    ],
+    "sample": [
+      "Accounting for system inefficiencies -- inverter efficiency (eta_{{inv}} \u0007pprox 90% \\text{ to } 95%), battery charge/discharge coulombic efficiency (eta_{{bat}} \u0007pprox 85% \\text{ for lead-acid}, 95% \\text{ for LiFePO4}), and DC cable losses (eta_{{wire}} \u0007pprox 97%):",
+      "N_{\\text{mod}} = leftlceil rac{P_{\\text{array}}}{P_{\\text{mod_rated}}} \\right ceil",
+      "): Configured such that total string maximum voltage at minimum ambient temperature does not exceed the MPPT inverter max input voltage (N_s \\times V_{{oc}}(\\text{cold}) le V_{\\text{mppt_max}}), and string V",
+      "at maximum cell temperature remains above the inverter lower MPPT voltage threshold (N_s \\times V_{{\\mp}}(\\text{hot}) ge V_{\\text{mppt_min}}).",
+      "): Sized to ensure total array short-circuit current does not exceed the inverter max input current (N_p \\times I_{{sc}} le I_{\\text{inv_max}})."
+    ]
+  }
+]
