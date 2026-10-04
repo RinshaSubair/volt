@@ -1,26 +1,86 @@
 rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: /users/{userId}
+// Document ID: Firebase Auth UID
+// Fields:
+//   - uid: string (required) - Firebase Auth UID
+//   - name: string (optional) - Full name of student/admin
+//   - email: string (optional) - Contact email address
+//   - phone: string (optional) - Contact telephone
+//   - college: string (optional) - Enrolled college / institution
+//   - semester: string (optional) - Academic semester
+//   - department: string (optional) - Engineering department (e.g. EEE)
+//   - role: string (required: 'student' | 'admin') - User authorization level
+//   - status: string (required: 'pending' | 'approved' | 'rejected') - Account access state
+//   - approvalStatus: string (optional: 'pending' | 'approved' | 'rejected')
+//   - isApproved: bool (optional) - Boolean flag for platform access
+//   - registeredAt: timestamp (optional) - Registration submission time
+//   - approvedAt: timestamp (optional) - Timestamp of admin approval
+//   - approvedBy: string (optional) - Email or UID of approving admin
+//
+// Subcollection: /users/{userId}/progress/{docId}
+// Document ID: Progress tracker document ID (e.g. 'tracker')
+// Fields:
+//   - completedTopics: list/map (optional) - Array/map of completed topic IDs
+//   - scores: map (optional) - Quiz and test results
+//   - streak: int/number (optional) - Daily activity streak
+//   - lastUpdated: timestamp/number (optional)
+//
+// Collection: /questions/{questionId}
+// Document ID: Question ID string
+// Fields:
+//   - q: string - Question text
+//   - options: list - Multiple choice options
+//   - ans: int/string - Correct answer index or key
+//   - explanation: string - Detailed technical explanation
+//
+// Collection: /audits/{auditId}
+// Document ID: Audit log entry ID
+// Fields:
+//   - action: string - Action recorded
+//   - userId: string - User ID associated with event
+//   - timestamp: timestamp - Time of event
+//
+// Collection: /feedback/{feedbackId}
+// Document ID: Feedback submission ID
+// Fields:
+//   - userId / uid: string - Submitting user ID
+//   - message: string - User feedback / bug report
+//   - submittedAt: timestamp - Submission time
+//
+// Collection: /metadata/{docId}, /platform/{docId}, /platform_metadata/{docId}
+// Document ID: Configuration document ID
+// Fields:
+//   - version, announcements, maintenanceMode, etc.
+//
+// ===============================================================
+
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper: Check if authenticated user is a Volt Administrator
-    function isAdmin() {
-      return request.auth != null && (
-        (request.auth.token.email != null && request.auth.token.email.lower() in [
-          'rinshasv@gmail.com',
-          'admin@volt.edu',
-          'admin@volt.io',
-          'rinshahrinsha2004@gmail.com',
-          'rinshads2006@gmail.com',
-          'arunv2006@gmail.com',
-          'rinsha@gmail.com',
-          'rinshamuhammed098@gmail.com'
-        ]) ||
-        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
-      );
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Check if the request is from an authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
     }
 
-    // Helper: Check if user is approved
+    // Check if user is an administrator: strictly restricted to rinshasv@gmail.com with role == 'admin' in Firestore
+    function isAdmin() {
+      return request.auth != null &&
+        request.auth.token.email.lower() == 'rinshasv@gmail.com' && (
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+        );
+    }
+
+    // Check if user account is approved to access learning materials
     function isApprovedUser() {
       return request.auth != null && (
         isAdmin() ||
@@ -37,64 +97,164 @@ service cloud.firestore {
     // ===============================================================
     match /users/{userId} {
       // Allow reading user document: user themselves or any Volt admin
-      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
 
       // Allow creating user document on registration:
       // Admins can create with any status; students must create with status 'pending' and role 'student'
-      allow create: if request.auth != null && request.auth.uid == userId && (
+      allow create: if isAuthenticated() && (
         isAdmin() ||
         (
+          request.auth.uid == userId &&
           request.resource.data.role == 'student' &&
           request.resource.data.status == 'pending' &&
-          (!('isApproved' in request.resource.data) || request.resource.data.isApproved == false)
+          (!('isApproved' in request.resource.data) || request.resource.data.isApproved == false) &&
+          (!('approvalStatus' in request.resource.data) || request.resource.data.approvalStatus == 'pending')
         )
       );
 
       // Allow updating user document:
       // Admins can approve/reject and edit all fields;
       // Normal students cannot escalate privileges or self-approve.
-      allow update: if request.auth != null && (
+      allow update: if isAuthenticated() && (
         isAdmin() ||
         (
           request.auth.uid == userId &&
-          (
-            !request.resource.data.diff(resource.data).affectedKeys().hasAny([
-              'role', 'status', 'approvalStatus', 'isApproved', 'approvedAt', 'approvedBy'
-            ])
-            ||
-            (
-              resource.data.status == 'pending' &&
-              request.resource.data.status == 'pending' &&
-              request.resource.data.role == 'student'
-            )
-          )
+          !request.resource.data.diff(resource.data).affectedKeys().hasAny([
+            'role', 'status', 'approvalStatus', 'isApproved', 'approvedAt', 'approvedBy'
+          ])
         )
       );
 
       // Allow deletion only by administrator
       allow delete: if isAdmin();
+
+      // Nested collections under user profile (e.g. /users/{userId}/progress/{docId})
+      match /progress/{docId} {
+        // Students can read/write their own progress tracker; admins can review and manage
+        allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      }
+
+      // Any other nested subcollections under user
+      match /{allSubcollections=**} {
+        allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      }
+    }
+
+    // ===============================================================
+    // PROGRESS COLLECTION (Root-level backwards compatibility)
+    // ===============================================================
+    match /progress/{userId} {
+      // Students can read their own progress; admins can review any student's progress
+      allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+
+      match /{subcollection=**} {
+        allow read, write: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      }
     }
 
     // ===============================================================
     // QUESTIONS COLLECTION (MCQ Bank & Question Management)
     // ===============================================================
     match /questions/{questionId} {
-      // Questions can be read by approved users or admins
+      // Questions can be read by approved users or administrators
       allow read: if isApprovedUser();
 
       // Only administrators can create, update, or delete questions
       allow write: if isAdmin();
+
+      match /{subcollection=**} {
+        allow read: if isApprovedUser();
+        allow write: if isAdmin();
+      }
     }
 
     // ===============================================================
-    // PROGRESS COLLECTION (Student Scores, Completed Topics, Streaks)
+    // AUDITS COLLECTION (Security & Activity Audit Logs)
     // ===============================================================
-    match /progress/{userId} {
-      // Students can read their own progress; admins can review any student's progress
-      allow read: if request.auth != null && (request.auth.uid == userId || isAdmin());
+    match /audits/{auditId} {
+      // Only administrators can read audit records
+      allow read: if isAdmin();
 
-      // Students can update their own study progress
-      allow write: if request.auth != null && (request.auth.uid == userId || isAdmin());
+      // Authenticated users or admins can record audit events
+      allow create: if isAuthenticated();
+
+      // Only administrators can modify or purge audit entries
+      allow update, delete: if isAdmin();
+
+      match /{subcollection=**} {
+        allow read: if isAdmin();
+        allow create: if isAuthenticated();
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    // ===============================================================
+    // FEEDBACK COLLECTION (User Feedback, Suggestions, Bug Reports)
+    // ===============================================================
+    match /feedback/{feedbackId} {
+      // Users can read their own feedback submissions; admins can read all
+      allow read: if isAuthenticated() && (
+        isAdmin() ||
+        (resource.data.userId == request.auth.uid || resource.data.uid == request.auth.uid)
+      );
+
+      // Authenticated users can submit feedback; admins can create any
+      allow create: if isAuthenticated() && (
+        isAdmin() ||
+        (
+          (!('userId' in request.resource.data) || request.resource.data.userId == request.auth.uid) &&
+          (!('uid' in request.resource.data) || request.resource.data.uid == request.auth.uid)
+        )
+      );
+
+      // Users can update their own feedback; admins can manage any
+      allow update: if isAuthenticated() && (
+        isAdmin() ||
+        (resource.data.userId == request.auth.uid || resource.data.uid == request.auth.uid)
+      );
+
+      // Only administrators can delete feedback
+      allow delete: if isAdmin();
+
+      match /{subcollection=**} {
+        allow read, write: if isAdmin();
+      }
+    }
+
+    // ===============================================================
+    // PLATFORM METADATA COLLECTIONS (Configurations, Announcements)
+    // ===============================================================
+    match /metadata/{docId} {
+      // Platform metadata can be read by authenticated users; managed by admins
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+
+      match /{subcollection=**} {
+        allow read: if isAuthenticated();
+        allow write: if isAdmin();
+      }
+    }
+
+    match /platform/{docId} {
+      // Platform settings & app version info readable by authenticated users
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+
+      match /{subcollection=**} {
+        allow read: if isAuthenticated();
+        allow write: if isAdmin();
+      }
+    }
+
+    match /platform_metadata/{docId} {
+      // Platform metadata readable by authenticated users
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+
+      match /{subcollection=**} {
+        allow read: if isAuthenticated();
+        allow write: if isAdmin();
+      }
     }
 
     // ===============================================================

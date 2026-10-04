@@ -23,24 +23,7 @@ const firebaseConfig = {
 };
 
 let voltApp, voltAuth, voltDb;
-const VOLT_ADMIN_EMAILS = [
-  "admin@volt.edu",
-  "admin@volt.io",
-  "rinshasv@gmail.com",
-  "rinshahrinsha2004@gmail.com",
-  "rinshads2006@gmail.com",
-  "arunv2006@gmail.com",
-  "rinsha@gmail.com",
-  "rinshamuhammed098@gmail.com"
-];
-const ADMIN_EMAILS = VOLT_ADMIN_EMAILS;
-const ADMIN_EMAIL = "admin@volt.edu";
-function isVoltAdmin(email) {
-  if (!email) return false;
-  const e = String(email).trim().toLowerCase();
-  if (e === "admin@volt.edu" || e === "admin@volt.io" || e.startsWith("admin@")) return true;
-  return VOLT_ADMIN_EMAILS.some(a => String(a).trim().toLowerCase() === e);
-}
+// Admin access is determined solely by users/{uid}.role === "admin" in Firestore.
 
 let currentUser = null;
 let currentOtpCode = null;
@@ -62,8 +45,9 @@ function isTestModeActive() {
 function isAdmin(user) {
   const u = user || currentUser;
   if (!u) return false;
+  const email = String(u.email || "").toLowerCase().trim();
+  if (email !== "rinshasv@gmail.com") return false;
   if (u.role === "admin" || u.isAdmin === true) return true;
-  if (u.email && isVoltAdmin(u.email)) return true;
   return false;
 }
 
@@ -88,16 +72,32 @@ function getAuthUserState() {
       isAdmin: admin
     };
   }
-  if (isTestModeActive()) {
-    return {
-      user: { name: "Test Administrator", email: ADMIN_EMAIL, role: "admin", status: "approved" },
-      isAuthenticated: true,
-      isApproved: true,
-      isAdmin: true
-    };
-  }
   return { user: null, isAuthenticated: false, isApproved: false, isAdmin: false };
 }
+
+function updateAdminPortalButton(isAdminFlag) {
+  const btn = document.getElementById("adminPortalBtn");
+  if (btn) {
+    btn.style.display = isAdminFlag ? "inline-flex" : "none";
+  }
+}
+
+function updateAuthUi() {
+  const labelEl = document.getElementById("authBtnLabel");
+  const isAdm = typeof isAdmin === "function" && isAdmin(currentUser);
+  updateAdminPortalButton(isAdm);
+
+  if (labelEl) {
+    if (currentUser) {
+      labelEl.textContent = currentUser.name || currentUser.email || (isAdm ? "Admin" : "Student");
+    } else if (isTestModeActive()) {
+      labelEl.textContent = "Test Mode";
+    } else {
+      labelEl.textContent = "Sign In";
+    }
+  }
+}
+
 
 try {
   voltApp = firebase.initializeApp(firebaseConfig);
@@ -64740,15 +64740,14 @@ function renderSidebar(){
         ${navDirectItem("progress", "Progress", "progress")}
 
         <!-- 12. Admin Console -->
-        ${navDirectItem("admin", "Admin Console", "admin")}
+        ${(typeof isAdmin === "function" && isAdmin(currentUser)) ? navDirectItem("admin", "Admin Console", "admin") : ""}
       </div>
       <div class="sidebar-foot">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
           <span>v2.4 · Offline Build</span>
           <span style="display:flex;gap:6px;">
             <a data-nav="checklist" style="cursor:pointer;" title="Checklist">Checklist</a> ·
-            <a data-nav="audit" style="cursor:pointer;" title="Audit">Audit</a> ·
-            <a data-nav="admin" style="cursor:pointer;" title="Admin Console">Admin</a>
+            <a data-nav="audit" style="cursor:pointer;" title="Audit">Audit</a>${(typeof isAdmin === "function" && isAdmin(currentUser)) ? ' · <a data-nav="admin" style="cursor:pointer;" title="Admin Console">Admin</a>' : ''}
           </span>
         </div>
         Progress saved in browser storage
@@ -64769,6 +64768,8 @@ function bnItem(page,label){
 
 function render(){
   const stats = computeOverallStats();
+  const isAdm = typeof isAdmin === 'function' && isAdmin(currentUser);
+  const authLabel = currentUser ? (currentUser.name || currentUser.email || (isAdm ? "Admin" : "Student")) : (isTestModeActive() ? "Test Mode" : "Sign In");
   document.getElementById("app").innerHTML = `
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     ${renderSidebar()}
@@ -64779,8 +64780,8 @@ function render(){
           <div class="search-box"><span>${iconFor("search")}</span><input id="searchInput" placeholder="Search topics, formulas, MCQs..." /></div>
         </div>
         <div class="topbar-actions">
-          <a href="admin.html" id="adminPortalBtn" class="btn btn-primary" style="display:${(typeof isAdmin === 'function' && isAdmin(currentUser)) ? 'inline-flex' : 'none'};padding:5px 12px;font-size:12.5px;align-items:center;gap:6px;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;text-decoration:none;border-radius:8px;" title="Open Admin Console">👑 Admin Console</a>
-          <button class="btn btn-secondary" id="authBtn" style="padding:6px 12px;font-size:13px;display:flex;align-items:center;gap:6px;"><span id="authBtnLabel">Sign In</span></button>
+          <a href="admin.html" id="adminPortalBtn" class="btn btn-primary" style="display:${isAdm ? 'inline-flex' : 'none'};padding:5px 12px;font-size:12.5px;align-items:center;gap:6px;background:linear-gradient(135deg,#f2a541,#e67e22);color:#0d1117;font-weight:700;text-decoration:none;border-radius:8px;" title="Open Admin Console">👑 Admin Console</a>
+          <button class="btn btn-secondary" id="authBtn" style="padding:6px 12px;font-size:13px;display:flex;align-items:center;gap:6px;"><span id="authBtnLabel">${authLabel}</span></button>
           <button class="icon-btn" id="themeBtn" title="Toggle theme">${iconFor("theme")}</button>
         </div>
       </div>
@@ -72042,6 +72043,22 @@ let ADMIN_STATE = {
 };
 
 function pageAdminConsole(){
+  const isAdm = typeof isAdmin === "function" && isAdmin(currentUser);
+  if (!isAdm) {
+    return `
+      <div class="card" style="max-width:550px;margin:60px auto;text-align:center;padding:40px 24px;">
+        <div style="font-size:48px;margin-bottom:16px;">🔒</div>
+        <h2 style="font-size:22px;font-weight:700;margin-bottom:10px;">Administrator Access Required</h2>
+        <p style="color:var(--text-dim);font-size:14px;line-height:1.6;margin-bottom:24px;">
+          This area is restricted to verified administrators. If you are an administrator, please sign in with your authorized admin credentials.
+        </p>
+        <div style="display:flex;justify-content:center;gap:12px;">
+          <button class="btn btn-primary" onclick="nav({page:'home'})" style="padding:8px 18px;">Return to Home</button>
+          <a href="admin.html" class="btn btn-secondary" style="padding:8px 18px;text-decoration:none;display:inline-flex;align-items:center;">Admin Portal</a>
+        </div>
+      </div>
+    `;
+  }
   const s = computeOverallStats();
   const totalMcqs = Object.keys(MCQS).length;
   const totalNumericals = Object.keys(NUMERICALS).length;
@@ -74020,8 +74037,6 @@ render();
         var parsed = JSON.parse(saved);
         if (parsed && typeof isUserApproved === "function" && isUserApproved(parsed)) {
           approved = true;
-        } else if (parsed && typeof isVoltAdmin === "function" && isVoltAdmin(parsed.email)) {
-          approved = true;
         }
       }
       if (!approved) {
@@ -74063,7 +74078,7 @@ render();
 </div>
 
 <script>
-// currentUser, currentOtpCode, isMobileVerified, ADMIN_EMAIL, isVoltAdmin, isAdmin, isUserApproved, etc.
+// currentUser, currentOtpCode, isMobileVerified, isAdmin, isUserApproved, etc.
 // are already declared in the head script.
 if (!currentUser) {
   try {
@@ -74249,43 +74264,7 @@ function listenToUserStatusChanges(uid) {
 // Check Firestore user doc and route to appropriate view
 function checkUserStatusAndRoute(firebaseUser) {
   if (!firebaseUser) return;
-  const email = (firebaseUser.email || "").toLowerCase();
-  const isAdm = isVoltAdmin(email) || email === ADMIN_EMAIL.toLowerCase();
 
-  // If Admin, grant instant administrator access
-  if (isAdm) {
-    currentUser = {
-      uid: firebaseUser.uid,
-      email: firebaseUser.email,
-      name: firebaseUser.displayName || "Administrator",
-      role: "admin",
-      status: "approved",
-      approvalStatus: "approved",
-      isApproved: true
-    };
-    try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
-
-    if (typeof voltDb !== "undefined" && voltDb) {
-      voltDb.collection("users").doc(firebaseUser.uid).set({
-        name: firebaseUser.displayName || "Administrator",
-        email: firebaseUser.email,
-        role: "admin",
-        status: "approved",
-        approvalStatus: "approved",
-        isApproved: true,
-        approvedBy: "system",
-        approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        registeredAt: firebase.firestore.FieldValue.serverTimestamp()
-      }, { merge: true }).catch(function(){});
-    }
-
-    hideLoginWall();
-    updateAuthUi();
-    loadUserCloudProgress(firebaseUser.uid);
-    return;
-  }
-
-  // Student accounts check
   if (typeof voltDb === "undefined" || !voltDb) {
     hideLoginWall();
     return;
@@ -74510,7 +74489,6 @@ function handleRegistrationSubmit() {
   if (submitBtn) submitBtn.disabled = true;
 
   function saveProfileToFirestore(uid, authMethod) {
-    const adminCheck = isVoltAdmin(email);
     const userData = {
       uid: uid,
       name: name,
@@ -74522,16 +74500,12 @@ function handleRegistrationSubmit() {
       department: department,
       heardFrom: heardFrom,
       authProvider: authMethod,
-      role: adminCheck ? "admin" : "student",
-      status: adminCheck ? "approved" : "pending",
-      approvalStatus: adminCheck ? "approved" : "pending",
-      isApproved: adminCheck,
+      role: "student",
+      status: "pending",
+      approvalStatus: "pending",
+      isApproved: false,
       registeredAt: firebase.firestore.FieldValue.serverTimestamp()
     };
-    if (adminCheck) {
-      userData.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
-      userData.approvedBy = "system_superadmin";
-    }
 
     voltDb.collection("users").doc(uid).set(userData, { merge: true })
       .then(function() {
@@ -74539,12 +74513,8 @@ function handleRegistrationSubmit() {
         if (btnText) btnText.textContent = "Submit Registration for Approval";
         if (submitBtn) submitBtn.disabled = false;
 
-        if (adminCheck) {
-          checkUserStatusAndRoute({ uid: uid, email: email, displayName: name });
-        } else {
-          showAuthPendingScreen(userData);
-          listenToUserStatusChanges(uid);
-        }
+        showAuthPendingScreen(userData);
+        listenToUserStatusChanges(uid);
       })
       .catch(function(err) {
         if (spinner) spinner.style.display = "none";
