@@ -46,7 +46,7 @@ function isAdmin(user) {
   const u = user || currentUser;
   if (!u) return false;
   const email = String(u.email || "").toLowerCase().trim();
-  if (email !== "rinshasv@gmail.com") return false;
+  if (email === "rinshasv@gmail.com") return true;
   if (u.role === "admin" || u.isAdmin === true) return true;
   return false;
 }
@@ -73874,7 +73874,7 @@ render();
         <!-- Full Name -->
         <div style="margin-bottom:10px;">
           <label for="regNameInput" class="auth-label">Full Name *</label>
-          <input id="regNameInput" type="text" class="auth-input" placeholder="e.g. Rinsha Subair" required />
+          <input id="regNameInput" type="text" class="auth-input" placeholder="e.g. Alex Johnson" required />
         </div>
 
         <!-- Email Address -->
@@ -73896,7 +73896,7 @@ render();
             <span id="otpStatusBadge" style="display:none;font-size:11px;font-weight:700;color:var(--ok,#6ed08a);">✓ Verified</span>
           </div>
           <div style="display:flex;gap:8px;">
-            <input id="regPhoneInput" type="tel" class="auth-input" placeholder="+91 9876543210" style="flex:1;" required />
+            <input id="regPhoneInput" type="tel" class="auth-input" placeholder="+91 98765 43210" style="flex:1;" required />
             <button type="button" id="sendOtpBtn" class="btn btn-secondary" style="padding:0 12px;font-size:12px;white-space:nowrap;">Send OTP</button>
           </div>
         </div>
@@ -73916,7 +73916,7 @@ render();
         <!-- College Name -->
         <div style="margin-bottom:10px;">
           <label for="regCollegeInput" class="auth-label">College / Institution *</label>
-          <input id="regCollegeInput" type="text" class="auth-input" placeholder="e.g. NIT Calicut, CET Trivandrum, GEC" required />
+          <input id="regCollegeInput" type="text" class="auth-input" placeholder="e.g. National Institute of Technology" required />
         </div>
 
         <!-- Semester & Department 2-column grid -->
@@ -73970,7 +73970,7 @@ render();
       </form>
 
       <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);font-size:11.5px;color:var(--text-faint);line-height:1.4;">
-        🔒 All student accounts are reviewed and approved by administrator Rinsha (<b style="color:var(--text);">rinshasv@gmail.com</b>).
+        🔒 All student accounts are reviewed and approved by the platform administrator (<b style="color:var(--text);">admin@volt.internal</b>).
       </div>
     </div>
 
@@ -73992,7 +73992,7 @@ render();
       </div>
 
       <p style="font-size:12.5px;color:var(--text-dim);line-height:1.5;margin-bottom:18px;">
-        Your profile is safely stored. Administrator <b>Rinsha (<a href="mailto:rinshasv@gmail.com" style="color:var(--accent);text-decoration:none;">rinshasv@gmail.com</a>)</b> approves registered students to grant full access to courses, practice MCQs, and interview prep.
+        Your profile is safely stored. The administrator (<b style="color:var(--text);">admin@volt.internal</b>) approves registered students to grant full access to courses, practice MCQs, and interview prep.
       </p>
 
       <div style="display:flex;gap:10px;">
@@ -74012,7 +74012,7 @@ render();
       </div>
       <h3 style="font-family:'Space Grotesk',sans-serif;font-size:20px;color:var(--danger);margin:0 0 6px;">Access Declined</h3>
       <p style="font-size:13px;color:var(--text-dim);line-height:1.5;margin-bottom:18px;">
-        Your registration was not approved by the administrator. If you believe this is in error, please contact <b>rinshasv@gmail.com</b>.
+        Your registration was not approved by the administrator. If you believe this is in error, please contact <b style="color:var(--text);">admin@volt.internal</b>.
       </p>
       <button type="button" id="rejectedSignOutBtn" class="btn btn-secondary" style="width:100%;padding:10px;font-size:13px;">
         Sign Out
@@ -74296,12 +74296,15 @@ function listenToUserStatusChanges(uid) {
       hideLoginWall();
       updateAuthUi();
       loadUserCloudProgress(uid);
+      if (typeof render === "function") render();
     } else if (isRej) {
       showAuthRejectedScreen();
       updateAuthUi();
+      if (typeof render === "function") render();
     } else {
       showAuthPendingScreen(data);
       updateAuthUi();
+      if (typeof render === "function") render();
     }
   }, function(err) {
     console.warn("User status listener error:", err);
@@ -74311,6 +74314,42 @@ function listenToUserStatusChanges(uid) {
 // Check Firestore user doc and route to appropriate view
 function checkUserStatusAndRoute(firebaseUser) {
   if (!firebaseUser) return;
+
+  const email = String(firebaseUser.email || "").toLowerCase().trim();
+  const isAdm = email === "rinshasv@gmail.com";
+
+  if (isAdm) {
+    currentUser = {
+      uid: firebaseUser.uid,
+      email: firebaseUser.email,
+      name: firebaseUser.displayName || "Administrator",
+      role: "admin",
+      status: "approved",
+      approvalStatus: "approved",
+      isApproved: true
+    };
+    try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
+
+    if (typeof voltDb !== "undefined" && voltDb) {
+      voltDb.collection("users").doc(firebaseUser.uid).set({
+        name: firebaseUser.displayName || "Administrator",
+        email: firebaseUser.email,
+        role: "admin",
+        status: "approved",
+        approvalStatus: "approved",
+        isApproved: true
+      }, { merge: true }).catch(function(err){
+        console.warn("Admin doc auto-heal notice:", err);
+      });
+    }
+
+    listenToUserStatusChanges(firebaseUser.uid);
+    hideLoginWall();
+    updateAuthUi();
+    loadUserCloudProgress(firebaseUser.uid);
+    if (typeof render === "function") render();
+    return;
+  }
 
   if (typeof voltDb === "undefined" || !voltDb) {
     hideLoginWall();
@@ -74359,19 +74398,23 @@ function checkUserStatusAndRoute(firebaseUser) {
         hideLoginWall();
         updateAuthUi();
         loadUserCloudProgress(firebaseUser.uid);
+        if (typeof render === "function") render();
       } else if (isRej) {
         showAuthRejectedScreen();
         updateAuthUi();
+        if (typeof render === "function") render();
       } else {
         // Pending approval
         showAuthPendingScreen(data);
         updateAuthUi();
+        if (typeof render === "function") render();
       }
     })
     .catch(function(err) {
       console.warn("User status check error:", err);
       if (isUserApproved(currentUser)) {
         hideLoginWall();
+        if (typeof render === "function") render();
       } else {
         showAuthAlert("Error verifying account status. Please check your internet connection.", false);
       }
@@ -74791,6 +74834,7 @@ function initGlobalAuthAndChatbot() {
         currentUser = null;
         try { localStorage.removeItem("volt_user"); localStorage.removeItem("volt_token"); } catch(e){}
         updateAuthUi();
+        if (typeof render === "function") render();
         if (isTestModeActive()) {
           hideLoginWall();
         } else {
@@ -74864,7 +74908,7 @@ function initGlobalAuthAndChatbot() {
               } else if (uData.status === "rejected" || uData.approvalStatus === "rejected") {
                 showAuthRejectedScreen();
               } else {
-                alert("Your account is still pending approval by Rinsha (rinshasv@gmail.com). Please check back soon!");
+                alert("Your account is still pending approval by the administrator (admin@volt.internal). Please check back soon!");
               }
             } else {
               alert("Your registration record was not found. Please submit registration again.");
