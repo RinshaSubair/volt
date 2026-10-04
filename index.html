@@ -73838,7 +73838,10 @@ render();
           <input id="loginEmailInput" type="email" class="auth-input" autocomplete="username" placeholder="student@college.edu or admin" required />
         </div>
         <div style="margin-bottom:16px;">
-          <label for="loginPasswordInput" class="auth-label">Password</label>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+            <label for="loginPasswordInput" class="auth-label" style="margin:0;">Password</label>
+            <a href="javascript:void(0)" id="forgotPassBtn" style="font-size:11.5px;color:var(--accent);text-decoration:none;font-weight:600;">Forgot Password?</a>
+          </div>
           <input id="loginPasswordInput" type="password" class="auth-input" autocomplete="current-password" placeholder="••••••••" required />
         </div>
         <button id="loginSubmitBtn" type="submit" class="btn btn-primary" style="width:100%;padding:10px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border-radius:8px;">
@@ -74016,6 +74019,32 @@ render();
       </button>
     </div>
 
+    <!-- ==================== TAB: FORGOT PASSWORD ==================== -->
+    <div id="authForgotPassPanel" style="display:none;text-align:left;">
+      <div style="margin-bottom:14px;">
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:18px;color:var(--text);margin:0 0 6px;">Reset Password</h3>
+        <p style="font-size:12.5px;color:var(--text-dim);line-height:1.4;margin:0;">
+          Enter your registered email address below. We'll send you a secure link to reset your password.
+        </p>
+      </div>
+
+      <form id="forgotPassForm" onsubmit="return false;">
+        <div style="margin-bottom:16px;">
+          <label for="forgotEmailInput" class="auth-label">Registered Email Address</label>
+          <input id="forgotEmailInput" type="email" class="auth-input" autocomplete="email" placeholder="student@college.edu" required />
+        </div>
+        <button id="forgotPassSubmitBtn" type="submit" class="btn btn-primary" style="width:100%;padding:10px;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;border-radius:8px;">
+          <span id="forgotPassSpinner" style="display:none;width:14px;height:14px;border:2px solid #ffffff44;border-top-color:#fff;border-radius:50%;animation:volt-spin 0.8s linear infinite;"></span>
+          <span id="forgotPassSubmitText">Send Password Reset Link</span>
+        </button>
+      </form>
+
+      <div style="margin-top:16px;text-align:center;font-size:12px;color:var(--text-dim);">
+        Remembered your password?
+        <a href="javascript:void(0)" onclick="switchAuthTab('signin')" style="color:var(--accent);font-weight:600;text-decoration:none;margin-left:4px;">← Back to Sign In</a>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -74159,22 +74188,36 @@ function switchAuthTab(tab) {
   const regPanel = document.getElementById("authRegisterPanel");
   const pendingPanel = document.getElementById("authPendingPanel");
   const rejectedPanel = document.getElementById("authRejectedPanel");
+  const forgotPanel = document.getElementById("authForgotPassPanel");
   const tabsRow = document.getElementById("authTabsRow");
 
-  if (tabsRow) tabsRow.style.display = "flex";
   if (pendingPanel) pendingPanel.style.display = "none";
   if (rejectedPanel) rejectedPanel.style.display = "none";
 
   if (tab === "signin") {
+    if (tabsRow) tabsRow.style.display = "flex";
     if (signInBtn) signInBtn.classList.add("active");
     if (regBtn) regBtn.classList.remove("active");
     if (signInPanel) signInPanel.style.display = "block";
     if (regPanel) regPanel.style.display = "none";
-  } else {
+    if (forgotPanel) forgotPanel.style.display = "none";
+  } else if (tab === "register") {
+    if (tabsRow) tabsRow.style.display = "flex";
     if (signInBtn) signInBtn.classList.remove("active");
     if (regBtn) regBtn.classList.add("active");
     if (signInPanel) signInPanel.style.display = "none";
     if (regPanel) regPanel.style.display = "block";
+    if (forgotPanel) forgotPanel.style.display = "none";
+  } else if (tab === "forgot") {
+    if (tabsRow) tabsRow.style.display = "none";
+    if (signInPanel) signInPanel.style.display = "none";
+    if (regPanel) regPanel.style.display = "none";
+    if (forgotPanel) forgotPanel.style.display = "block";
+    const forgotEmail = document.getElementById("forgotEmailInput");
+    const loginEmail = document.getElementById("loginEmailInput");
+    if (forgotEmail && loginEmail && loginEmail.value) {
+      forgotEmail.value = loginEmail.value.trim();
+    }
   }
 }
 
@@ -74183,12 +74226,14 @@ function showAuthPendingScreen(userData) {
   const regPanel = document.getElementById("authRegisterPanel");
   const pendingPanel = document.getElementById("authPendingPanel");
   const rejectedPanel = document.getElementById("authRejectedPanel");
+  const forgotPanel = document.getElementById("authForgotPassPanel");
   const tabsRow = document.getElementById("authTabsRow");
 
   if (tabsRow) tabsRow.style.display = "none";
   if (signInPanel) signInPanel.style.display = "none";
   if (regPanel) regPanel.style.display = "none";
   if (rejectedPanel) rejectedPanel.style.display = "none";
+  if (forgotPanel) forgotPanel.style.display = "none";
   if (pendingPanel) pendingPanel.style.display = "block";
 
   const cardName = document.getElementById("pendingCardName");
@@ -74211,12 +74256,14 @@ function showAuthRejectedScreen() {
   const regPanel = document.getElementById("authRegisterPanel");
   const pendingPanel = document.getElementById("authPendingPanel");
   const rejectedPanel = document.getElementById("authRejectedPanel");
+  const forgotPanel = document.getElementById("authForgotPassPanel");
   const tabsRow = document.getElementById("authTabsRow");
 
   if (tabsRow) tabsRow.style.display = "none";
   if (signInPanel) signInPanel.style.display = "none";
   if (regPanel) regPanel.style.display = "none";
   if (pendingPanel) pendingPanel.style.display = "none";
+  if (forgotPanel) forgotPanel.style.display = "none";
   if (rejectedPanel) rejectedPanel.style.display = "block";
   showLoginWall();
 }
@@ -74331,16 +74378,92 @@ function checkUserStatusAndRoute(firebaseUser) {
     });
 }
 
-// Interactive Mobile OTP handler
+// Interactive Mobile OTP handler (Firebase Phone Auth + Fallback)
+let phoneConfirmationResult = null;
+let recaptchaVerifier = null;
+
+function initRecaptcha() {
+  if (typeof firebase === "undefined" || !firebase.auth) return null;
+  if (!recaptchaVerifier) {
+    try {
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier("sendOtpBtn", {
+        size: "invisible",
+        callback: function() {
+          // reCAPTCHA solved
+        }
+      });
+    } catch(e) {
+      console.warn("reCAPTCHA init error:", e);
+    }
+  }
+  return recaptchaVerifier;
+}
+
 function handleSendOtp() {
   const phoneInput = document.getElementById("regPhoneInput");
-  const phone = phoneInput ? phoneInput.value.trim() : "";
+  let phone = phoneInput ? phoneInput.value.trim() : "";
   if (!phone || phone.length < 8) {
-    showAuthAlert("Please enter a valid mobile number first.", false);
+    showAuthAlert("Please enter a valid mobile number with country code (e.g. +91 9876543210).", false);
     return;
   }
 
-  // Generate 6-digit verification code
+  // Format phone number with country code if missing
+  if (!phone.startsWith("+")) {
+    if (phone.length === 10) phone = "+91" + phone;
+    else phone = "+" + phone;
+    if (phoneInput) phoneInput.value = phone;
+  }
+
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  if (sendOtpBtn) {
+    sendOtpBtn.disabled = true;
+    sendOtpBtn.textContent = "Sending...";
+  }
+
+  const otpBox = document.getElementById("otpVerifyBox");
+  const otpInput = document.getElementById("regOtpInput");
+
+  // Attempt Firebase real Phone SMS first if configured
+  try {
+    const verifier = initRecaptcha();
+    if (verifier && typeof voltAuth !== "undefined" && voltAuth) {
+      voltAuth.signInWithPhoneNumber(phone, verifier)
+        .then(function(confirmationResult) {
+          phoneConfirmationResult = confirmationResult;
+          if (sendOtpBtn) {
+            sendOtpBtn.disabled = false;
+            sendOtpBtn.textContent = "Resend OTP";
+          }
+          if (otpBox) otpBox.style.display = "block";
+          if (otpInput) {
+            otpInput.value = "";
+            otpInput.placeholder = "Enter SMS OTP";
+            otpInput.focus();
+          }
+          showAuthAlert("SMS OTP sent to " + phone + ". Please enter the 6-digit code received on your phone.", true);
+        })
+        .catch(function(err) {
+          console.warn("Firebase Phone Auth error, falling back to simulated verification:", err);
+          if (recaptchaVerifier && typeof recaptchaVerifier.clear === "function") {
+            try { recaptchaVerifier.clear(); recaptchaVerifier = null; } catch(e){}
+          }
+          fallbackSimulateOtp(phone);
+        });
+      return;
+    }
+  } catch(e) {
+    console.warn("Phone auth attempt failed:", e);
+  }
+
+  fallbackSimulateOtp(phone);
+}
+
+function fallbackSimulateOtp(phone) {
+  const sendOtpBtn = document.getElementById("sendOtpBtn");
+  if (sendOtpBtn) {
+    sendOtpBtn.disabled = false;
+    sendOtpBtn.textContent = "Resend OTP";
+  }
   currentOtpCode = Math.floor(100000 + Math.random() * 900000).toString();
   const otpBox = document.getElementById("otpVerifyBox");
   if (otpBox) otpBox.style.display = "block";
@@ -74349,7 +74472,7 @@ function handleSendOtp() {
     otpInput.value = currentOtpCode;
     otpInput.focus();
   }
-  showAuthAlert("Verification code generated for " + phone + ": " + currentOtpCode + " (Entered automatically)", true);
+  showAuthAlert("⚠️ SMS gateway not activated in Firebase Console. Simulation code for " + phone + ": " + currentOtpCode + " (auto-filled)", true);
 }
 
 function handleVerifyOtp() {
@@ -74360,6 +74483,42 @@ function handleVerifyOtp() {
     return;
   }
 
+  const verifyBtn = document.getElementById("verifyOtpBtn");
+  if (verifyBtn) {
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = "Verifying...";
+  }
+
+  // If real Firebase SMS confirmationResult is active:
+  if (phoneConfirmationResult && typeof phoneConfirmationResult.confirm === "function") {
+    phoneConfirmationResult.confirm(code)
+      .then(function(result) {
+        if (verifyBtn) {
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = "Verify";
+        }
+        isMobileVerified = true;
+        const badge = document.getElementById("otpStatusBadge");
+        if (badge) badge.style.display = "inline-flex";
+        const otpBox = document.getElementById("otpVerifyBox");
+        if (otpBox) otpBox.style.display = "none";
+        showAuthAlert("Mobile number verified successfully via SMS! ✓", true);
+      })
+      .catch(function(err) {
+        if (verifyBtn) {
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = "Verify";
+        }
+        showAuthAlert("Invalid SMS OTP: " + (err.message || "Please check the code entered."), false);
+      });
+    return;
+  }
+
+  // Fallback simulator verification
+  if (verifyBtn) {
+    verifyBtn.disabled = false;
+    verifyBtn.textContent = "Verify";
+  }
   if (code === currentOtpCode || code === "123456" || code === "999999") {
     isMobileVerified = true;
     const badge = document.getElementById("otpStatusBadge");
@@ -74368,7 +74527,7 @@ function handleVerifyOtp() {
     if (otpBox) otpBox.style.display = "none";
     showAuthAlert("Mobile number verified successfully! ✓", true);
   } else {
-    showAuthAlert("Invalid OTP code. Please try again.", false);
+    showAuthAlert("Invalid OTP code. Please enter the generated code.", false);
   }
 }
 
@@ -74545,9 +74704,79 @@ function handleRegistrationSubmit() {
   }
 }
 
+// Forgot Password Form Submission
+function handleForgotPassword() {
+  const emailInput = document.getElementById("forgotEmailInput");
+  const submitBtn = document.getElementById("forgotPassSubmitBtn");
+  const spinner = document.getElementById("forgotPassSpinner");
+  const btnText = document.getElementById("forgotPassSubmitText");
+
+  if (!emailInput) return;
+  const email = emailInput.value.trim();
+
+  if (!email) {
+    showAuthAlert("Please enter your registered email address.", false);
+    return;
+  }
+
+  showAuthAlert("", false);
+  if (spinner) spinner.style.display = "inline-block";
+  if (btnText) btnText.textContent = "Sending Link...";
+  if (submitBtn) submitBtn.disabled = true;
+
+  if (typeof voltAuth === "undefined" || !voltAuth) {
+    if (spinner) spinner.style.display = "none";
+    if (btnText) btnText.textContent = "Send Password Reset Link";
+    if (submitBtn) submitBtn.disabled = false;
+    showAuthAlert("Authentication service is currently unavailable.", false);
+    return;
+  }
+
+  voltAuth.sendPasswordResetEmail(email)
+    .then(function() {
+      if (spinner) spinner.style.display = "none";
+      if (btnText) btnText.textContent = "Send Password Reset Link";
+      if (submitBtn) submitBtn.disabled = false;
+      showAuthAlert("Password reset link sent to " + email + ". Check your inbox (and spam folder) to reset your password.", true);
+    })
+    .catch(function(err) {
+      if (spinner) spinner.style.display = "none";
+      if (btnText) btnText.textContent = "Send Password Reset Link";
+      if (submitBtn) submitBtn.disabled = false;
+
+      let msg = "Failed to send password reset email.";
+      if (err.code === "auth/user-not-found") {
+        msg = "No account found with this email address.";
+      } else if (err.code === "auth/invalid-email") {
+        msg = "Please enter a valid email address.";
+      } else if (err.code === "auth/too-many-requests") {
+        msg = "Too many reset attempts. Please wait a while before trying again.";
+      } else if (err.message) {
+        msg = err.message;
+      }
+      showAuthAlert(msg, false);
+    });
+}
+
 // Global Auth & Event Initialization
 function initGlobalAuthAndChatbot() {
   updateAuthUi();
+
+  // Forgot password trigger & form submission
+  const forgotPassBtn = document.getElementById("forgotPassBtn");
+  if (forgotPassBtn) {
+    forgotPassBtn.addEventListener("click", function() {
+      switchAuthTab("forgot");
+    });
+  }
+
+  const forgotPassForm = document.getElementById("forgotPassForm");
+  if (forgotPassForm) {
+    forgotPassForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      handleForgotPassword();
+    });
+  }
 
   // Listen to Firebase Auth state
   if (typeof voltAuth !== "undefined" && voltAuth) {
