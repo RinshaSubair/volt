@@ -453,11 +453,26 @@ html, body {
   margin: 0.5em 0;
 }
 .katex {
-  display: inline-block !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  vertical-align: middle;
+  max-width: 100%;
+}
+.volt-var {
+  display: inline;
+  white-space: nowrap;
+}
+.volt-var i {
+  font-style: italic;
+  font-family: inherit;
+}
+.volt-var sub {
+  font-size: 72%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+  bottom: -0.22em;
+  font-style: normal;
+}
+svg text tspan {
+  font-family: inherit;
 }
 
 </style>
@@ -64264,8 +64279,12 @@ function repairLatex(str){
   // 7. Fix unescaped & inside \text{...}
   s = s.replace(/(\\text\{[^{}]*?)&([^{}]*\})/g, '$1\\&$2');
 
-  // 8. Fix unescaped _ inside \text{...}
-  s = s.replace(/\\text\{[^{}]*\}/g, (m) => m.replace(/(?<!\\)_/g, '\\_'));
+  // 8. Fix Greek commands inside \text{...} (KaTeX rejects \phi etc in text mode) and unescaped _
+  s = s.replace(/\\text\{[^{}]*\}/g, function(tm) {
+    const gMap = { phi:'φ', theta:'θ', omega:'ω', alpha:'α', beta:'β', gamma:'γ', delta:'δ', lambda:'λ', mu:'μ', pi:'π', rho:'ρ', sigma:'σ', tau:'τ', psi:'ψ', zeta:'ζ', eta:'η', Phi:'Φ', Delta:'Δ', Omega:'Ω' };
+    let res = tm.replace(/\\(Phi|Delta|Omega|phi|theta|omega|alpha|beta|gamma|delta|lambda|mu|pi|rho|sigma|tau|psi|zeta|eta)\b/g, (m, g) => gMap[g] || m);
+    return res.replace(/(?<!\\)_/g, '\\_');
+  });
 
   // 9. Fix bare le / ge without backslash
   s = s.replace(/(?<=\s)(?:le|ge)(?=\s)/g, (m) => '\\' + m);
@@ -64276,7 +64295,11 @@ function repairLatex(str){
   // 11. Fix trailing $$ inside math block
   s = s.replace(/\$\$$/, '');
 
-  // 12. Ensure open environments are closed
+  // 12. Fix en-dash / em-dash inside \text{}
+  s = s.replace(/\\text\{--\}/g, '\\text{ – }');
+  s = s.replace(/\\text\{---\}/g, '\\text{ — }');
+
+  // 13. Ensure open environments are closed
   if(s.includes('\\begin{aligned}') && !s.includes('\\end{aligned}')){
     s += '\n\\end{aligned}';
   }
@@ -64305,6 +64328,72 @@ function convertAsciiToLatex(text) {
   if (!text) return '';
   let s = text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, ' and ');
 
+  // 1. Convert sqrt before any bracket/parenthesis manipulation:
+  // e.g. √(a² + b²) -> \sqrt{a² + b²}, √[a² + b²] -> \sqrt{a² + b²}
+  s = s.replace(/(?:&radic;|√|\\sqrt)\s*\[([^\]]+)\]/g, '\\sqrt{$1}');
+  s = s.replace(/(?:&radic;|√|\\sqrt)\s*\(([^)]+)\)/g, '\\sqrt{$1}');
+  s = s.replace(/&radic;/g, '\\sqrt ');
+  s = s.replace(/√\s*([a-zA-Z0-9]+)/g, '\\sqrt{$1}');
+  s = s.replace(/√/g, '\\sqrt ');
+
+  // 2. Format parenthetical prose notes with proper spacing and text wrapper:
+  // e.g. '(circuit turn-off time must exceed t_q)' -> '\quad \text{(circuit turn-off time must exceed } t_{q} \text{)}'
+  s = s.replace(/\(([^)]+)\)/g, function(match, inner){
+    const words = inner.match(/[a-zA-Z]{2,}/g);
+    // Ignore if it looks like pure math expressions or arguments e.g. (s^2 + 1) or (V cos φ + I R_a)
+    const isMathExp = /[\^=+\-*\/_]/.test(inner) && (!words || words.length <= 4 && !/\b(for|lagging|leading|use|since|when|must|with|where|and|or)\b/i.test(inner));
+    if (words && words.length >= 2 && !isMathExp) {
+      let normInner = inner.replace(/−/g, '-').replace(/–/g, '-');
+      const parts = normInner.split(/([A-Za-z]{1,4}_[A-Za-z0-9]{1,6})/g);
+      let out = ' \\quad \\text{(';
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        if (/^[A-Za-z]{1,4}_[A-Za-z0-9]{1,6}$/.test(p)) {
+          const bp = p.split('_');
+          const subTex = (bp[1].length === 1 || /^\d+$/.test(bp[1])) ? bp[1] : '\\text{' + bp[1] + '}';
+          out += '} ' + bp[0] + '_{' + subTex + '} \\text{';
+        } else {
+          out += p;
+        }
+      }
+      out += ')}';
+      return out;
+    }
+    return match;
+  });
+
+  // Also handle square brackets containing prose notes: e.g. '[circuit turn-off time must exceed t_q]'
+  s = s.replace(/\[([^\]]+)\]/g, function(match, inner){
+    const words = inner.match(/[a-zA-Z]{2,}/g);
+    const isMathExp = /[\^=+\-*\/_]/.test(inner) && (!words || words.length <= 4 && !/\b(for|lagging|leading|use|since|when|must|with|where|and|or)\b/i.test(inner));
+    if (words && words.length >= 2 && !isMathExp) {
+      let normInner = inner.replace(/−/g, '-').replace(/–/g, '-');
+      const parts = normInner.split(/([A-Za-z]{1,4}_[A-Za-z0-9]{1,6})/g);
+      let out = ' \\quad \\text{[';
+      for (let i = 0; i < parts.length; i++) {
+        const p = parts[i];
+        if (/^[A-Za-z]{1,4}_[A-Za-z0-9]{1,6}$/.test(p)) {
+          const bp = p.split('_');
+          const subTex = (bp[1].length === 1 || /^\d+$/.test(bp[1])) ? bp[1] : '\\text{' + bp[1] + '}';
+          out += '} ' + bp[0] + '_{' + subTex + '} \\text{';
+        } else {
+          out += p;
+        }
+      }
+      out += ']}';
+      return out;
+    }
+    return match;
+  });
+
+  // Handle trailing/inline prose connectors like ', where ...', ', for ...', ', when ...', ', since ...'
+  s = s.replace(/,\s*(where|for|when|since|if)\b/gi, function(match, word){
+    return ' \\quad \\text{' + word.toLowerCase() + '} ';
+  });
+
+  // Convert abbreviations that shouldn't be italic product of letters:
+  s = s.replace(/\b(HCF|LCM|ADC|DAC|LSB|MSB|RMS|THD|SIL|NGR)\b/g, '\\text{$1}');
+
   // Convert consecutive unicode subscripts to _{digits}
   const subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','₋':'-','ₙ':'n','ᵢ':'i','ⱼ':'j','ₖ':'k','ᵣ':'r'};
   s = s.replace(/[₀-₉₋ₙᵢⱼₖᵣ]+/g, (m) => '_{' + Array.from(m).map(c => subMap[c] || c).join('') + '}');
@@ -64324,10 +64413,6 @@ function convertAsciiToLatex(text) {
 
   s = s.replace(/Σ/g, '\\sum ');
   s = s.replace(/∑/g, '\\sum ');
-  s = s.replace(/(?:&radic;|√)\s*\[([^\]]+)\]/g, '\\sqrt{$1} ');
-  s = s.replace(/&radic;/g, '\\sqrt ');
-  s = s.replace(/√\s*([a-zA-Z0-9]+)/g, '\\sqrt{$1} ');
-  s = s.replace(/√/g, '\\sqrt ');
   s = s.replace(/∫/g, '\\int ');
   s = s.replace(/∮/g, '\\oint ');
   s = s.replace(/∝/g, '\\propto ');
@@ -64368,7 +64453,17 @@ function convertAsciiToLatex(text) {
   s = s.replace(/\^\{([^}]+)\}\^([0-9a-zA-Z]+)/g, '^{$1 $2}');
 
   s = s.replace(/([0-9a-zA-Z\)\}])\s*\^\s*([0-9a-zA-Z]+|\([^\)]+\))/g, '$1^{$2}');
-  s = s.replace(/_([a-zA-Z]{2,})/g, '_{\\text{$1}}');
+
+  // Convert variable subscripts outside \\text{...}: e.g. t_q -> t_{q}, t_rr -> t_{\text{rr}}
+  const segs = s.split(/(\\text\{[^{}]*\})/g);
+  for (let i = 0; i < segs.length; i++) {
+    if (!segs[i].startsWith('\\text{')) {
+      segs[i] = segs[i].replace(/\b([A-Za-z]{1,4})_([A-Za-z0-9]{1,6})\b/g, function(vm, b, sub){
+        return b + '_{' + (sub.length === 1 || /^\d+$/.test(sub) ? sub : '\\text{' + sub + '}') + '}';
+      });
+    }
+  }
+  s = segs.join('');
 
   // Escape any remaining bare & not in environment
   if (!/aligned|matrix|cases/.test(s)) {
@@ -64378,9 +64473,115 @@ function convertAsciiToLatex(text) {
   return prefix + s;
 }
 
+function convertInlineDollarMath(root){
+  if(!root) return;
+  const ignoredTags = { SCRIPT: 1, NOSCRIPT: 1, STYLE: 1, TEXTAREA: 1, PRE: 1, CODE: 1, OPTION: 1, SVG: 1 };
+  const proseWords = /\b(per|to|from|with|cost|costs|price|rate|meter|meters|month|months|year|years|hour|hours|day|days|dollar|dollars|while|which|that|this|because|under|over|above|below|between)\b/i;
+
+  function isGenuineMath(inner){
+    const s = inner.trim();
+    if(!s) return false;
+    if(inner.startsWith(' ') && inner.endsWith(' ') && inner.split(/\s+/).length > 3) return false;
+    if(/^\\\$[\d,]+(?:\.\d+)?$/.test(s)) return false;
+    if(/<[a-z\/][\s\S]*>/i.test(s)) return false;
+    if(/\\/.test(s) || /\{/.test(s) || /\}/.test(s)) return true;
+    if(proseWords.test(s)) return false;
+    if(/[\^_=<>≤≥±∓×·÷≈∝≠≡∑∫√°%πμΩΔθφωαβληρΦ:/\|\'\[\]\(\)]/.test(s)) return true;
+    if(/^[\+\-]?[a-zA-Z0-9_\.:,\s\+\-\*\/]+$/.test(s)) return true;
+    return false;
+  }
+
+  const greekNames = 'Alpha|Beta|Gamma|Delta|Epsilon|Zeta|Eta|Theta|Iota|Kappa|Lambda|Mu|Nu|Xi|Pi|Rho|Sigma|Tau|Upsilon|Phi|Chi|Psi|Omega|alpha|beta|gamma|delta|epsilon|zeta|eta|theta|iota|kappa|lambda|mu|nu|xi|pi|rho|sigma|tau|upsilon|phi|chi|psi|omega';
+  const greekRe = new RegExp('^(?:' + greekNames + ')$');
+  const commonAbbrVars = 'PF|THD|BW|CMRR|RMS|MMF|EMF|VA|VAR';
+  const commonAbbrRe = new RegExp('^(?:' + commonAbbrVars + ')$');
+  const lowerMathVars = 't|f|v|i|x|y|z|w|r|p|s|k|e|n|m|q|d|c|a|b';
+  const basePattern = '([jJ]?)(' + greekNames + '|' + commonAbbrVars + '|[A-Z]|[' + lowerMathVars + '])';
+  const subVarRegex = new RegExp('(?<![A-Za-z0-9_\\\\$])' + basePattern + '_([A-Za-z0-9]{1,5})(?![A-Za-z0-9_])', 'g');
+
+  function convertSubscripts(text){
+    if(!text || !text.includes('_')) return text;
+    // Don't modify parts already wrapped in math delimiters \(...\) or $$...$$
+    const parts = text.split(/(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|\$\$[\s\S]*?\$\$)/g);
+    for(let i = 0; i < parts.length; i++){
+      const seg = parts[i];
+      if(!seg || seg.startsWith('\\(') || seg.startsWith('\\[') || seg.startsWith('$$')) continue;
+      parts[i] = seg.replace(subVarRegex, function(match, prefixJ, base, sub){
+        let baseTex;
+        if(greekRe.test(base)){
+          baseTex = '\\' + base;
+        } else if(commonAbbrRe.test(base)){
+          baseTex = '\\text{' + base + '}';
+        } else {
+          baseTex = base;
+        }
+        if(prefixJ){
+          baseTex = prefixJ + baseTex;
+        }
+        const subTex = (sub.length === 1 || /^\d+$/.test(sub)) ? sub : ('\\text{' + sub + '}');
+        return '\\(' + baseTex + '_{' + subTex + '}\\)';
+      });
+    }
+    return parts.join('');
+  }
+
+  function transformText(text){
+    if(!text) return text;
+    let s = text;
+    if(s.includes('$')){
+      s = s.replace(/(?<!\\|\$)\$([^\$\r\n]+?)\$(?!\$)/g, function(match, inner){
+        if(isGenuineMath(inner)){
+          return '\\(' + inner + '\\)';
+        }
+        return match;
+      });
+    }
+    if(s.includes('_')){
+      s = convertSubscripts(s);
+    }
+    return s;
+  }
+
+  if(root.nodeType === 3){
+    const transformed = transformText(root.nodeValue);
+    if(transformed !== root.nodeValue) root.nodeValue = transformed;
+    return;
+  }
+  if(root.nodeType !== 1 && root.nodeType !== 9 && root.nodeType !== 11) return;
+
+  const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    acceptNode: function(node){
+      if(!node.nodeValue || (!node.nodeValue.includes('$') && !node.nodeValue.includes('_'))) return NodeFilter.FILTER_REJECT;
+      let p = node.parentElement;
+      while(p && p !== root){
+        if(ignoredTags[p.nodeName] || (p.classList && (p.classList.contains('katex') || p.classList.contains('katex-display')))){
+          return NodeFilter.FILTER_REJECT;
+        }
+        p = p.parentElement;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const nodes = [];
+  while(walker.nextNode()) nodes.push(walker.currentNode);
+
+  nodes.forEach(node => {
+    const orig = node.nodeValue;
+    const transformed = transformText(orig);
+    if(transformed !== orig){
+      node.nodeValue = transformed;
+    }
+  });
+}
+
 function renderMath(container){
   if(!container) container = document.body;
   if(typeof katex === 'undefined') return;
+
+  try {
+    convertInlineDollarMath(container);
+  } catch(e) {}
 
   // 1. Process formula-boxes
   const boxes = container.querySelectorAll('.formula-box');
@@ -64467,6 +64668,30 @@ function renderMath(container){
           let processedLine = line.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
           processedLine = processedLine.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
           if (!processedLine) return;
+
+          // Check if line is a descriptive definition: e.g. "F_O = field current that produces rated V on the OCC"
+          const defMatch = processedLine.match(/^([A-Za-z0-9_]{1,10}|[A-Za-z]_[A-Za-z0-9]{1,4})\s*=\s*([a-zA-Z\s]{4,}.*)$/);
+          if (defMatch) {
+            const sym = defMatch[1];
+            const desc = defMatch[2].trim();
+            const words = desc.match(/[a-zA-Z]{3,}/g);
+            if (words && words.length >= 3 && !/[\+\*\/\\^]/.test(desc)) {
+              const defDiv = document.createElement('div');
+              defDiv.style.margin = '4px 0';
+              defDiv.style.fontSize = '0.95em';
+              const symSpan = document.createElement('span');
+              try {
+                katex.render(repairLatex(convertAsciiToLatex(sym)), symSpan, { displayMode: false, throwOnError: false, output: 'html' });
+              } catch(e) {
+                symSpan.textContent = sym;
+              }
+              defDiv.appendChild(symSpan);
+              defDiv.appendChild(document.createTextNode(' = ' + desc));
+              box.appendChild(defDiv);
+              return;
+            }
+          }
+
           if (!/\\[a-zA-Z]+/.test(processedLine)) {
             processedLine = convertAsciiToLatex(processedLine);
           }
@@ -74691,6 +74916,7 @@ function handleRegistrationSubmit() {
   if (submitBtn) submitBtn.disabled = true;
 
   function saveProfileToFirestore(uid, authMethod) {
+    const isThisAdmin = email.toLowerCase().trim() === "rinshasv@gmail.com";
     const userData = {
       uid: uid,
       name: name,
@@ -74702,12 +74928,16 @@ function handleRegistrationSubmit() {
       department: department,
       heardFrom: heardFrom,
       authProvider: authMethod,
-      role: "student",
-      status: "pending",
-      approvalStatus: "pending",
-      isApproved: false,
+      role: isThisAdmin ? "admin" : "student",
+      status: isThisAdmin ? "approved" : "pending",
+      approvalStatus: isThisAdmin ? "approved" : "pending",
+      isApproved: isThisAdmin ? true : false,
       registeredAt: firebase.firestore.FieldValue.serverTimestamp()
     };
+    if (isThisAdmin) {
+      userData.approvedAt = firebase.firestore.FieldValue.serverTimestamp();
+      userData.approvedBy = "system";
+    }
 
     voltDb.collection("users").doc(uid).set(userData, { merge: true })
       .then(function() {
@@ -74715,8 +74945,18 @@ function handleRegistrationSubmit() {
         if (btnText) btnText.textContent = "Submit Registration for Approval";
         if (submitBtn) submitBtn.disabled = false;
 
-        showAuthPendingScreen(userData);
-        listenToUserStatusChanges(uid);
+        if (isThisAdmin) {
+          currentUser = Object.assign({}, userData);
+          try { localStorage.setItem("volt_user", JSON.stringify(currentUser)); } catch(e){}
+          listenToUserStatusChanges(uid);
+          hideLoginWall();
+          updateAuthUi();
+          loadUserCloudProgress(uid);
+          if (typeof render === "function") render();
+        } else {
+          showAuthPendingScreen(userData);
+          listenToUserStatusChanges(uid);
+        }
       })
       .catch(function(err) {
         if (spinner) spinner.style.display = "none";

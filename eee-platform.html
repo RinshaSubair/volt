@@ -454,11 +454,27 @@ html, body {
   margin: 0.5em 0;
 }
 .katex {
-  display: inline-block !important;
-  max-width: 100% !important;
-  overflow-x: auto !important;
-  overflow-y: hidden !important;
-  vertical-align: middle;
+  max-width: 100%;
+}
+.volt-var {
+  display: inline;
+  white-space: nowrap;
+}
+.volt-var i {
+  font-style: italic;
+  font-family: inherit;
+}
+.volt-var sub, .volt-var sup {
+  font-size: 0.75em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+.volt-var sub {
+  bottom: -0.25em;
+}
+.volt-var sup {
+  top: -0.5em;
 }
 
 </style>
