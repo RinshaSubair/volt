@@ -65178,7 +65178,7 @@ function pageLearningPath(){
               <div style="font-size:12px;color:var(--text-dim);">Category ${s.catId}: ${cat.name || ''}</div>
             </div>
           </div>
-          <span class="pill pill-ok">Stage ${s.step} Core</span>
+          <span class="course-meta">Stage ${s.step}</span>
         </div>
         <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;">
           ${topicsHtml}
@@ -65223,7 +65223,7 @@ function pageEeeZeroTopic(catId, topicId){
         <div style="font-weight:600;font-size:13.5px;color:var(--text);">${sec.title}</div>
         <div style="font-size:12px;color:var(--text-dim);margin-top:2px;">${sec.desc}</div>
       </div>
-      <span class="pill pill-ok" style="font-size:11px;">Structured Section</span>
+
     </div>
   `).join("");
 
@@ -65252,7 +65252,6 @@ function pageEeeZeroTopic(catId, topicId){
     <div class="card" style="margin-bottom:18px;background:var(--bg-elevated);border-left:4px solid var(--accent);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
         <b>Curriculum Learning Architecture</b>
-        <span class="pill pill-ok">STANDARD CURRICULUM</span>
       </div>
       <p style="font-size:13px;color:var(--text-dim);margin:0;line-height:1.5;">
         ${hasLesson ? `This topic features an interactive foundation lesson with step-by-step mathematical derivations and real-world industrial context.` : `This topic follows the standardized 15-section pedagogical architecture designed for core electrical engineering depth, conceptual clarity, and competitive interview preparation.`}
@@ -65261,7 +65260,7 @@ function pageEeeZeroTopic(catId, topicId){
     </div>
 
     <div class="card" style="margin-bottom:18px;">
-      <div style="font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Standard 15-Section Lesson Architecture</div>
+      <div style="font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;">Curriculum Structure & Core Topics</div>
       <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;">Every EEE From Zero lesson adheres to this rigorous pedagogical framework to guarantee conceptual clarity and placement readiness.</p>
       <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg);">
         ${sectionsList}
@@ -65288,8 +65287,8 @@ function pageEeeZeroExplorer(filterCatId){
       const navAttr = t.lessonId ? `data-nav="lesson:${t.lessonId}" style="cursor:pointer;"` : `data-nav="eeezero:${cat.id}:${t.id}" style="cursor:pointer;"`;
       return `
         <div class="topic-row" ${navAttr}>
-          <div class="topic-left"><span class="topic-dot done"></span>${t.title}</div>
-          <span class="pill pill-ok">${t.lessonId ? 'Interactive Lesson' : 'Core Topic'}</span>
+          <div class="topic-left"><span class="topic-dot"></span>${t.title}</div>
+          <span style="font-size:12px;color:var(--text-faint);">→</span>
         </div>
       `;
     }).join("");
@@ -65302,7 +65301,7 @@ function pageEeeZeroExplorer(filterCatId){
             <b>Category ${cat.id}: ${cat.name}</b>
             <div style="font-size:12px;color:var(--text-dim);font-weight:normal;margin-top:2px;">${cat.desc}</div>
           </div>
-          <span class="pill pill-ok">${cat.topics.length} Topics</span>
+          <span class="course-meta" style="font-weight:normal;">(${cat.topics.length} topics)</span>
         </div>
         ${topicsHtml}
       </div>
@@ -65488,7 +65487,7 @@ function pageProgramming(activeLang, activeTopic){
               </div>
             </div>
             <div style="display:flex;align-items:center;gap:8px;">
-              <span class="pill pill-ok">Placement Ready</span>
+              
               <button class="btn btn-secondary" style="padding:3px 8px;font-size:12px;">${isExpanded ? '▲ Hide' : '▼ Study Topic'}</button>
             </div>
           </div>
@@ -65712,7 +65711,7 @@ function pageReasoning(){
       <div>
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:6px;flex-wrap:wrap;">
           <div style="font-weight:700;font-size:15px;min-width:0;word-break:break-word;cursor:pointer;color:var(--text);" ${tp.lessonId ? `data-nav="lesson:${tp.lessonId}"` : ''}>${idx + 1}. ${tp.name}</div>
-          <span class="pill pill-ok">${tp.questions ? `${tp.questions} Questions` : 'Core Module'}</span>
+          <span class="course-meta">${tp.questions ? `${tp.questions} Questions` : ''}</span>
         </div>
         <p style="font-size:13px;color:var(--text-dim);line-height:1.45;margin-bottom:12px;">${tp.desc}</p>
       </div>
@@ -65753,7 +65752,7 @@ function pageVerbal(){
       <div>
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:6px;flex-wrap:wrap;">
           <div style="font-weight:700;font-size:15px;min-width:0;word-break:break-word;cursor:pointer;color:var(--text);" ${tp.lessonId ? `data-nav="lesson:${tp.lessonId}"` : ''}>${idx + 1}. ${tp.name}</div>
-          <span class="pill pill-ok">${tp.questions ? `${tp.questions} Questions` : 'Core Module'}</span>
+          <span class="course-meta">${tp.questions ? `${tp.questions} Questions` : ''}</span>
         </div>
         <p style="font-size:13px;color:var(--text-dim);line-height:1.45;margin-bottom:12px;">${tp.desc}</p>
       </div>
@@ -65892,7 +65891,6 @@ function pageAiMl(selectedTopicId){
               <div class="nav-item ${isSelected ? 'active' : ''}" style="cursor:pointer;padding:8px 10px;border-radius:6px;font-size:13px;display:flex;justify-content:space-between;align-items:center;min-width:0;gap:8px;"
                 onclick="AIML_SELECTED_TOPIC = '${tp.id}'; render();">
                 <span style="font-weight:${isSelected ? '700' : '500'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">${tp.num}. ${tp.title}</span>
-                <span class="pill pill-ok" style="font-size:10px;padding:2px 6px;flex-shrink:0;">Ready</span>
               </div>
             `;
           }).join("")}
@@ -65904,8 +65902,7 @@ function pageAiMl(selectedTopicId){
         <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
           <div>
             <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;">Domain: ${activeTopic.domain || 'General AI'}</div>
-            <h2 style="font-size:22px;margin:4px 0 6px 0;">${activeTopic.num || 1}. ${activeTopic.title}</h2>
-            <span class="pill pill-ok" style="font-size:11px;">15-Section Canonical Lesson Architecture · Complete</span>
+            <h2 style="font-size:22px;margin:4px 0 0 0;">${activeTopic.num || 1}. ${activeTopic.title}</h2>
           </div>
         </div>
 
@@ -66253,7 +66250,7 @@ function pageHome(stats){
     ${(()=>{const T=syllabusTotals(); return `<div class="card" style="font-size:13.5px;line-height:1.7;color:var(--text-dim);">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:8px;">
         <div><b style="color:var(--text);font-size:14px;">Core Engineering Syllabus (Semesters 3–7)</b></div>
-        <span class="pill pill-ok">100% Comprehensive Coverage</span>
+        
       </div>
       <div>${T.courses} Courses · ${T.modules} Modules · ${T.topics} Canonical Lessons with KaTeX Mathematical Derivations & Diagrams.</div>
       <div style="margin-top:8px;border-top:1px solid var(--border);padding-top:8px;display:flex;flex-wrap:wrap;gap:16px;">
@@ -66270,7 +66267,7 @@ function learnedResumeCard(id,title,area){
   return `<div class="card" style="cursor:pointer;" data-nav="lesson:${id}">
     <div style="font-size:11.5px;color:var(--text-faint);margin-bottom:4px;">${area}</div>
     <div style="font-weight:600;font-size:14.5px;margin-bottom:8px;">${title}</div>
-    <span class="pill ${done?'pill-ok':'pill-neutral'}">${done?'Completed':'Available'}</span>
+    ${done ? `<span class="badge" style="color:var(--ok);font-size:11.5px;">Completed ✓</span>` : ''}
   </div>`;
 }
 
@@ -66290,7 +66287,7 @@ function pageLearn(){
     const l = LESSONS[id]; const done = isFoundationLessonDone(id);
     return `<div class="topic-row" data-nav="lesson:${id}">
       <div class="topic-left"><span class="topic-dot ${done?'done':''}"></span>${l.title}</div>
-      <span class="pill ${done?'pill-ok':'pill-neutral'}">${done?'Completed':'Explore'}</span>
+      <span style="font-size:12px;color:var(--text-faint);">→</span>
     </div>`;
   }).join("");
 
@@ -66303,7 +66300,7 @@ function pageLearn(){
             <div style="font-weight:700;font-size:17px;color:var(--text);margin-bottom:4px;">⚡ EEE From Zero</div>
             <div class="course-meta" style="font-size:13px;line-height:1.4;">201 Foundation Lessons across 40 Knowledge Domains (A–AN) • Complete 17-Stage Beginner-to-Industry Career Path</div>
           </div>
-          <span class="pill pill-ok" style="font-size:12px;">201 Lessons</span>
+          <span class="course-meta">201 Lessons</span>
         </div>
         <div style="display:flex;gap:8px;margin-top:14px;">
           <button class="btn btn-primary" style="font-size:12px;padding:5px 12px;" data-nav="eeezero">Explore All 40 Categories →</button>
@@ -66322,7 +66319,7 @@ function pageSemester(n){
     const modCount = c.modules.length, topicCount = courseTopics(c).length, st = courseStatus(c);
     return `<div class="course-row" data-nav="course:${c.code}" data-sem="${n}">
       <div><div style="font-weight:600;">${c.title}</div><div class="course-meta">${c.code} · ${modCount} Modules · ${topicCount} Lecture Topics · ${c.credits} Credits</div></div>
-      <span class="pill pill-ok">${c.credits} Credits</span>
+      <span class="course-meta">${c.credits} Credits</span>
     </div>`;
   }).join("");
   return `
@@ -66340,11 +66337,11 @@ function pageCourse(sem, code){
     const topics = m.topics.map(t=>{
       const lessonId = findLessonIdForTopic(t);
       return `<div class="topic-row" ${lessonId?`data-nav="lesson:${lessonId}"`:''} style="cursor:${lessonId?'pointer':'default'};">
-        <div class="topic-left"><span class="topic-dot done"></span>${t}</div>
-        <span class="pill pill-ok" style="font-size:11px;">${lessonId?'Interactive Lesson':'Core Topic'}</span>
+        <div class="topic-left"><span class="topic-dot"></span>${t}</div>
+        ${lessonId ? `<span style="font-size:12px;color:var(--text-faint);">→</span>` : ''}
       </div>`;
     }).join("");
-    return `<div class="module-block"><div class="module-head">Module ${mi+1}: ${m.name} <span class="pill pill-ok" style="margin-left:8px;">${m.topics.length} Topics</span></div>${topics}</div>`;
+    return `<div class="module-block"><div class="module-head"><div style="font-weight:600;">Module ${mi+1}: ${m.name}</div><span class="course-meta">${m.topics.length} topics</span></div>${topics}</div>`;
   }).join("");
   return `
     <div class="crumb"><span data-nav="learn" style="cursor:pointer;">Learn</span> / <span data-nav="sem:${sem}" style="cursor:pointer;">${s.label}</span> / ${c.title}</div>
@@ -71158,7 +71155,7 @@ function pagePracticeHub(){
     <div class="card" style="margin-bottom:20px;background:var(--bg-elevated);border-left:4px solid var(--accent);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
         <div style="font-weight:700;font-size:15px;">Advanced Practice Modes (Targeted & Adaptive)</div>
-        <span class="pill pill-ok">${allIds.length} Verified MCQs Ready</span>
+        <span class="pill pill-ok">${allIds.length} Practice MCQs</span>
       </div>
       <p style="font-size:13px;color:var(--text-dim);margin-bottom:12px;line-height:1.45;">Select an optimized mode to test conceptual accuracy, build exam endurance, or target specific weak areas.</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -71271,7 +71268,7 @@ function pageAptitude(){
           <span style="font-size:18px;color:var(--accent);">→</span>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-          <span class="pill pill-ok">39 Chapters Ready</span>
+          <span class="pill pill-ok">39 Chapters</span>
           <span class="pill pill-neutral">780 Practice MCQs</span>
         </div>
       </div>
@@ -71284,7 +71281,7 @@ function pageAptitude(){
           <span style="font-size:18px;color:var(--accent);">→</span>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-          <span class="pill pill-ok">13 Modules Ready</span>
+          <span class="pill pill-ok">13 Modules</span>
           <span class="pill pill-neutral">260 Practice MCQs</span>
         </div>
       </div>
@@ -71297,7 +71294,7 @@ function pageAptitude(){
           <span style="font-size:18px;color:var(--accent);">→</span>
         </div>
         <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
-          <span class="pill pill-ok">10 Modules Ready</span>
+          <span class="pill pill-ok">10 Modules</span>
           <span class="pill pill-neutral">200 Practice MCQs</span>
         </div>
       </div>
@@ -71325,7 +71322,7 @@ function pageAptitudeQuant(){
         <div>
           <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:6px;flex-wrap:wrap;">
             <div style="font-weight:700;font-size:15px;min-width:0;word-break:break-word;cursor:pointer;color:var(--text);" ${lessonId ? `data-nav="lesson:${lessonId}"` : ''}>${idx + 1}. ${ch}</div>
-            <span class="pill pill-ok">${qCount} Questions</span>
+            <span class="course-meta">${qCount} Questions</span>
           </div>
           <p style="font-size:13px;color:var(--text-dim);line-height:1.45;margin-bottom:12px;">${subTitle}</p>
         </div>
@@ -73408,16 +73405,16 @@ function pageSearch(q){
     <h2 style="font-size:19px;margin-bottom:14px;">Results for "${q}"</h2>
     ${lessonHits.length? `<div class="section-title"><h2>Lessons</h2></div><div class="grid" style="display:flex;flex-direction:column;gap:12px;">${lessonHits.map(([id,l])=>`<div class="card" style="cursor:pointer;" data-nav="lesson:${id}"><div style="font-weight:600;">${l.title}</div><div class="course-meta">${l.area}</div></div>`).join("")}</div>`:""}
     ${formulaHits.length? `<div class="section-title"><h2>Formulas (${formulaHits.length})</h2></div><div class="card">${formulaHits.slice(0,20).map(f=>`<div class="topic-row" data-nav="formulabook" style="cursor:pointer;"><div class="topic-left"><b>${f.name}</b>: <code>${f.f}</code></div><div class="course-meta">${f.subj}</div></div>`).join("")}</div>`:""}
-    ${eeeZeroHits.length? `<div class="section-title"><h2>EEE From Zero Topics (${eeeZeroHits.length})</h2></div><div class="card">${eeeZeroHits.slice(0,25).map(h=>`<div class="topic-row" data-nav="${h.topic.lessonId ? `lesson:${h.topic.lessonId}` : `eeezero:${h.catId}:${h.topic.id}`}" style="cursor:pointer;"><div class="topic-left"><span class="pill pill-ok">Foundation Topic</span>${h.topic.title}</div><div class="course-meta">Category ${h.catId}: ${h.catName}</div></div>`).join("")}</div>`:""}
-    ${topicHits.length? `<div class="section-title"><h2>Syllabus topics (${topicHits.length})</h2></div><div class="card">${topicHits.slice(0,40).map(h=>{const lid=TOPIC_TO_LESSON[h.t]; return `<div class="topic-row" ${lid?`data-nav="lesson:${lid}"`:`data-nav="course:${h.c.code}" data-sem="${h.n}"`} style="cursor:pointer;"><div class="topic-left"><span class="topic-dot ${lid?'done':''}"></span><span>${h.t}<div class="course-meta">S${h.n} · ${h.c.title} · Module ${h.mi+1}</div></span></div><span class="pill ${lid?(TOPIC_PARTIAL.has(h.t)?'pill-partial':'pill-ok'):'pill-neutral'}">${lid?(TOPIC_PARTIAL.has(h.t)?'Foundation Lesson':'Core Topic'):'Curriculum Topic'}</span></div>`;}).join("")}${topicHits.length>40?`<div class="course-meta" style="padding:8px;">Showing 40 of ${topicHits.length}. Refine your search.</div>`:''}</div>`:""}
+    ${eeeZeroHits.length? `<div class="section-title"><h2>EEE From Zero Topics (${eeeZeroHits.length})</h2></div><div class="card">${eeeZeroHits.slice(0,25).map(h=>`<div class="topic-row" data-nav="${h.topic.lessonId ? `lesson:${h.topic.lessonId}` : `eeezero:${h.catId}:${h.topic.id}`}" style="cursor:pointer;"><div class="topic-left">${h.topic.title}</div><div class="course-meta">Category ${h.catId}: ${h.catName}</div></div>`).join("")}</div>`:""}
+    ${topicHits.length? `<div class="section-title"><h2>Syllabus topics (${topicHits.length})</h2></div><div class="card">${topicHits.slice(0,40).map(h=>{const lid=TOPIC_TO_LESSON[h.t]; return `<div class="topic-row" ${lid?`data-nav="lesson:${lid}"`:`data-nav="course:${h.c.code}" data-sem="${h.n}"`} style="cursor:pointer;"><div class="topic-left"><span class="topic-dot ${lid?'done':''}"></span><span>${h.t}<div class="course-meta">S${h.n} · ${h.c.title} · Module ${h.mi+1}</div></span></div></div>`;}).join("")}${topicHits.length>40?`<div class="course-meta" style="padding:8px;">Showing 40 of ${topicHits.length}. Refine your search.</div>`:''}</div>`:""}
     ${numHits.length? `<div class="section-title"><h2>Numericals (${numHits.length})</h2></div><div class="card">${numHits.slice(0,20).map(([id,n])=>`<div class="topic-row" data-nav="numerical:${id}" style="cursor:pointer;"><div class="topic-left"><span class="pill pill-partial">${NUM_DIFF[n.d]}</span><span>${n.q.slice(0,100)}…</span></div><div class="course-meta">${n.subj}</div></div>`).join("")}</div>`:""}
     ${ivHits.length? `<div class="section-title"><h2>Interview questions (${ivHits.length})</h2></div><div class="card">${ivHits.slice(0,20).map(([id,x])=>`<div class="topic-row" data-nav="ivcat:${x.cat}" style="cursor:pointer;"><div class="topic-left"><span class="pill pill-neutral">${x.cat}</span><span>${x.q}</span></div><div class="course-meta">${x.subj}</div></div>`).join("")}</div>`:""}
     ${companyHits.length? `<div class="section-title"><h2>Company Preparation (${companyHits.length})</h2></div><div class="grid" style="display:flex;flex-direction:column;gap:12px;">${companyHits.map(c=>`<div class="card" style="cursor:pointer;" data-nav="company:${c.id}"><div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;"><span style="font-size:20px;">${c.icon}</span><b>${c.name}</b></div><div class="course-meta">${c.sector}</div></div>`).join("")}</div>`:""}
-    ${progHits.length? `<div class="section-title"><h2>Programming & DSA Curriculum (${progHits.length})</h2></div><div class="card">${progHits.slice(0, 30).map(h=>`<div class="topic-row" data-nav="lang:${h.lang}" style="cursor:pointer;"><div class="topic-left"><b>${h.topic.name}</b><div class="course-meta">${h.lang.toUpperCase()} Track · ${h.topic.whyItMatters.slice(0, 80)}…</div></div><span class="pill pill-ok">Complete</span></div>`).join("")}</div>`:""}
-    ${progProbHits.length? `<div class="section-title"><h2>Coding Problems (${progProbHits.length})</h2></div><div class="card">${progProbHits.slice(0, 30).map(p=>`<div class="topic-row" data-nav="progprob:${p.id}" style="cursor:pointer;"><div class="topic-left"><span class="pill pill-partial">${p.difficulty||'Placement'}</span><b>${p.title||'Problem'}</b><div class="course-meta">${(p.lang||p.language||'c').toUpperCase()} · Time: ${typeof p.complexity==='object'&&p.complexity?p.complexity.time:(p.complexity||'O(N)')}</div></div><span class="pill pill-ok">Solved</span></div>`).join("")}</div>`:""}
-    ${reasoningHits.length? `<div class="section-title"><h2>Logical Reasoning Modules (${reasoningHits.length})</h2></div><div class="card">${reasoningHits.map(tp=>`<div class="topic-row" data-nav="reasoning" style="cursor:pointer;"><div class="topic-left"><b>${tp.name}</b></div><span class="pill pill-ok">Module</span></div>`).join("")}</div>`:""}
-    ${verbalHits.length? `<div class="section-title"><h2>Verbal Ability Domains (${verbalHits.length})</h2></div><div class="card">${verbalHits.map(tp=>`<div class="topic-row" data-nav="verbal" style="cursor:pointer;"><div class="topic-left"><b>${tp.name}</b></div><span class="pill pill-ok">Module</span></div>`).join("")}</div>`:""}
-    ${aimlHits.length? `<div class="section-title"><h2>Applied AI/ML Curriculum Topics (${aimlHits.length})</h2></div><div class="card">${aimlHits.slice(0, 30).map(tp=>`<div class="topic-row" data-nav="aiml:${tp.id}" style="cursor:pointer;"><div class="topic-left"><b>${tp.num}. ${tp.title}</b><div class="course-meta">${tp.domain} · ${tp.simpleExplanation.slice(0, 80)}…</div></div><span class="pill pill-ok">Complete</span></div>`).join("")}</div>`:""}
+    ${progHits.length? `<div class="section-title"><h2>Programming & DSA Curriculum (${progHits.length})</h2></div><div class="card">${progHits.slice(0, 30).map(h=>`<div class="topic-row" data-nav="lang:${h.lang}" style="cursor:pointer;"><div class="topic-left"><b>${h.topic.name}</b><div class="course-meta">${h.lang.toUpperCase()} Track · ${h.topic.whyItMatters.slice(0, 80)}…</div></div></div>`).join("")}</div>`:""}
+    ${progProbHits.length? `<div class="section-title"><h2>Coding Problems (${progProbHits.length})</h2></div><div class="card">${progProbHits.slice(0, 30).map(p=>`<div class="topic-row" data-nav="progprob:${p.id}" style="cursor:pointer;"><div class="topic-left"><span class="pill pill-partial">${p.difficulty||'Placement'}</span><b>${p.title||'Problem'}</b><div class="course-meta">${(p.lang||p.language||'c').toUpperCase()} · Time: ${typeof p.complexity==='object'&&p.complexity?p.complexity.time:(p.complexity||'O(N)')}</div></div></div>`).join("")}</div>`:""}
+    ${reasoningHits.length? `<div class="section-title"><h2>Logical Reasoning Modules (${reasoningHits.length})</h2></div><div class="card">${reasoningHits.map(tp=>`<div class="topic-row" data-nav="reasoning" style="cursor:pointer;"><div class="topic-left"><b>${tp.name}</b></div></div>`).join("")}</div>`:""}
+    ${verbalHits.length? `<div class="section-title"><h2>Verbal Ability Domains (${verbalHits.length})</h2></div><div class="card">${verbalHits.map(tp=>`<div class="topic-row" data-nav="verbal" style="cursor:pointer;"><div class="topic-left"><b>${tp.name}</b></div></div>`).join("")}</div>`:""}
+    ${aimlHits.length? `<div class="section-title"><h2>Applied AI/ML Curriculum Topics (${aimlHits.length})</h2></div><div class="card">${aimlHits.slice(0, 30).map(tp=>`<div class="topic-row" data-nav="aiml:${tp.id}" style="cursor:pointer;"><div class="topic-left"><b>${tp.num}. ${tp.title}</b><div class="course-meta">${tp.domain} · ${tp.simpleExplanation.slice(0, 80)}…</div></div></div>`).join("")}</div>`:""}
     ${mcqHits.length? `<div class="section-title"><h2>MCQs</h2></div><div class="card">${mcqHits.slice(0,20).map(([id,m])=>`<div class="topic-row" data-nav="mcq:x" data-ids='${JSON.stringify([id])}' style="cursor:pointer;">${m.q}</div>`).join("")}</div>`:""}
     ${(!lessonHits.length && !mcqHits.length && !topicHits.length && !numHits.length && !ivHits.length && !formulaHits.length && !eeeZeroHits.length && !companyHits.length && !progHits.length && !reasoningHits.length && !verbalHits.length && !aimlHits.length) ? `<div class="empty-state">No matches found. Try another keyword or topic.</div>` : ""}
   `;
@@ -75522,7 +75519,7 @@ function pageProgProblemDetail(probId) {
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;">
-          <span class="pill pill-ok">Verified Code</span>
+          
           <button class="btn btn-secondary" onclick="copyProgCode('${p.id}')" style="padding:3px 10px;font-size:12px;display:inline-flex;align-items:center;gap:4px;cursor:pointer;">📋 Copy Code</button>
         </div>
       </div>
