@@ -65082,6 +65082,11 @@ function wireDynamicHandlers(root, scope){
       else if(val.startsWith("lang:")) nav({page:"programming", lang:val.slice(5)});
       else if(val.startsWith("progprob:")) nav({page:"progprob", id:val.slice(9)});
       else if(val.startsWith("aimltopic:")) nav({page:"aimltopic", id:val.slice(10)});
+      else if(val.startsWith("aiml:")){
+        const id = val.slice(5);
+        if(id) nav({page:"aimltopic", id});
+        else nav({page:"aiml"});
+      }
       else if(val.startsWith("aptitude:")){
         const parts = val.split(":");
         if(parts[1] === "quant") nav({page:"aptitude", sub:"quant", cat:parts[2]||"all"});
@@ -65136,7 +65141,7 @@ function renderPage(stats){
     case "aimltopic": return pageAiMlTopicDetail(ROUTE.id);
     case "reasoning": return pageReasoning();
     case "verbal": return pageVerbal();
-    case "aiml": return pageAiMl(ROUTE.sub);
+    case "aiml": return (ROUTE.id || ROUTE.topic) ? pageAiMlTopicDetail(ROUTE.id || ROUTE.topic) : pageAiMl();
     case "companies": return pageCompanies(ROUTE.id);
     case "profile": return pageProfile();
     case "mock": return pageMock();
@@ -65787,15 +65792,10 @@ function pageVerbal(){
 }
 
 /* ---------- STANDALONE AI / ML TRACK ---------- */
-let AIML_SELECTED_TOPIC = "aiml-ai-fund";
 let AIML_ACTIVE_DOMAIN = "all";
 
-function pageAiMl(selectedTopicId){
-  if(selectedTopicId) AIML_SELECTED_TOPIC = selectedTopicId;
+function pageAiMl(){
   const topicsList = Object.values(AIML_CURRICULUM || {});
-  const totalTopics = topicsList.length;
-  const completeTopics = topicsList.filter(t => t.status === "COMPLETE").length;
-
   const domains = [
     { id: "all", name: "All Topics (70)" },
     { id: "AI & ML Foundations", name: "Foundations (6)" },
@@ -65821,7 +65821,26 @@ function pageAiMl(selectedTopicId){
   }).join(" ");
 
   const filteredTopics = AIML_ACTIVE_DOMAIN === "all" ? topicsList : topicsList.filter(t => t.domain === AIML_ACTIVE_DOMAIN);
-  const activeTopic = AIML_CURRICULUM[AIML_SELECTED_TOPIC] || topicsList[0] || {};
+
+  const topicCards = filteredTopics.map(tp => `
+    <div class="card" style="cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;padding:16px;transition:all 0.15s ease;"
+         data-nav="aimltopic:${tp.id}">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
+          <span style="font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;">${tp.domain}</span>
+          <span class="course-meta">Topic ${tp.num}</span>
+        </div>
+        <h3 style="font-size:16px;margin:0 0 8px 0;color:var(--text);font-weight:700;">${tp.num}. ${tp.title}</h3>
+        <p style="font-size:13px;color:var(--text-dim);line-height:1.5;margin:0 0 14px 0;">
+          ${tp.simpleExplanation ? (tp.simpleExplanation.slice(0, 140) + '...') : (tp.whyItMatters ? tp.whyItMatters.slice(0, 140) + '...' : '')}
+        </p>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:10px;font-size:12px;color:var(--text-faint);">
+        <span class="course-meta">15 Study Sections</span>
+        <span style="color:var(--accent);font-weight:600;display:flex;align-items:center;gap:4px;">Read Lesson →</span>
+      </div>
+    </div>
+  `).join("");
 
   return `
     <div class="crumb"><span data-nav="home" style="cursor:pointer;">Home</span> / Applied AI & Machine Learning</div>
@@ -65833,9 +65852,9 @@ function pageAiMl(selectedTopicId){
         </div>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-primary" data-nav="practice:E:mcq" style="font-size:12px;padding:6px 14px;">🎯 Practice AI/ML MCQs (60)</button>
-        <button class="btn btn-secondary" data-nav="interview" style="font-size:12px;padding:6px 14px;">💬 Interview Questions (40)</button>
-        <button class="btn btn-secondary" data-nav="fb:aiml" style="font-size:12px;padding:6px 14px;">📐 Formula Book (12)</button>
+        <button class="btn btn-primary" data-nav="practice:E:mcq" style="font-size:12px;padding:6px 14px;">Practice AI/ML MCQs (60)</button>
+        <button class="btn btn-secondary" data-nav="interview" style="font-size:12px;padding:6px 14px;">Interview Questions (40)</button>
+        <button class="btn btn-secondary" data-nav="fb:aiml" style="font-size:12px;padding:6px 14px;">Formula Book (12)</button>
       </div>
     </div>
 
@@ -65852,7 +65871,7 @@ function pageAiMl(selectedTopicId){
       <div class="card stat-card">
         <div class="stat-label">Curriculum Topics</div>
         <div class="stat-num" style="font-size:22px;">70 Topics</div>
-        <div style="font-size:12px;color:var(--text-dim);">10 Domains · 100% Real Content</div>
+        <div style="font-size:12px;color:var(--text-dim);">10 Domains · Placement Standard</div>
       </div>
       <div class="card stat-card">
         <div class="stat-label">Practice MCQs</div>
@@ -65876,113 +65895,14 @@ function pageAiMl(selectedTopicId){
       ${domainPills}
     </div>
 
-    <!-- Two-Column Layout: Topic List on Left, Active 15-Section Study Drawer on Right -->
-    <div class="aiml-grid-layout">
-      <!-- Topic Navigation Drawer -->
-      <div class="card" style="padding:12px;max-height:850px;overflow-y:auto;min-width:0;max-width:100%;">
-        <div style="font-weight:700;font-size:13.5px;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
-          <span>Curriculum Topics (${filteredTopics.length})</span>
-          <span style="font-size:11px;color:var(--accent);">Click to Read</span>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:6px;">
-          ${filteredTopics.map(tp => {
-            const isSelected = tp.id === AIML_SELECTED_TOPIC;
-            return `
-              <div class="nav-item ${isSelected ? 'active' : ''}" style="cursor:pointer;padding:8px 10px;border-radius:6px;font-size:13px;display:flex;justify-content:space-between;align-items:center;min-width:0;gap:8px;"
-                onclick="AIML_SELECTED_TOPIC = '${tp.id}'; render();">
-                <span style="font-weight:${isSelected ? '700' : '500'};overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;">${tp.num}. ${tp.title}</span>
-              </div>
-            `;
-          }).join("")}
-        </div>
-      </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div style="font-weight:700;font-size:16px;">Curriculum Topics (${filteredTopics.length})</div>
+      <span class="course-meta">Click any topic to read full lesson</span>
+    </div>
 
-      <!-- Active 15-Section Topic Study View -->
-      <div class="card" style="padding:20px;min-width:0;max-width:100%;">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:16px;flex-wrap:wrap;gap:8px;">
-          <div>
-            <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;">Domain: ${activeTopic.domain || 'General AI'}</div>
-            <h2 style="font-size:22px;margin:4px 0 0 0;">${activeTopic.num || 1}. ${activeTopic.title}</h2>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:18px;font-size:13.5px;line-height:1.6;">
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">1. Why This Matters</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.whyItMatters}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">2. Simple Intuitive Explanation</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.simpleExplanation}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">3. Rigorous Technical Explanation</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.technicalExplanation}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">4. Key Terminology</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.terminology}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">5. Mathematical Symbols & Parameters</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.symbols}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">6. Mathematical Equations</h3>
-            <div class="callout callout-info" style="margin:4px 0 0 0;">${activeTopic.equations}</div>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">7. Visual Dataflow / Architecture</h3>
-            <pre style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:monospace;font-size:12px;color:var(--text);overflow-x:auto;margin:4px 0 0 0;">${activeTopic.diagram}</pre>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">8. Step-by-Step Worked Example</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.workedExample}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">9. Practical Code & Pipeline Implementation</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.practicalExample}</p>
-          </div>
-
-          <div style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:14px;">
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--accent);">⚡ 10. Electrical Engineering & Industrial Applications</h3>
-            <p style="margin:0;color:var(--text);">${activeTopic.eeeApplication}</p>
-          </div>
-
-          <div class="callout callout-trap" style="margin:0;">
-            <h3 style="font-size:15px;margin:0 0 4px 0;color:#ef4444;">⚠️ 11. Common Mistakes & Placement Traps</h3>
-            <p style="margin:0;">${activeTopic.commonMistakes}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">12. Placement & GATE Focus Areas</h3>
-            <p style="margin:0;color:var(--text-dim);">${activeTopic.placementFocus}</p>
-          </div>
-
-          <div>
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:8px;">13. Technical Interview Question & Answer</h3>
-            <pre style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:sans-serif;white-space:pre-wrap;font-size:13px;color:var(--text);margin:4px 0 0 0;">${activeTopic.interviewQuestions}</pre>
-          </div>
-
-          <div style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:14px;">
-            <h3 style="font-size:15px;margin:0 0 6px 0;color:var(--text);">📌 14. Quick Revision Points</h3>
-            <pre style="background:transparent;border:none;padding:0;font-family:sans-serif;white-space:pre-wrap;font-size:13px;color:var(--text-dim);margin:0;">${activeTopic.quickRevision}</pre>
-          </div>
-
-          <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:14px;margin-top:8px;">
-            <span style="font-size:13px;color:var(--text-dim);">${activeTopic.nextTopic}</span>
-            <button class="btn btn-primary" onclick="AIML_SELECTED_TOPIC = 'aiml-' + (${activeTopic.num % 70} + 1); render();" style="font-size:12px;padding:6px 14px;">Next Topic →</button>
-          </div>
-        </div>
-      </div>
+    <!-- Full-Width Responsive Topic Grid -->
+    <div class="grid grid-2" style="gap:14px;margin-bottom:24px;">
+      ${topicCards}
     </div>
   `;
 }
@@ -73414,7 +73334,7 @@ function pageSearch(q){
     ${progProbHits.length? `<div class="section-title"><h2>Coding Problems (${progProbHits.length})</h2></div><div class="card">${progProbHits.slice(0, 30).map(p=>`<div class="topic-row" data-nav="progprob:${p.id}" style="cursor:pointer;"><div class="topic-left"><span class="pill pill-partial">${p.difficulty||'Placement'}</span><b>${p.title||'Problem'}</b><div class="course-meta">${(p.lang||p.language||'c').toUpperCase()} · Time: ${typeof p.complexity==='object'&&p.complexity?p.complexity.time:(p.complexity||'O(N)')}</div></div></div>`).join("")}</div>`:""}
     ${reasoningHits.length? `<div class="section-title"><h2>Logical Reasoning Modules (${reasoningHits.length})</h2></div><div class="card">${reasoningHits.map(tp=>`<div class="topic-row" data-nav="reasoning" style="cursor:pointer;"><div class="topic-left"><b>${tp.name}</b></div></div>`).join("")}</div>`:""}
     ${verbalHits.length? `<div class="section-title"><h2>Verbal Ability Domains (${verbalHits.length})</h2></div><div class="card">${verbalHits.map(tp=>`<div class="topic-row" data-nav="verbal" style="cursor:pointer;"><div class="topic-left"><b>${tp.name}</b></div></div>`).join("")}</div>`:""}
-    ${aimlHits.length? `<div class="section-title"><h2>Applied AI/ML Curriculum Topics (${aimlHits.length})</h2></div><div class="card">${aimlHits.slice(0, 30).map(tp=>`<div class="topic-row" data-nav="aiml:${tp.id}" style="cursor:pointer;"><div class="topic-left"><b>${tp.num}. ${tp.title}</b><div class="course-meta">${tp.domain} · ${tp.simpleExplanation.slice(0, 80)}…</div></div></div>`).join("")}</div>`:""}
+    ${aimlHits.length? `<div class="section-title"><h2>Applied AI/ML Curriculum Topics (${aimlHits.length})</h2></div><div class="card">${aimlHits.slice(0, 30).map(tp=>`<div class="topic-row" data-nav="aimltopic:${tp.id}" style="cursor:pointer;"><div class="topic-left"><b>${tp.num}. ${tp.title}</b><div class="course-meta">${tp.domain} · ${tp.simpleExplanation.slice(0, 80)}…</div></div></div>`).join("")}</div>`:""}
     ${mcqHits.length? `<div class="section-title"><h2>MCQs</h2></div><div class="card">${mcqHits.slice(0,20).map(([id,m])=>`<div class="topic-row" data-nav="mcq:x" data-ids='${JSON.stringify([id])}' style="cursor:pointer;">${m.q}</div>`).join("")}</div>`:""}
     ${(!lessonHits.length && !mcqHits.length && !topicHits.length && !numHits.length && !ivHits.length && !formulaHits.length && !eeeZeroHits.length && !companyHits.length && !progHits.length && !reasoningHits.length && !verbalHits.length && !aimlHits.length) ? `<div class="empty-state">No matches found. Try another keyword or topic.</div>` : ""}
   `;
@@ -75542,7 +75462,7 @@ function pageAiMlTopicDetail(topicId) {
   if (!tp && typeof AIML_CURRICULUM !== 'undefined') {
     tp = Object.values(AIML_CURRICULUM).find(x => x.id === topicId || x.num == topicId) || Object.values(AIML_CURRICULUM)[0];
   }
-  if (!tp) return `<div class="empty-state">AI/ML Topic not found.</div>`;
+  if (!tp) return `<div class="empty-state">AI/ML Topic not found. <button class="btn btn-primary" style="margin-top:12px;" data-nav="aiml">Back to AI/ML Curriculum</button></div>`;
 
   const allTopics = Object.values(AIML_CURRICULUM || {});
   const idx = allTopics.findIndex(x => x.id === tp.id);
@@ -75550,53 +75470,120 @@ function pageAiMlTopicDetail(topicId) {
   const nextTp = allTopics[(idx + 1) % allTopics.length];
 
   return `
-    <div class="crumb"><span data-nav="learn" style="cursor:pointer;">Learn</span> / <span data-nav="aiml" style="cursor:pointer;">AI & ML</span> / Topic ${tp.num || idx+1}</div>
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+    <div class="crumb">
+      <span data-nav="home" style="cursor:pointer;">Home</span> / 
+      <span data-nav="aiml" style="cursor:pointer;">Applied AI & Machine Learning</span> / 
+      <span>Topic ${tp.num}: ${tp.title}</span>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:18px;border-bottom:1px solid var(--border);padding-bottom:16px;">
       <div>
-        <h2 style="font-size:22px;margin-bottom:6px;color:var(--text);">${tp.num ? `${tp.num}. ` : ''}${tp.title}</h2>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <span class="pill pill-ok">${tp.domain || 'Applied AI/ML'}</span>
-          <span class="pill pill-neutral">${tp.subtopic || 'Core Concept'}</span>
-        </div>
+        <div style="font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">Domain: ${tp.domain || 'General AI'}</div>
+        <h1 style="font-size:24px;margin:0 0 6px 0;color:var(--text);">${tp.num}. ${tp.title}</h1>
+        <div class="course-meta">Applied AI & Machine Learning Mastery · Topic ${tp.num} of ${allTopics.length}</div>
       </div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn btn-secondary" onclick="nav({page:'aimltopic', id:'${prevTp.id}'})">← Prev Topic</button>
-        <button class="btn btn-secondary" onclick="nav({page:'aimltopic', id:'${nextTp.id}'})">Next Topic →</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-secondary" data-nav="aiml">← All Topics</button>
+        <button class="btn btn-secondary" data-nav="aimltopic:${prevTp.id}">← Prev</button>
+        <button class="btn btn-primary" data-nav="aimltopic:${nextTp.id}">Next →</button>
       </div>
     </div>
 
-    ${tp.simpleExplanation ? `
-      <div class="card" style="margin-bottom:16px;border-left:4px solid var(--accent);">
-        <h3 style="font-size:15px;margin-bottom:6px;color:var(--accent);">Intuitive Overview</h3>
-        <div style="font-size:14px;line-height:1.6;color:var(--text);">${tp.simpleExplanation}</div>
+    <div style="display:flex;flex-direction:column;gap:18px;font-size:14px;line-height:1.6;max-width:960px;">
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">1. Why This Matters</h3>
+        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.whyItMatters}</p>
       </div>
-    ` : ''}
 
-    <div class="card" style="margin-bottom:16px;">
-      <h3 style="font-size:16px;margin-bottom:10px;">Technical Deep Dive</h3>
-      <div style="font-size:14px;line-height:1.6;color:var(--text);">${tp.technicalExplanation || tp.desc || 'No detailed technical description available.'}</div>
-    </div>
-
-    ${tp.eeeApplication ? `
-      <div class="card" style="margin-bottom:16px;background:var(--bg-elevated);">
-        <h3 style="font-size:15px;margin-bottom:6px;color:var(--text);">Real-World EEE & Engineering Application</h3>
-        <div style="font-size:14px;line-height:1.5;color:var(--text-dim);">${tp.eeeApplication}</div>
+      <div class="card" style="padding:18px;border-left:4px solid var(--accent);">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--accent);">2. Simple Intuitive Explanation</h3>
+        <p style="margin:0;color:var(--text);line-height:1.6;">${tp.simpleExplanation}</p>
       </div>
-    ` : ''}
 
-    ${tp.codeExample ? `
-      <div class="card" style="margin-bottom:16px;">
-        <h3 style="font-size:15px;margin-bottom:8px;">Python Implementation</h3>
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">3. Rigorous Technical Explanation</h3>
+        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.technicalExplanation || tp.desc || ''}</p>
+      </div>
+
+      ${tp.terminology ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">4. Key Terminology</h3>
+        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.terminology}</p>
+      </div>` : ''}
+
+      ${tp.symbols ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">5. Mathematical Symbols & Parameters</h3>
+        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.symbols}</p>
+      </div>` : ''}
+
+      ${tp.equations ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">6. Mathematical Equations</h3>
+        <div class="callout callout-info" style="margin:4px 0 0 0;">${tp.equations}</div>
+      </div>` : ''}
+
+      ${tp.diagram ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">7. Visual Dataflow / Architecture</h3>
+        <pre style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;font-family:monospace;font-size:12.5px;color:var(--text);overflow-x:auto;margin:4px 0 0 0;line-height:1.4;">${tp.diagram}</pre>
+      </div>` : ''}
+
+      ${tp.workedExample ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">8. Step-by-Step Worked Example</h3>
+        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.workedExample}</p>
+      </div>` : ''}
+
+      ${tp.practicalExample ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">9. Practical Code & Pipeline Implementation</h3>
+        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.practicalExample}</p>
+      </div>` : ''}
+
+      ${tp.codeExample ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">Python Implementation</h3>
         <pre style="background:#0f172a;color:#f8fafc;padding:14px;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:13.5px;line-height:1.5;margin:0;"><code>${tp.codeExample}</code></pre>
-      </div>
-    ` : ''}
+      </div>` : ''}
 
-    ${(tp.keyTakeaways || tp.commonMistakes) ? `
-      <div class="card" style="margin-bottom:20px;">
-        ${tp.keyTakeaways ? `<div style="margin-bottom:10px;"><b>Key Takeaways:</b> <span style="color:var(--text-dim);">${tp.keyTakeaways}</span></div>` : ''}
-        ${tp.commonMistakes ? `<div style="color:var(--text-dim);">⚠️ <b>Common Pitfalls:</b> ${tp.commonMistakes}</div>` : ''}
+      ${tp.eeeApplication ? `
+      <div class="card" style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--accent);">10. Electrical Engineering & Industrial Applications</h3>
+        <p style="margin:0;color:var(--text);line-height:1.6;">${tp.eeeApplication}</p>
+      </div>` : ''}
+
+      ${tp.commonMistakes ? `
+      <div class="callout callout-trap" style="margin:0;">
+        <h3 style="font-size:15px;margin:0 0 6px 0;color:#ef4444;">11. Common Mistakes & Placement Traps</h3>
+        <p style="margin:0;line-height:1.6;">${tp.commonMistakes}</p>
+      </div>` : ''}
+
+      ${tp.placementFocus ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">12. Placement & GATE Focus Areas</h3>
+        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.placementFocus}</p>
+      </div>` : ''}
+
+      ${tp.interviewQuestions ? `
+      <div class="card" style="padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">13. Technical Interview Question & Answer</h3>
+        <pre style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;font-family:sans-serif;white-space:pre-wrap;font-size:13.5px;color:var(--text);margin:4px 0 0 0;line-height:1.6;">${tp.interviewQuestions}</pre>
+      </div>` : ''}
+
+      ${tp.quickRevision ? `
+      <div class="card" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);">14. Quick Revision Points</h3>
+        <pre style="background:transparent;border:none;padding:0;font-family:sans-serif;white-space:pre-wrap;font-size:13.5px;color:var(--text-dim);margin:0;line-height:1.6;">${tp.quickRevision}</pre>
+      </div>` : ''}
+
+      <!-- Bottom Navigation Bar -->
+      <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:16px;margin-top:10px;flex-wrap:wrap;gap:10px;">
+        <button class="btn btn-secondary" data-nav="aimltopic:${prevTp.id}">← ${prevTp.num}. ${prevTp.title}</button>
+        <button class="btn btn-secondary" data-nav="aiml">All 70 Topics</button>
+        <button class="btn btn-primary" data-nav="aimltopic:${nextTp.id}">${nextTp.num}. ${nextTp.title} →</button>
       </div>
-    ` : ''}
+    </div>
   `;
 }
 
