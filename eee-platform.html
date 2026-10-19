@@ -62541,7 +62541,7 @@ const MCQS = {
     opts: ["Clustering residential smart meter load profiles into distinct consumer usage archetypes", "Predicting high-voltage transmission line real-time dynamic thermal conductor temperature using ambient weather telemetry and line current measurements", "Classifying induction motor current signatures into Healthy, Broken Bar, or Bearing Fault", "Controlling grid battery storage inverter active power to maximize daily arbitrage revenue"],
     a: 0,
     d: "E",
-    lesson: "ml-paradigms-learning-types",
+    lesson: "aiml-types-ml",
     exp: "Clustering load profiles is an unsupervised learning task because the algorithm identifies natural groupings in consumer consumption data without any external supervisory target labels. Temperature prediction is supervised regression, motor fault diagnosis is supervised classification, and battery charge scheduling is reinforcement learning."
   },
 
@@ -62550,7 +62550,7 @@ const MCQS = {
     opts: ["Supervised regression models trained exclusively on historical smart meter energy billing records without real-time supervisory measurements", "The decision boundary should pass through low-density data regions rather than cutting across dense clusters", "All unlabeled data points must belong to exactly one spherical cluster centered on a labeled sample", "The boundary must be purely linear to prevent overfitting to unconfirmed pseudo-labels"],
     a: 1,
     d: "M",
-    lesson: "ml-paradigms-learning-types",
+    lesson: "aiml-types-ml",
     exp: "The cluster assumption states that data points belonging to the same cluster typically share the same class label. Consequently, the optimal decision boundary should traverse low-density separator regions rather than passing through dense clusters of data points."
   },
 
@@ -62559,7 +62559,7 @@ const MCQS = {
     opts: ["The agent considers all future infinite-horizon rewards with equal mathematical weight", "The optimization problem diverges to infinity due to lack of convergence guarantees", "The agent behaves entirely myopically, optimizing strictly the immediate reward r_(t+1)", "Clustering unlabeled dissolved gas analysis data from high-voltage substation transformer mineral oil samples into unknown aging fault topologies"],
     a: 2,
     d: "H",
-    lesson: "ml-paradigms-learning-types",
+    lesson: "aiml-types-ml",
     exp: "The return is defined as G_t = sum_(k=0)^infinity gamma^k r_(t+k+1). When gamma = 0, gamma^0 = 1 for k=0, and all terms for k >= 1 vanish (0^k = 0). Thus G_t = r_(t+1), causing the agent to act purely myopically by evaluating only immediate rewards and ignoring all subsequent state transitions."
   },
 
@@ -62568,7 +62568,7 @@ const MCQS = {
     opts: ["Absence of any loss gradient calculation during training iterations", "Dynamic simulation solvers that iteratively update synchronous generator power flow equations strictly based on analytical Jacobian matrices", "The complete inability to utilize neural networks for non-linear state representations", "The fundamental dilemma of balancing exploration of untried actions with exploitation of known profitable actions"],
     a: 3,
     d: "P",
-    lesson: "ml-paradigms-learning-types",
+    lesson: "aiml-types-ml",
     exp: "The exploration-exploitation trade-off is unique to reinforcement learning: the agent must exploit what it already knows to maximize cumulative reward, but it must also explore unvisited actions to discover superior long-term control strategies. Supervised and unsupervised learning operate on static datasets where this dilemma does not exist."
   },
 
@@ -67229,6 +67229,7 @@ function wireDynamicHandlers(root, scope){
   });
 }
 function renderPage(stats){
+  if (!stats && typeof computeOverallStats === 'function') stats = computeOverallStats();
   switch(ROUTE.page){
     case "home": return pageHome(stats);
     case "learn": return pageLearn();
@@ -68760,7 +68761,7 @@ const TOPIC_TO_LESSON = {
   "Dual Active Bridge Converter--Circuit diagram- working and waveforms": "pe-dual-active-bridge",
   "Practical applications of isolated DC-DC converters-Introduction to soft switching": "pe-isolated-apps-soft-switching",
   // Session 42: 23ESP510 Introduction to Machine Learning topics
-  "Supervised, semi-supervised, unsupervised learning, reinforcement learning": "ml-paradigms-learning-types",
+  "Supervised, semi-supervised, unsupervised learning, reinforcement learning": "aiml-types-ml",
   "Maximum likelihood estimation (MLE), Bayesian formulation - example": "ml-mle-map-bayesian",
   "Over fitting in regression, Naive Bayes": "ml-regression-overfitting-naivebayes",
   "Decision trees- ID3 algorithm": "ml-decision-trees-id3",
@@ -68943,9 +68944,9 @@ const TOPIC_TO_LESSON = {
   "Introduction to TMS320C67xx digital signal processor": "dsp-processor-architecture-tms320",
   "Functional Block Diagram": "dsp-processor-architecture-tms320",
   "Finite word length effects in DSP systems": "dsp-finite-wordlength-arithmetic",
-  "Introduction to fixed-point and floating-point DSP arithmetic": "dsp-finite-wordlength-arithmetic",  "Overview of mitigation methods – from fault to trip, reducing the number of faults, reducing the fault clearing time": "pq-interruption-mitigation-immunity",
-  "Installing mitigation equipment, improving equipment immunity": "pq-interruption-mitigation-immunity",
-  "Different events and mitigation methods": "pq-interruption-mitigation-immunity",
+  "Introduction to fixed-point and floating-point DSP arithmetic": "dsp-finite-wordlength-arithmetic",  "Overview of mitigation methods – from fault to trip, reducing the number of faults, reducing the fault clearing time": "pq-interruption-prevention-immunity",
+  "Installing mitigation equipment, improving equipment immunity": "pq-interruption-prevention-immunity",
+  "Different events and mitigation methods": "pq-interruption-prevention-immunity",
   "System equipment interface – voltage source converter": "pq-custom-power-dvr-statcom-upqc",
   "Series voltage controller, shunt controller, combined shunt and series controller": "pq-custom-power-dvr-statcom-upqc",
   "Harmonic Distortion, Voltage versus Current Distortion, Harmonics versus Transients": "pq-harmonic-sources-indices-evaluation",
@@ -72763,9 +72764,36 @@ function contentTotals(){
 /* ---------- LESSON PAGE ---------- */
 function pageLesson(id){
   let l = LESSONS[id];
-  if(!l && id === "tfr-losses") l = LESSONS["xfmr-losses-allday-efficiency"];
-  if(!l && id === "power-system-transients-traveling-waves-bewley") l = LESSONS["emt-transmission-lines"];
-  if(!l && id === "pe-cycloconverters-matrix-converters") l = LESSONS["z-matrix-converters"];
+  const LESSON_ALIASES = {
+    "tfr-losses": "xfmr-losses-allday-efficiency",
+    "power-system-transients-traveling-waves-bewley": "emt-transmission-lines",
+    "pe-cycloconverters-matrix-converters": "z-matrix-converters",
+    "pq-interruption-prevention-immunity": "pq-interruption-prevention-immunity",
+    "aiml-types-ml": "aiml-types-ml",
+    "ac-ind-circle-diagram": "ac-ind-motor-circle-diagram",
+    "ac-ind-motor-equiv": "ac-ind-motor-phasor-equivalent-circuit",
+    "ac-ind-motor-principle": "ac-ind-motor-construction-principle",
+    "ac-ind-motor-torque-slip": "ac-ind-motor-power-torque-slip",
+    "ac-to-dc-rectifiers": "single-three-phase-controlled-rectifiers-converters",
+    "control-time-domain": "cse-time-domain-specs",
+    "ct-three-phase-circuits": "three-phase-power",
+    "ct-two-port-parameters": "ct-two-port-intro",
+    "dc-dc-buck-converter": "pe-buck-converter",
+    "digital-logic-basics": "logic-gates-truth-tables",
+    "inverter-spwm-threephase": "voltage-source-inverters-sinusoidal-pwm-modulation",
+    "lead-acid-batteries": "z-battery-chemistries",
+    "pe-inverters-vsi-csi": "voltage-source-inverters-sinusoidal-pwm-modulation",
+    "pe-rectifiers-single-three-phase": "single-three-phase-controlled-rectifiers-converters",
+    "ps-fault-types": "symmetrical-unsymmetrical-fault-analysis",
+    "ps-protection-relays": "eps-protective-relays-fundamentals",
+    "ps-scada-ems": "psa-scada-systems",
+    "signals-ct-dt": "sig-classification-operations",
+    "signals-dtft": "sig-dtft-frequency-response",
+    "synchronous-machine-phasor": "synchronous-generator-alternator-regulation",
+    "three-phase-im-equivalent-circuit": "ac-ind-motor-phasor-equivalent-circuit",
+    "three-phase-transformer-connections": "xfmr-3phase-connections-vector"
+  };
+  if(!l && LESSON_ALIASES[id]) l = LESSONS[LESSON_ALIASES[id]];
   if(!l) return `<div class="empty-state">Lesson not found.</div>`;
   const lTitle = l.title || (typeof TOPIC_TO_LESSON !== 'undefined' ? Object.keys(TOPIC_TO_LESSON).find(t => TOPIC_TO_LESSON[t] === id) : '') || id;
   const lArea = l.area || (typeof courseOfTopic !== 'undefined' && lTitle ? courseOfTopic(lTitle) : '') || 'Electrical Engineering Core';
