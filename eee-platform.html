@@ -76486,11 +76486,11 @@ function mockHomeHtml(){
   const noBank = Object.keys(MCQS).length;
   return `
     <h2 style="font-size:20px;margin-bottom:6px;">Daily Mock Test</h2>
-    <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:16px;max-width:720px;">A timed test of up to ${MOCK_MAX_Q} randomly picked MCQs, one minute per question (${MOCK_MAX_Q} minutes for a full mock). One mark per correct answer, no negative marking. <b>Nothing is marked right or wrong until you submit.</b> Option order is shuffled every time.</p>
-    <div class="card" style="font-size:13px;color:var(--text-dim);margin-bottom:16px;max-width:720px;"><b style="color:var(--text)">Question Bank Overview:</b> ${noBank} placement and competitive exam MCQs curated across all 7 core tracks: EEE From Zero (${cAll["EEE From Zero"]}), S3–S7 University Syllabus (${cAll["EEE Syllabus (S3–S7)"]}), Quantitative Aptitude (${cAll["Aptitude"]}), Logical Reasoning (${cAll["Reasoning"]}), Verbal Ability (${cAll["Verbal"]}), Programming & DSA (${cAll["Programming"]}), and Applied AI/ML (${cAll["AI/ML"]}). Practice questions are balanced across all disciplines.</div>
-    ${takenToday?`<div class="card" style="margin-bottom:16px;max-width:720px;border-color:var(--ok);font-size:13.5px;">You have already taken a mock today. You can take another.</div>`:''}
+    <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:16px;width:100%;max-width:100%;box-sizing:border-box;">A timed test of up to ${MOCK_MAX_Q} randomly picked MCQs, one minute per question (${MOCK_MAX_Q} minutes for a full mock). One mark per correct answer, no negative marking. <b>Nothing is marked right or wrong until you submit.</b> Option order is shuffled every time.</p>
+    <div class="card" style="font-size:13px;color:var(--text-dim);margin-bottom:16px;width:100%;max-width:100%;box-sizing:border-box;"><b style="color:var(--text)">Question Bank Overview:</b> ${noBank} placement and competitive exam MCQs curated across all 7 core tracks: EEE From Zero (${cAll["EEE From Zero"]}), S3–S7 University Syllabus (${cAll["EEE Syllabus (S3–S7)"]}), Quantitative Aptitude (${cAll["Aptitude"]}), Logical Reasoning (${cAll["Reasoning"]}), Verbal Ability (${cAll["Verbal"]}), Programming & DSA (${cAll["Programming"]}), and Applied AI/ML (${cAll["AI/ML"]}). Practice questions are balanced across all disciplines.</div>
+    ${takenToday?`<div class="card" style="margin-bottom:16px;width:100%;max-width:100%;box-sizing:border-box;border-color:var(--ok);font-size:13.5px;">You have already taken a mock today. You can take another.</div>`:''}
     <div class="section-title" style="margin-top:8px;"><h2>Set up your test</h2></div>
-    <div class="card" style="max-width:720px;">
+    <div class="card" style="width:100%;max-width:100%;box-sizing:border-box;">
       <div style="font-weight:600;margin-bottom:8px;font-size:13.5px;">Categories</div>
       ${catRows}
       <div style="font-weight:600;margin:16px 0 8px;font-size:13.5px;">Difficulty</div>
@@ -76499,7 +76499,7 @@ function mockHomeHtml(){
       <button class="btn btn-primary" data-mock="start" ${pool.length?'':'disabled'}>Start mock test →</button>
     </div>
     <div class="section-title"><h2>Your mock history</h2><span class="course-meta">${hist.length} test${hist.length===1?'':'s'}${avg!==null?` · average accuracy ${avg}%`:''}</span></div>
-    ${hist.length ? `<div class="card">${histRows}</div>` : `<div class="card" style="font-size:13.5px;color:var(--text-dim);">No mock tests taken yet.</div>`}
+    ${hist.length ? `<div class="card" style="width:100%;max-width:100%;box-sizing:border-box;">${histRows}</div>` : `<div class="card" style="font-size:13.5px;color:var(--text-dim);width:100%;max-width:100%;box-sizing:border-box;">No mock tests taken yet.</div>`}
     <div class="section-title"><h2>Weak areas</h2></div>
     ${mockWeakHtml()}
   `;
