@@ -139,12 +139,7 @@ function pageInterview(cat){
   const subCategories = [...new Set(list.map(([_, q]) => q.sub || q.subj || q.cat).filter(Boolean))];
   const subPills = subCategories.map(s => `<button class="iv-sub-pill" data-ivsub="${encodeURIComponent(s)}">${s}</button>`).join("");
 
-  // Standard legacy category buttons (strictly includes 'Logical (4)' and 'Behavioral (4)' for Session 15 specs)
-  const legacyButtons = cats.map(c => {
-    const cCount = allEntries.filter(([_, q]) => q.cat === c).length;
-    const isAct = c === activeCat;
-    return `<button class="btn iv-legacy-btn ${isAct ? 'btn-primary' : ''}" data-nav="ivcat:${c}">${c} (${cCount})</button>`;
-  }).join("");
+
 
   // Render question cards
   const qs = list.map(([id, q]) => {
@@ -212,18 +207,7 @@ function pageInterview(cat){
         <div id="ivFilterStatus" style="font-size:12.5px;color:var(--text-dim);margin-top:6px;">Showing <b>${list.length}</b> questions${isExactCategory ? ` for category: <span class="pill pill-neutral">${activeCat}</span> <a class="link" data-nav="interview" style="margin-left:6px;cursor:pointer;">Clear category filter</a>` : ''}</div>
       </div>
 
-      <div class="iv-categories-wrap" style="margin-top:14px; padding:12px 14px; border:1px solid var(--border); border-radius:10px; background:var(--bg-card);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
-          <div style="font-size:12px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:.05em; display:flex; align-items:center; gap:6px;">
-            <span>🏷️ Standard Categories (${cats.length})</span>
-            ${isExactCategory ? `<span class="badge" style="background:rgba(59,130,246,0.15); color:var(--accent); font-size:11.5px; padding:2px 8px; border-radius:10px;">Filtered: <b>${activeCat}</b> (<a class="link" data-nav="interview" style="cursor:pointer; font-weight:600;">Show All ✕</a>)</span>` : ''}
-          </div>
-          <span style="font-size:11.5px; color:var(--text-faint);">Select a category to view its dedicated questions</span>
-        </div>
-        <div class="iv-legacy-pills" style="display:flex; gap:6px; flex-wrap:wrap;">
-          ${legacyButtons}
-        </div>
-      </div>
+
 
       <div id="ivCardsContainer" style="margin-top:16px;">
         ${qs}
@@ -379,7 +363,59 @@ function wireInterviewHandlers(){
     content = fn_pattern.sub(lambda _: new_interview_code, content, count=1)
     print("Replaced pageInterview & wireInterviewHandlers in index.html.")
 
-    # 4. Save to index.html and eee-platform.html
+    # 4. Standardize pageLearn (remove 17-Stage Learning Path tab and make card standard)
+    new_learn_code = """function pageLearn(){
+  let semCards = Object.keys(SYLLABUS).map(n=>{
+    const s = SYLLABUS[n];
+    const total = s.courses.length;
+    return `<div class="card sem-card" data-nav="sem:${n}">
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <div><div style="font-weight:600;font-size:15px;">${s.label}</div><div class="course-meta">${total} course${total>1?'s':''} · ${s.courses.reduce((a,c)=>a+courseTopics(c).length,0)} Core Topics · Full Curriculum</div></div>
+        <span style="font-size:18px;color:var(--text-faint);">→</span>
+      </div>
+    </div>`;
+  }).join("");
+  const foundList = FOUNDATION.topics.map(id=>{
+    const l = LESSONS[id]; const done = isFoundationLessonDone(id);
+    return `<div class="topic-row" data-nav="lesson:${id}">
+      <div class="topic-left"><span class="topic-dot ${done?'done':''}"></span>${l.title}</div>
+      <span style="font-size:12px;color:var(--text-faint);">→</span>
+    </div>`;
+  }).join("");
+
+  return `
+    <h2 style="font-size:20px;margin-bottom:16px;">Learn & Core Curriculum</h2>
+    
+    <div class="section-title" style="margin-bottom:12px;"><h2>Foundation Curriculum</h2></div>
+    <div style="margin-bottom:24px;">
+      <div class="card sem-card" data-nav="eeezero" style="cursor:pointer;padding:16px 20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-weight:700;font-size:16px;color:var(--text);display:flex;align-items:center;gap:8px;">
+              <span>⚡ EEE From Zero</span>
+              <span class="badge" style="background:rgba(59,130,246,0.15);color:var(--accent);font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;">Foundation Track</span>
+            </div>
+            <div class="course-meta" style="font-size:13px;line-height:1.4;margin-top:4px;">40 Knowledge Domains (A–AN) · 201 Foundation Lessons · Electrical &amp; Electronics Engineering Fundamentals</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span class="course-meta" style="font-size:13px;font-weight:600;color:var(--accent);">201 Lessons</span>
+            <span style="font-size:18px;color:var(--text-faint);">→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-bottom:12px;"><h2>Semesters 3–7 (University Curriculum)</h2></div>
+    <div class="grid" style="display:flex;flex-direction:column;gap:12px;">${semCards}</div>
+  `;
+}"""
+
+    learn_pattern = re.compile(r'function pageLearn\(\)\{.*?\n\}', re.DOTALL)
+    assert learn_pattern.search(content), "Could not find pageLearn in index.html!"
+    content = learn_pattern.sub(lambda _: new_learn_code, content, count=1)
+    print("Standardized pageLearn in index.html.")
+
+    # 5. Save to index.html and eee-platform.html
     print("Writing index.html...")
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(content)

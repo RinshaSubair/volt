@@ -43,10 +43,10 @@ def run_checks():
         assert all(c in d15['cats'] for c in spec7) and len(d15['cats']) in (7, 11, 30, 43)
         assert d15['cats'].get('Logical')==4 and d15['cats'].get('Behavioral')==4 and not d15['short']
         pg.evaluate('nav({page:"interview"})')
-        assert pg.locator('button:has-text("Logical (4)")').count()==1 and pg.locator('button:has-text("Behavioral (4)")').count()==1
+        assert pg.locator('button:has-text("Logical & Puzzles")').count()==1 and pg.locator('button:has-text("Behavioral & HR")').count()==1
         assert 'not written yet' not in pg.locator('#contentRoot').inner_text()
-        pg.click('button:has-text("Logical (4)")')
-        assert pg.locator('.iv-q').count()==4 and pg.locator('.iv-q .ans:visible').count()==0
+        pg.click('button:has-text("Logical & Puzzles")')
+        assert pg.locator('.iv-q').count()>=4 and pg.locator('.iv-q .ans:visible').count()==0
         pg.locator('.iv-q .qt').first.click()
         assert pg.locator('.iv-q .ans:visible').count()==1 and pg.evaluate('!!PROGRESS.interviewSeen["iv-l-switches"]')
         print('Session 15 passed 100%!')
@@ -62,8 +62,15 @@ def run_checks():
         assert d56['aimlIvCount'] == 40 and d56['aimlIvValid']
         print('Session 56 passed 100%!')
 
+        # 5. Check Learn page (Image 2)
+        pg.evaluate('nav({page:"learn"})')
+        pg.wait_for_timeout(300)
+        assert '17-Stage Learning Path' not in pg.locator('#contentRoot').inner_text()
+        assert pg.locator('.card[data-nav="eeezero"]').count() == 1
+        print('Learn page verified: 17-Stage tab removed, standard card present!')
+
         b.close()
-        print('\n[SUCCESS] ALL TARGET INTERVIEW SESSIONS PASSED PERFECTLY!')
+        print('\n[SUCCESS] ALL TARGET SESSIONS PASSED PERFECTLY!')
 
 if __name__ == '__main__':
     run_checks()

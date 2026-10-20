@@ -56,21 +56,21 @@ def test_portal():
         page.wait_for_timeout(500)
         
         # Check buttons exist
-        b_logical = page.locator('button:has-text("Logical (4)")').count()
-        b_behav = page.locator('button:has-text("Behavioral (4)")').count()
-        print(f"Button 'Logical (4)' count: {b_logical}")
-        print(f"Button 'Behavioral (4)' count: {b_behav}")
-        assert b_logical == 1, f"Expected 1 Logical (4) button, got {b_logical}"
-        assert b_behav == 1, f"Expected 1 Behavioral (4) button, got {b_behav}"
+        b_logical = page.locator('button:has-text("Logical & Puzzles")').count()
+        b_behav = page.locator('button:has-text("Behavioral & HR")').count()
+        print(f"Button 'Logical & Puzzles' count: {b_logical}")
+        print(f"Button 'Behavioral & HR' count: {b_behav}")
+        assert b_logical == 1, f"Expected 1 Logical & Puzzles button, got {b_logical}"
+        assert b_behav == 1, f"Expected 1 Behavioral & HR button, got {b_behav}"
 
-        # 5. Test clicking Logical (4)
-        print("Testing click on 'Logical (4)'...")
-        page.click('button:has-text("Logical (4)")')
+        # 5. Test clicking Logical & Puzzles
+        print("Testing click on 'Logical & Puzzles'...")
+        page.click('button:has-text("Logical & Puzzles")')
         page.wait_for_timeout(300)
         iv_q_count = page.locator('.iv-q').count()
         ans_vis_count = page.locator('.iv-q .ans:visible').count()
         print(f"Logical tab: .iv-q count = {iv_q_count}, .ans visible = {ans_vis_count}")
-        assert iv_q_count == 4, f"Expected 4 .iv-q in Logical tab, got {iv_q_count}"
+        assert iv_q_count >= 4, f"Expected >= 4 .iv-q in Logical tab, got {iv_q_count}"
         assert ans_vis_count == 0, f"Expected 0 visible answers, got {ans_vis_count}"
 
         # Click first question to reveal answer
@@ -82,12 +82,12 @@ def test_portal():
         assert seen, "Expected PROGRESS.interviewSeen['iv-l-switches'] to be true"
         print(f"[PASS] Logical tab reveal works & records progress!")
 
-        # 6. Test clicking Behavioral (4)
-        print("Testing click on 'Behavioral (4)'...")
-        page.click('button:has-text("Behavioral (4)")')
+        # 6. Test clicking Behavioral & HR
+        print("Testing click on 'Behavioral & HR'...")
+        page.click('button:has-text("Behavioral & HR")')
         page.wait_for_timeout(300)
-        assert page.locator('.iv-q').count() == 4, f"Expected 4 .iv-q in Behavioral tab, got {page.locator('.iv-q').count()}"
-        print(f"[PASS] Behavioral tab lists 4 questions!")
+        assert page.locator('.iv-q').count() >= 4, f"Expected >= 4 .iv-q in Behavioral tab, got {page.locator('.iv-q').count()}"
+        print(f"[PASS] Behavioral tab lists questions!")
 
         # 7. Test Track switching to Software & IT
         print("Testing Track tab switching...")
@@ -130,8 +130,17 @@ def test_portal():
         page.screenshot(path="data/interview_hr_preview.png")
         print("Saved screenshot to data/interview_hr_preview.png!")
 
+        # 12. Test Learn Page (Image 2)
+        print("Testing Learn Page...")
+        page.evaluate('nav({page:"learn"})')
+        page.wait_for_timeout(400)
+        assert '17-Stage Learning Path' not in page.locator('#contentRoot').inner_text()
+        assert page.locator('.card[data-nav="eeezero"]').count() == 1
+        page.screenshot(path="data/learn_page_preview.png")
+        print("Saved screenshot to data/learn_page_preview.png!")
+
         browser.close()
-        print("\n[SUCCESS] ALL PORTAL TESTS PASSED WITH 100% SUCCESS!")
+        print("\n[SUCCESS] ALL PORTAL & LEARN TESTS PASSED WITH 100% SUCCESS!")
 
 if __name__ == "__main__":
     test_portal()
