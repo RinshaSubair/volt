@@ -78781,6 +78781,752 @@ function enhanceLessonVisuals(bodyHtml, lessonId) {
   return out;
 }
 
+/* =====================================================================
+   UNIVERSAL VISUAL ARCHITECTURE & STRUCTURED CONTENT ENGINE (SESSION 57+)
+   Transforms dense text into structured, point-by-point presentation cards
+   ===================================================================== */
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function highlightPythonCode(rawCode) {
+  if (!rawCode) return '';
+  let lines = rawCode.split('\n');
+  return lines.map(line => {
+    let commentIdx = line.indexOf('#');
+    let codePart = commentIdx !== -1 ? line.slice(0, commentIdx) : line;
+    let commentPart = commentIdx !== -1 ? line.slice(commentIdx) : '';
+
+    let code = escapeHtml(codePart);
+
+    // 1. Strings isolated to tokens
+    let strTokens = [];
+    code = code.replace(/(['"])(.*?)\1/g, (m) => {
+      strTokens.push('<span style="color:#34d399;">' + m + '</span>');
+      return `___STR_${strTokens.length - 1}___`;
+    });
+
+    // 2. Python keywords
+    const keywords = ['import', 'from', 'def', 'return', 'class', 'if', 'else', 'elif', 'for', 'in', 'as', 'with', 'lambda', 'True', 'False', 'None', 'try', 'except', 'while'];
+    code = code.replace(new RegExp('\\b(' + keywords.join('|') + ')\\b', 'g'), '<span style="color:#f472b6;font-weight:bold;">$1</span>');
+
+    // 3. Function calls
+    code = code.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)(?=\()/g, '<span style="color:#60a5fa;">$1</span>');
+
+    // 4. Numbers
+    code = code.replace(/(?<![#_a-zA-Z])\b(\d+\.?\d*)\b/g, '<span style="color:#fbbf24;">$1</span>');
+
+    // 5. Restore strings
+    strTokens.forEach((st, idx) => {
+      code = code.replace(`___STR_${idx}___`, st);
+    });
+
+    if (commentPart) {
+      code += '<span style="color:#64748b;font-style:italic;">' + escapeHtml(commentPart) + '</span>';
+    }
+    return code;
+  }).join('\n');
+}
+
+function formatAiMlCodeExample(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let code = raw;
+  if (raw.startsWith('```')) {
+    code = raw.replace(/^```[a-zA-Z]*\n?/, '').replace(/\n?```$/, '').trim();
+  }
+
+  const highlighted = highlightPythonCode(code);
+  return `
+    <div style="background:#090d16;border:1px solid #1e293b;border-radius:10px;overflow:hidden;margin:10px 0 16px 0;box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+      <div style="background:#0f172a;border-bottom:1px solid #1e293b;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#ef4444;"></span>
+          <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#f59e0b;"></span>
+          <span style="display:inline-block;width:11px;height:11px;border-radius:50%;background:#10b981;"></span>
+          <span style="margin-left:10px;font-family:monospace;font-size:12.5px;color:#94a3b8;font-weight:600;">pipeline.py</span>
+          <span class="badge" style="font-size:10.5px;background:rgba(59,130,246,0.15);color:#38bdf8;padding:2px 8px;border-radius:4px;">Python 3.10+ / Scikit-Learn</span>
+        </div>
+        <button class="btn btn-secondary" style="font-size:11.5px;padding:4px 12px;background:#1e293b;border:1px solid #334155;color:#e2e8f0;border-radius:6px;cursor:pointer;" onclick="navigator.clipboard.writeText(this.closest('div').nextElementSibling.innerText);this.innerText='✓ Copied!';setTimeout(()=>this.innerText='📋 Copy Code',2000)">📋 Copy Code</button>
+      </div>
+      <pre style="background:transparent;margin:0;padding:18px;font-family:'JetBrains Mono',Consolas,Menlo,monospace;font-size:13px;line-height:1.65;color:#e2e8f0;overflow-x:auto;white-space:pre;"><code>${highlighted}</code></pre>
+    </div>
+  `;
+}
+
+function formatAiMlWhyItMatters(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let sentences = raw.split(/(?<=\.)\s+/).filter(Boolean);
+  if (sentences.length <= 1) {
+    return `<p style="margin:0;color:var(--text);line-height:1.65;font-size:14px;">${raw}</p>`;
+  }
+
+  let lead = sentences[0];
+  let placement = [];
+  let body = [];
+
+  for (let i = 1; i < sentences.length; i++) {
+    let s = sentences[i];
+    if (/placement|interview|tcs|infosys|zoho|bosch|google|gate/i.test(s)) {
+      placement.push(s);
+    } else {
+      body.push(s);
+    }
+  }
+
+  return `
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:rgba(59,130,246,0.08);border-left:4px solid var(--accent);border-radius:6px;padding:12px 16px;font-size:14px;line-height:1.6;color:var(--text);">
+        <b style="color:var(--accent);display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:0.04em;">💡 Core Practical Motivation</b>
+        ${lead}
+      </div>
+      ${body.length ? `
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:12px 16px;font-size:13.5px;line-height:1.6;color:#cbd5e1;">
+        ${body.join(' ')}
+      </div>` : ''}
+      ${placement.length ? `
+      <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:6px;padding:12px 16px;font-size:13px;line-height:1.6;color:#a7f3d0;">
+        <b style="color:#34d399;display:block;margin-bottom:4px;font-size:12px;text-transform:uppercase;letter-spacing:0.04em;">🎯 Placement &amp; Industry Relevance</b>
+        ${placement.join(' ')}
+      </div>` : ''}
+    </div>
+  `;
+}
+
+function formatAiMlSimpleExplanation(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let parts = raw.split(/\n(?=[1-9]\.\s+)/);
+  if (parts.length <= 1) {
+    return `<p style="margin:0;color:var(--text);line-height:1.65;font-size:14px;">${raw.replace(/\n/g, '<br>')}</p>`;
+  }
+
+  let intro = parts[0].includes('1.') ? '' : parts[0];
+  let items = parts[0].includes('1.') ? parts : parts.slice(1);
+
+  let html = intro ? `<div style="margin:0 0 12px 0;color:var(--text);line-height:1.6;font-size:14px;font-weight:600;">${intro}</div>` : '';
+  html += `<div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:12px;">`;
+
+  items.forEach((p, idx) => {
+    let clean = p.replace(/^[1-9]\.\s*/, '').trim();
+    let title = '';
+    let body = clean;
+    let colonIdx = clean.indexOf(':');
+    if (colonIdx !== -1 && colonIdx < 45) {
+      title = clean.slice(0, colonIdx).trim();
+      body = clean.slice(colonIdx + 1).trim();
+    } else {
+      title = `Scenario ${idx + 1}`;
+    }
+
+    let borderCol = idx === 0 ? '#ef4444' : idx === 1 ? '#f59e0b' : '#10b981';
+    let badgeBg = idx === 0 ? 'rgba(239,68,68,0.15)' : idx === 1 ? 'rgba(245,158,11,0.15)' : 'rgba(16,185,129,0.15)';
+    let badgeText = idx === 0 ? '#f87171' : idx === 1 ? '#fbbf24' : '#34d399';
+
+    html += `
+      <div style="background:#1e293b;border:1px solid #334155;border-left:4px solid ${borderCol};border-radius:8px;padding:14px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="font-size:11px;font-weight:700;background:${badgeBg};color:${badgeText};padding:2px 7px;border-radius:4px;">0${idx+1}</span>
+          <span style="font-size:13.5px;font-weight:700;color:#e2e8f0;">${title}</span>
+        </div>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:#94a3b8;">${body}</p>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+function formatAiMlTechnicalExplanation(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let parts = raw.split(/\n(?=[1-9]\.\s+)/);
+  if (parts.length <= 1) {
+    return `<p style="margin:0;color:var(--text-dim);line-height:1.65;font-size:14px;">${raw.replace(/\n/g, '<br>')}</p>`;
+  }
+
+  let intro = parts[0].includes('1.') ? '' : parts[0];
+  let items = parts[0].includes('1.') ? parts : parts.slice(1);
+
+  let html = intro ? `<div style="font-weight:600;color:var(--text);margin-bottom:12px;font-size:14px;">${intro}</div>` : '';
+  html += `<div style="display:flex;flex-direction:column;gap:12px;">`;
+
+  items.forEach((p, idx) => {
+    let clean = p.replace(/^[1-9]\.\s*/, '').trim();
+    let fixes = '';
+    let fixIdx = clean.search(/Fixes?:/i);
+    if (fixIdx !== -1) {
+      fixes = clean.slice(fixIdx).trim();
+      clean = clean.slice(0, fixIdx).trim();
+    }
+
+    let colonIdx = clean.indexOf(':');
+    let title = colonIdx !== -1 && colonIdx < 50 ? clean.slice(0, colonIdx) : `Phase ${idx+1}`;
+    let body = colonIdx !== -1 && colonIdx < 50 ? clean.slice(colonIdx + 1).trim() : clean;
+
+    html += `
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span style="background:rgba(56,189,248,0.15);color:#38bdf8;font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:4px;">Phase 0${idx+1}</span>
+          <span style="font-size:14px;font-weight:700;color:#f1f5f9;">${title}</span>
+        </div>
+        <p style="margin:0;font-size:13.5px;line-height:1.6;color:#cbd5e1;">${body}</p>
+        ${fixes ? `
+        <div style="margin-top:10px;padding:8px 12px;background:rgba(16,185,129,0.08);border-left:3px solid #10b981;border-radius:4px;font-size:12.5px;color:#a7f3d0;line-height:1.5;">
+          <b style="color:#34d399;">🔧 Actionable Fixes &amp; Remedies:</b> ${fixes.replace(/^Fixes?:\s*/i, '')}
+        </div>` : ''}
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+function formatAiMlTerminology(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let terms = raw.split(/;\s*(?=\([0-9]+\)|[0-9]+\.)/);
+  if (terms.length <= 1) {
+    terms = raw.split(/;\s*/);
+  }
+
+  return `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:12px;">
+      ${terms.map(t => {
+        let clean = t.replace(/^\([0-9]+\)\s*/, '').replace(/^[0-9]+\.\s*/, '').trim();
+        let colonIdx = clean.indexOf(':');
+        let termName = colonIdx !== -1 ? clean.slice(0, colonIdx).trim() : 'Term';
+        let termDef = colonIdx !== -1 ? clean.slice(colonIdx + 1).trim() : clean;
+        return `
+          <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;">
+            <span style="font-size:13px;font-weight:700;color:#38bdf8;display:flex;align-items:center;gap:6px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:#38bdf8;"></span>
+              ${termName}
+            </span>
+            <span style="font-size:12.5px;line-height:1.5;color:#94a3b8;">${termDef}</span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function formatAiMlSymbols(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let items = raw.split(/;\s*/);
+  return `
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));gap:10px;">
+      ${items.map(item => {
+        let colonIdx = item.indexOf(':');
+        let sym = colonIdx !== -1 ? item.slice(0, colonIdx).trim() : item;
+        let meaning = colonIdx !== -1 ? item.slice(colonIdx + 1).trim() : '';
+        return `
+          <div style="background:#0f172a;border:1px solid #334155;border-radius:6px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#f59e0b;background:#1e293b;padding:2px 8px;border-radius:4px;">${sym}</span>
+            <span style="font-size:12px;color:#cbd5e1;text-align:right;">${meaning}</span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function formatAiMlWorkedExample(text) {
+  if (!text) return '';
+  let raw = text.trim();
+
+  // If contains python code (like Topic 47)
+  if (raw.includes('```')) {
+    let parts = raw.split(/(?=```)/);
+    let titlePart = parts[0].trim();
+    let codePart = parts.slice(1).join('').trim();
+    return `
+      ${titlePart ? `<div style="background:rgba(56,189,248,0.08);border-left:4px solid #38bdf8;padding:12px 16px;border-radius:6px;margin-bottom:12px;font-weight:600;color:#e2e8f0;">${titlePart}</div>` : ''}
+      ${formatAiMlCodeExample(codePart)}
+    `;
+  }
+
+  let lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  let title = '';
+  let items = [];
+  let currentItem = null;
+
+  for (let i = 0; i < lines.length; i++) {
+    let line = lines[i];
+    if (i === 0 && !line.startsWith('-') && !line.match(/^\d+\./) && !line.match(/^Case/i)) {
+      title = line.replace(/:$/, '');
+      continue;
+    }
+
+    if (line.startsWith('-') || line.match(/^Case\s+[A-Z]/i) || line.match(/^\d+\./)) {
+      if (currentItem) items.push(currentItem);
+      currentItem = { raw: line, sublines: [] };
+    } else {
+      if (currentItem) {
+        currentItem.sublines.push(line);
+      } else {
+        if (!title) title = line;
+      }
+    }
+  }
+  if (currentItem) items.push(currentItem);
+
+  if (items.length === 0) {
+    return `<div class="card" style="padding:14px;background:#1e293b;border-radius:8px;line-height:1.6;">${raw}</div>`;
+  }
+
+  let html = '';
+  if (title) {
+    html += `
+      <div style="background:rgba(56,189,248,0.08);border-left:4px solid #38bdf8;padding:12px 16px;border-radius:6px;margin-bottom:14px;">
+        <span style="font-weight:700;color:#38bdf8;font-size:14px;">📋 Problem Statement &amp; Scenario:</span>
+        <span style="color:var(--text);font-size:14px;margin-left:6px;">${title}</span>
+      </div>
+    `;
+  }
+
+  html += `<div style="display:flex;flex-direction:column;gap:12px;">`;
+
+  items.forEach((item, idx) => {
+    let fullText = item.raw.replace(/^[-\d\.\s]+/, '');
+    if (item.sublines.length) {
+      fullText += ' ' + item.sublines.join(' ');
+    }
+
+    let caseLabel = '';
+    let bodyText = fullText;
+    let caseMatch = fullText.match(/^((?:Case\s+[A-Z]|Step\s+\d+|Task\s+[A-Z]|Performance(?:\s+Measure)?|Experience|Decision|Sensors?|parts[^\:]*)[^:]*):\s*(.*)/i);
+    if (caseMatch) {
+      caseLabel = caseMatch[1];
+      bodyText = caseMatch[2];
+    } else {
+      caseLabel = `Step ${idx + 1}`;
+    }
+
+    let metrics = [];
+    bodyText = bodyText.replace(/([A-Za-z0-9_\s]+(?:MSE|Error|Accuracy|Loss|Delta|Gap|Penalty|Degree|R2|F1-score|uptime|rate|current|voltage|cycles)\s*(?:=|>=|<=|<|>)\s*[\d\.]+%?)/gi, (m) => {
+      metrics.push(m.trim());
+      return '';
+    });
+
+    let diagBadge = '';
+    let borderClr = '#334155';
+    let bgTint = '#1e293b';
+
+    if (/underfit/i.test(bodyText) || /high bias/i.test(bodyText)) {
+      diagBadge = '<span class="badge" style="background:rgba(239,68,68,0.2);color:#f87171;border:1px solid rgba(239,68,68,0.4);font-size:11.5px;padding:3px 10px;border-radius:6px;">❌ Underfitting (High Bias)</span>';
+      borderClr = '#ef4444';
+      bgTint = 'rgba(239,68,68,0.04)';
+    } else if (/overfit/i.test(bodyText) || /high variance/i.test(bodyText)) {
+      diagBadge = '<span class="badge" style="background:rgba(245,158,11,0.2);color:#fbbf24;border:1px solid rgba(245,158,11,0.4);font-size:11.5px;padding:3px 10px;border-radius:6px;">⚠️ Overfitting (High Variance)</span>';
+      borderClr = '#f59e0b';
+      bgTint = 'rgba(245,158,11,0.04)';
+    } else if (/optimal/i.test(bodyText) || /balanced/i.test(bodyText) || /sweet spot/i.test(bodyText)) {
+      diagBadge = '<span class="badge" style="background:rgba(16,185,129,0.2);color:#34d399;border:1px solid rgba(16,185,129,0.4);font-size:11.5px;padding:3px 10px;border-radius:6px;">✅ Optimal Balanced Fit</span>';
+      borderClr = '#10b981';
+      bgTint = 'rgba(16,185,129,0.04)';
+    }
+
+    bodyText = bodyText.replace(/^Diagnosis:\s*/i, '').replace(/\(\s*\)/g, '').trim();
+
+    html += `
+      <div style="background:${bgTint};border:1px solid ${borderClr};border-radius:8px;padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+          <span style="font-weight:700;color:#e2e8f0;font-size:14px;letter-spacing:0.02em;">🔹 ${caseLabel}</span>
+          ${diagBadge}
+        </div>
+
+        ${metrics.length ? `
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin:4px 0;">
+          ${metrics.map(m => `<span style="font-family:monospace;font-size:12px;background:#0f172a;border:1px solid #334155;color:#38bdf8;padding:2px 8px;border-radius:4px;font-weight:600;">📊 ${m}</span>`).join('')}
+        </div>` : ''}
+
+        <p style="margin:0;font-size:13.5px;line-height:1.6;color:#cbd5e1;">${bodyText}</p>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+function formatAiMlPoints(text, icon, badgeTitle) {
+  if (!text) return '';
+  let raw = text.trim();
+  let lines = raw.split(/\n|;\s*/).map(l => l.trim()).filter(Boolean);
+  if (lines.length <= 1) {
+    let colonIdx = raw.indexOf(':');
+    if (colonIdx !== -1 && colonIdx < 60) {
+      let title = raw.slice(0, colonIdx).trim();
+      let body = raw.slice(colonIdx + 1).trim();
+      return `
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 16px;line-height:1.6;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:15px;">${icon || '📌'}</span>
+            <span style="font-size:13.5px;font-weight:700;color:var(--accent);">${title}</span>
+          </div>
+          <p style="margin:0;font-size:13px;line-height:1.6;color:#e2e8f0;">${body}</p>
+        </div>
+      `;
+    }
+    return `
+      <div style="background:#1e293b;border:1px solid #334155;border-radius:8px;padding:14px 16px;line-height:1.6;font-size:13.5px;color:var(--text);display:flex;gap:10px;align-items:flex-start;">
+        <span style="font-size:16px;">${icon || '📌'}</span>
+        <div>${raw}</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      ${lines.map((l, idx) => {
+        let clean = l.replace(/^[-\d\.\s]+/, '').trim();
+        let colonIdx = clean.indexOf(':');
+        let title = colonIdx !== -1 && colonIdx < 45 ? clean.slice(0, colonIdx).trim() : '';
+        let body = colonIdx !== -1 && colonIdx < 45 ? clean.slice(colonIdx + 1).trim() : clean;
+
+        return `
+          <div style="display:flex;align-items:flex-start;gap:10px;background:#1e293b;border:1px solid #334155;border-radius:6px;padding:12px 14px;">
+            <span style="font-size:14px;line-height:1.2;margin-top:2px;">${icon || '📌'}</span>
+            <div style="display:flex;flex-direction:column;gap:3px;">
+              ${title ? `<span style="font-size:13px;font-weight:700;color:#38bdf8;">${title}</span>` : ''}
+              <span style="font-size:13px;line-height:1.55;color:#e2e8f0;">${body}</span>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function formatAiMlMistakes(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let parts = raw.split(/;\s*(?=\([0-9]+\)|[0-9]+\.)|\s+(?=\([0-9]+\))/);
+  if (parts.length <= 1) {
+    parts = raw.split(/\n(?=[-\d\.\s]+)/);
+  }
+
+  return `
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      ${parts.map((p, idx) => {
+        let clean = p.replace(/^\([0-9]+\)\s*/, '').replace(/^[0-9]+\.\s*/, '').replace(/^[-\s]+/, '').trim();
+        let colonIdx = clean.indexOf(':');
+        let title = colonIdx !== -1 && colonIdx < 60 ? clean.slice(0, colonIdx).trim() : `Diagnostic Pitfall 0${idx+1}`;
+        let body = colonIdx !== -1 && colonIdx < 60 ? clean.slice(colonIdx + 1).trim() : clean;
+
+        return `
+          <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.25);border-left:4px solid #ef4444;border-radius:8px;padding:14px 16px;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <span style="background:rgba(239,68,68,0.2);color:#f87171;font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;">⚠️ TRAP 0${idx+1}</span>
+              <span style="font-size:13.5px;font-weight:700;color:#fca5a5;">${title}</span>
+            </div>
+            <p style="margin:0;font-size:13px;line-height:1.6;color:#e2e8f0;">${body}</p>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+
+function formatAiMlPlacementFocus(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let qMatch = raw.match(/^(?:Interview\s+Question|Interviewers\s+love\s+asking|Question)[:\s]*['"]?([^'"]+)['"]?[\.\?\s]*(?:Crisp\s+Answer|Simple\s+Answer|Answer)[:\s]*(.*)/is);
+  if (qMatch) {
+    let q = qMatch[1].trim();
+    let a = qMatch[2].trim();
+    return `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);border-left:4px solid var(--accent);border-radius:8px;padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:11px;font-weight:700;background:rgba(59,130,246,0.2);color:var(--accent);padding:2px 8px;border-radius:4px;">🎯 TARGET INTERVIEW PROMPT</span>
+          </div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);line-height:1.5;">${q}</div>
+        </div>
+        <div style="background:#1e293b;border:1px solid #334155;border-left:4px solid #10b981;border-radius:8px;padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:11px;font-weight:700;background:rgba(16,185,129,0.2);color:#34d399;padding:2px 8px;border-radius:4px;">💼 MODEL CRISP ANSWER</span>
+          </div>
+          <div style="font-size:13.5px;color:#cbd5e1;line-height:1.6;">${a.replace(/\((\d+)\)/g, '<br><b style="color:#38bdf8;">($1)</b>')}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  return formatAiMlPoints(text, '🎯', 'Placement Focus');
+}
+
+function formatAiMlInterview(text) {
+  if (!text) return '';
+  let raw = text.trim();
+  let qMatch = raw.match(/^Q:\s*([\s\S]*?)\nA:\s*([\s\S]*)$/i);
+  if (qMatch) {
+    let q = qMatch[1].trim();
+    let a = qMatch[2].trim();
+    return `
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.25);border-left:4px solid var(--accent);border-radius:8px;padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <span style="font-size:11.5px;font-weight:700;background:rgba(59,130,246,0.2);color:var(--accent);padding:2px 8px;border-radius:4px;">❓ TECHNICAL INTERVIEW QUESTION</span>
+          </div>
+          <div style="font-size:14px;font-weight:600;color:var(--text);line-height:1.55;">${q}</div>
+        </div>
+        <div style="background:#0f172a;border:1px solid #334155;border-left:4px solid #10b981;border-radius:8px;padding:14px 16px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <span style="font-size:11.5px;font-weight:700;background:rgba(16,185,129,0.2);color:#34d399;padding:2px 8px;border-radius:4px;">💼 IDEAL ANSWER &amp; PLACEMENT KEY POINTS</span>
+          </div>
+          <p style="margin:0;font-size:13.5px;color:#cbd5e1;line-height:1.65;">${a}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  return `<div class="card" style="padding:14px;background:#1e293b;border-radius:8px;line-height:1.6;">${raw}</div>`;
+}
+
+function renderAimlArchitecture(tp) {
+  if (!tp) return '';
+  const tid = tp.id || '';
+  const title = tp.title || 'Architecture';
+  const rawDiag = tp.diagram || '';
+
+  let svgContent = '';
+
+  if (tid === 'aiml-types-ml') {
+    svgContent = `
+<svg viewBox="0 0 880 430" width="100%" style="max-height:460px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-root" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
+    </linearGradient>
+    <linearGradient id="g-sup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#047857" />
+    </linearGradient>
+    <linearGradient id="g-unsup" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="100%" stop-color="#b45309" />
+    </linearGradient>
+    <linearGradient id="g-rl" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6d28d9" />
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#64748b" />
+    </marker>
+  </defs>
+
+  <rect width="880" height="430" rx="12" fill="#0b1329" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="440" y="36" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="700" letter-spacing="0.04em">Machine Learning Paradigms &amp; Taxonomy Hierarchy</text>
+
+  <!-- Root Node -->
+  <rect x="315" y="60" width="250" height="56" rx="8" fill="url(#g-root)" stroke="#60a5fa" stroke-width="1.5"/>
+  <text x="440" y="86" text-anchor="middle" fill="#ffffff" font-size="14" font-weight="700">Machine Learning (ML)</text>
+  <text x="440" y="104" text-anchor="middle" fill="#bfdbfe" font-size="11">Data-Driven Mathematical Optimizations</text>
+
+  <!-- Connector Lines -->
+  <path d="M 370 116 L 370 140 L 150 140 L 150 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 440 116 L 440 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+  <path d="M 510 116 L 510 140 L 730 140 L 730 170" fill="none" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Column 1: Supervised -->
+  <rect x="35" y="172" width="230" height="64" rx="8" fill="url(#g-sup)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="150" y="198" text-anchor="middle" fill="#ffffff" font-size="13.5" font-weight="700">1. Supervised Learning</text>
+  <text x="150" y="220" text-anchor="middle" fill="#a7f3d0" font-size="11">Input-Output Pairs (x_i, y_i) &bull; Ground Truth</text>
+
+  <!-- Col 1 Details -->
+  <rect x="35" y="248" width="230" height="152" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="50" y="274" fill="#38bdf8" font-size="12" font-weight="700">&bull; Regression:</text>
+  <text x="65" y="294" fill="#cbd5e1" font-size="11.5">Continuous targets (e.g. Load, Temp)</text>
+  <text x="50" y="324" fill="#38bdf8" font-size="12" font-weight="700">&bull; Classification:</text>
+  <text x="65" y="344" fill="#cbd5e1" font-size="11.5">Discrete labels (Fault vs Normal)</text>
+  <text x="50" y="374" fill="#10b981" font-size="11" font-weight="600">Goal: Min Empirical Risk L(y, f(x))</text>
+
+  <!-- Column 2: Unsupervised -->
+  <rect x="325" y="172" width="230" height="64" rx="8" fill="url(#g-unsup)" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="440" y="198" text-anchor="middle" fill="#ffffff" font-size="13.5" font-weight="700">2. Unsupervised Learning</text>
+  <text x="440" y="220" text-anchor="middle" fill="#fde68a" font-size="11">Unlabeled Data {x_i} &bull; Latent Patterns</text>
+
+  <!-- Col 2 Details -->
+  <rect x="325" y="248" width="230" height="152" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="340" y="274" fill="#fbbf24" font-size="12" font-weight="700">&bull; Clustering (K-Means, GMM):</text>
+  <text x="355" y="294" fill="#cbd5e1" font-size="11.5">Customer load profiling &amp; grouping</text>
+  <text x="340" y="324" fill="#fbbf24" font-size="12" font-weight="700">&bull; Dim Reduction (PCA, t-SNE):</text>
+  <text x="355" y="344" fill="#cbd5e1" font-size="11.5">SCADA multi-channel feature compression</text>
+  <text x="340" y="374" fill="#f59e0b" font-size="11" font-weight="600">Goal: Discover Latent Manifolds</text>
+
+  <!-- Column 3: Reinforcement -->
+  <rect x="615" y="172" width="230" height="64" rx="8" fill="url(#g-rl)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="730" y="198" text-anchor="middle" fill="#ffffff" font-size="13.5" font-weight="700">3. Reinforcement Learning</text>
+  <text x="730" y="220" text-anchor="middle" fill="#ddd6fe" font-size="11">Agent-Environment MDP &bull; Reward R_t</text>
+
+  <!-- Col 3 Details -->
+  <rect x="615" y="248" width="230" height="152" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="630" y="274" fill="#a78bfa" font-size="12" font-weight="700">&bull; Action-Value Q(s, a):</text>
+  <text x="645" y="294" fill="#cbd5e1" font-size="11.5">Voltage tap changer &amp; battery dispatch</text>
+  <text x="630" y="324" fill="#a78bfa" font-size="12" font-weight="700">&bull; Policy Optimization &pi;(a|s):</text>
+  <text x="645" y="344" fill="#cbd5e1" font-size="11.5">Autonomous microgrid frequency stabilization</text>
+  <text x="630" y="374" fill="#8b5cf6" font-size="11" font-weight="600">Goal: Max Cumulative Future Reward</text>
+</svg>
+    `;
+  } else if (tid === 'aiml-overfit-underfit' || tid === 'aiml-bias-variance') {
+    svgContent = `
+<svg viewBox="0 0 880 380" width="100%" style="max-height:400px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-opt" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="bg-under" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="bg-over" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.02"/>
+    </linearGradient>
+    <marker id="arr-axis" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#94a3b8" />
+    </marker>
+    <marker id="arr-gap" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#f43f5e" />
+    </marker>
+  </defs>
+
+  <rect width="880" height="380" rx="12" fill="#0b1329" stroke="#1e293b" stroke-width="1.5"/>
+
+  <text x="440" y="32" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="700" letter-spacing="0.03em">Bias-Variance Tradeoff: Model Capacity vs. Generalization Error</text>
+  <text x="440" y="52" text-anchor="middle" fill="#94a3b8" font-size="12">Diagnosing Underfitting (High Bias) and Overfitting (High Variance) from Training &amp; Validation Loss</text>
+
+  <!-- Zone 1: Underfitting -->
+  <rect x="70" y="70" width="230" height="250" fill="url(#bg-under)" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,4" rx="6"/>
+  <text x="185" y="94" text-anchor="middle" fill="#f87171" font-size="13" font-weight="700">UNDERFITTING</text>
+  <text x="185" y="112" text-anchor="middle" fill="#ef4444" font-size="11">High Bias &bull; Model Too Simple</text>
+  <text x="185" y="295" text-anchor="middle" fill="#cbd5e1" font-size="11">Both E_train &amp; E_val are High</text>
+
+  <!-- Zone 2: Sweet Spot -->
+  <rect x="305" y="70" width="260" height="250" fill="url(#bg-opt)" stroke="#10b981" stroke-width="1.5" rx="6"/>
+  <rect x="345" y="78" width="180" height="24" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1"/>
+  <text x="435" y="94" text-anchor="middle" fill="#34d399" font-size="12" font-weight="700">★ OPTIMAL CAPACITY</text>
+  <text x="435" y="120" text-anchor="middle" fill="#6ee7b7" font-size="11">Minimum Generalization Error</text>
+  <text x="435" y="295" text-anchor="middle" fill="#a7f3d0" font-size="11" font-weight="600">Balanced Generalization</text>
+
+  <!-- Zone 3: Overfitting -->
+  <rect x="570" y="70" width="250" height="250" fill="url(#bg-over)" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4,4" rx="6"/>
+  <text x="695" y="94" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="700">OVERFITTING</text>
+  <text x="695" y="112" text-anchor="middle" fill="#f59e0b" font-size="11">High Variance &bull; Model Memorizes Noise</text>
+  <text x="695" y="295" text-anchor="middle" fill="#cbd5e1" font-size="11">E_train &rarr; 0, but E_val Explodes!</text>
+
+  <!-- Axes -->
+  <line x1="70" y1="320" x2="840" y2="320" stroke="#64748b" stroke-width="2" marker-end="url(#arr-axis)"/>
+  <line x1="70" y1="320" x2="70" y2="65" stroke="#64748b" stroke-width="2" marker-end="url(#arr-axis)"/>
+  <text x="440" y="355" text-anchor="middle" fill="#cbd5e1" font-size="13" font-weight="600">Model Complexity / Hypothesis Capacity (e.g., Polynomial Degree d, Tree Depth, Weights) &rarr;</text>
+  <text x="25" y="190" text-anchor="middle" fill="#cbd5e1" font-size="13" font-weight="600" transform="rotate(-90 25 190)">&larr; Prediction Error (MSE)</text>
+
+  <!-- Optimal Line Dotted -->
+  <line x1="435" y1="70" x2="435" y2="320" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <circle cx="435" cy="180" r="6" fill="#10b981" stroke="#f8fafc" stroke-width="2"/>
+
+  <!-- Training Error Curve (Blue) -->
+  <path d="M 90 145 C 180 180, 300 230, 435 255 C 570 280, 700 298, 800 305" fill="none" stroke="#38bdf8" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="800" cy="305" r="4" fill="#38bdf8"/>
+  <text x="760" y="295" fill="#38bdf8" font-size="12" font-weight="700">Training Error (E_train)</text>
+
+  <!-- Validation Error Curve (Crimson/Red) -->
+  <path d="M 90 190 C 200 185, 320 180, 435 180 C 530 180, 680 140, 800 95" fill="none" stroke="#f43f5e" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="800" cy="95" r="4" fill="#f43f5e"/>
+  <text x="760" y="85" fill="#f43f5e" font-size="12" font-weight="700">Validation Error (E_val)</text>
+
+  <!-- Generalization Gap Indicator -->
+  <line x1="750" y1="105" x2="750" y2="295" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="3,3" marker-start="url(#arr-gap)" marker-end="url(#arr-gap)"/>
+  <rect x="670" y="185" width="160" height="24" rx="4" fill="#1e293b" stroke="#f43f5e" stroke-width="1"/>
+  <text x="750" y="201" text-anchor="middle" fill="#fca5a5" font-size="11" font-weight="600">Generalization Gap &Delta;</text>
+</svg>
+    `;
+  } else if (rawDiag) {
+    svgContent = `
+<svg viewBox="0 0 880 240" width="100%" style="max-height:280px;display:block;margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g-node" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <marker id="u-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+  <rect width="880" height="240" rx="10" fill="#0b1329" stroke="#1e293b" stroke-width="1.5"/>
+  <text x="440" y="28" text-anchor="middle" fill="#f8fafc" font-size="14.5" font-weight="700" letter-spacing="0.03em">${escapeHtml(title)}: Architecture Flow</text>
+
+  <g transform="translate(60, 55)">
+    <!-- Stage 1 -->
+    <rect x="0" y="20" width="200" height="85" rx="8" fill="url(#g-node)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="15" y="10" width="100" height="20" rx="4" fill="#0284c7"/>
+    <text x="65" y="24" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="700">INPUT / DATA</text>
+    <text x="100" y="58" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600">Feature Vector X</text>
+    <text x="100" y="78" text-anchor="middle" fill="#94a3b8" font-size="10.5">Sensor &amp; Empirical Records</text>
+
+    <!-- Arrow 1 -->
+    <path d="M 205 62 L 270 62" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#u-arrow)"/>
+
+    <!-- Stage 2 -->
+    <rect x="280" y="20" width="200" height="85" rx="8" fill="url(#g-node)" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="295" y="10" width="110" height="20" rx="4" fill="#059669"/>
+    <text x="350" y="24" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="700">OPTIMIZATION</text>
+    <text x="380" y="58" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600">Loss Minimization</text>
+    <text x="380" y="78" text-anchor="middle" fill="#94a3b8" font-size="10.5">Parameter Weights &theta;*</text>
+
+    <!-- Arrow 2 -->
+    <path d="M 485 62 L 550 62" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#u-arrow)"/>
+
+    <!-- Stage 3 -->
+    <rect x="560" y="20" width="200" height="85" rx="8" fill="url(#g-node)" stroke="#f59e0b" stroke-width="1.5"/>
+    <rect x="575" y="10" width="110" height="20" rx="4" fill="#d97706"/>
+    <text x="630" y="24" text-anchor="middle" fill="#ffffff" font-size="10.5" font-weight="700">INFERENCE</text>
+    <text x="660" y="58" text-anchor="middle" fill="#e2e8f0" font-size="12" font-weight="600">Prediction y_hat</text>
+    <text x="660" y="78" text-anchor="middle" fill="#94a3b8" font-size="10.5">Target Classification / Reg</text>
+  </g>
+
+  <text x="440" y="205" text-anchor="middle" fill="#64748b" font-size="11.5">End-to-End Computational Pipeline &bull; Automated Gradient Updates &bull; Validated with Test Data</text>
+</svg>
+    `;
+  }
+
+  const diagUid = 'diag_' + Math.random().toString(36).substring(2, 9);
+
+  return `
+    <div class="card" style="padding:18px;margin-bottom:0;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;border-bottom:1px solid #1e293b;padding-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:16px;">🖼️</span>
+          <h3 style="font-size:15px;margin:0;color:var(--text);font-weight:700;">7. Visual Dataflow &amp; System Architecture</h3>
+        </div>
+        <div style="display:flex;gap:6px;background:#0f172a;padding:3px;border-radius:6px;border:1px solid #1e293b;">
+          <button id="btn_svg_${diagUid}" class="btn" style="padding:4px 12px;font-size:11.5px;background:var(--accent);color:#fff;border-radius:4px;border:none;cursor:pointer;" onclick="document.getElementById('view_svg_${diagUid}').style.display='block';document.getElementById('view_ascii_${diagUid}').style.display='none';this.style.background='var(--accent)';this.style.color='#fff';document.getElementById('btn_ascii_${diagUid}').style.background='transparent';document.getElementById('btn_ascii_${diagUid}').style.color='#94a3b8';">🖼️ Visual Diagram</button>
+          <button id="btn_ascii_${diagUid}" class="btn" style="padding:4px 12px;font-size:11.5px;background:transparent;color:#94a3b8;border-radius:4px;border:none;cursor:pointer;" onclick="document.getElementById('view_svg_${diagUid}').style.display='none';document.getElementById('view_ascii_${diagUid}').style.display='block';this.style.background='var(--accent)';this.style.color='#fff';document.getElementById('btn_svg_${diagUid}').style.background='transparent';document.getElementById('btn_svg_${diagUid}').style.color='#94a3b8';">🔤 Schema View</button>
+        </div>
+      </div>
+
+      <div id="view_svg_${diagUid}" style="display:block;margin:0 auto;text-align:center;">
+        ${svgContent}
+      </div>
+
+      <div id="view_ascii_${diagUid}" style="display:none;">
+        <pre style="background:#090d16;border:1px solid #1e293b;border-radius:8px;padding:16px;font-family:'JetBrains Mono',Consolas,monospace;font-size:12px;line-height:1.45;color:#38bdf8;overflow-x:auto;margin:0;">${escapeHtml(rawDiag)}</pre>
+      </div>
+    </div>
+  `;
+}
+
 function pageAiMlTopicDetail(topicId) {
   let tp = (typeof AIML_CURRICULUM !== 'undefined' && AIML_CURRICULUM[topicId]) ? AIML_CURRICULUM[topicId] : null;
   if (!tp && typeof AIML_CURRICULUM !== 'undefined') {
@@ -78814,98 +79560,109 @@ function pageAiMlTopicDetail(topicId) {
     </div>
 
     <div style="display:flex;flex-direction:column;gap:18px;font-size:14px;line-height:1.6;max-width:960px;">
+      <!-- 1. Why This Matters -->
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">1. Why This Matters</h3>
-        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.whyItMatters}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">1. Why This Matters</h3>
+        ${formatAiMlWhyItMatters(tp.whyItMatters)}
       </div>
 
+      <!-- 2. Simple Intuitive Explanation -->
       <div class="card" style="padding:18px;border-left:4px solid var(--accent);">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--accent);">2. Simple Intuitive Explanation</h3>
-        <p style="margin:0;color:var(--text);line-height:1.6;">${tp.simpleExplanation}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--accent);">2. Simple Intuitive Explanation</h3>
+        ${formatAiMlSimpleExplanation(tp.simpleExplanation)}
       </div>
 
+      <!-- 3. Rigorous Technical Explanation -->
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">3. Rigorous Technical Explanation</h3>
-        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.technicalExplanation || tp.desc || ''}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">3. Rigorous Technical Explanation</h3>
+        ${formatAiMlTechnicalExplanation(tp.technicalExplanation || tp.desc || '')}
       </div>
 
+      <!-- 4. Key Terminology -->
       ${tp.terminology ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">4. Key Terminology</h3>
-        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.terminology}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">4. Key Terminology</h3>
+        ${formatAiMlTerminology(tp.terminology)}
       </div>` : ''}
 
+      <!-- 5. Mathematical Symbols & Parameters -->
       ${tp.symbols ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">5. Mathematical Symbols & Parameters</h3>
-        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.symbols}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">5. Mathematical Symbols &amp; Parameters</h3>
+        ${formatAiMlSymbols(tp.symbols)}
       </div>` : ''}
 
+      <!-- 6. Mathematical Equations -->
       ${tp.equations ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">6. Mathematical Equations</h3>
-        <div class="callout callout-info" style="margin:4px 0 0 0;">${tp.equations}</div>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">6. Mathematical Equations</h3>
+        <div class="callout callout-info" style="margin:4px 0 0 0;font-size:14px;line-height:1.6;">${tp.equations}</div>
       </div>` : ''}
 
-      ${tp.diagram ? `
-      <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">7. Visual Dataflow / Architecture</h3>
-        <pre style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;font-family:monospace;font-size:12.5px;color:var(--text);overflow-x:auto;margin:4px 0 0 0;line-height:1.4;">${tp.diagram}</pre>
-      </div>` : ''}
+      <!-- 7. Visual Dataflow / Architecture -->
+      ${tp.diagram ? renderAimlArchitecture(tp) : ''}
 
+      <!-- 8. Step-by-Step Worked Example -->
       ${tp.workedExample ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">8. Step-by-Step Worked Example</h3>
-        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.workedExample}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">8. Step-by-Step Worked Example</h3>
+        ${formatAiMlWorkedExample(tp.workedExample)}
       </div>` : ''}
 
+      <!-- 9. Practical Code & Pipeline Implementation -->
       ${tp.practicalExample ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">9. Practical Code & Pipeline Implementation</h3>
-        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.practicalExample}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">9. Practical Code &amp; Pipeline Implementation</h3>
+        ${formatAiMlCodeExample(tp.practicalExample)}
       </div>` : ''}
 
       ${tp.codeExample ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">Python Implementation</h3>
-        <pre style="background:#0f172a;color:#f8fafc;padding:14px;border-radius:8px;overflow-x:auto;font-family:monospace;font-size:13.5px;line-height:1.5;margin:0;"><code>${tp.codeExample}</code></pre>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">Python Implementation</h3>
+        ${formatAiMlCodeExample(tp.codeExample)}
       </div>` : ''}
 
+      <!-- 10. Electrical Engineering & Industrial Applications -->
       ${tp.eeeApplication ? `
       <div class="card" style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--accent);">10. Electrical Engineering & Industrial Applications</h3>
-        <p style="margin:0;color:var(--text);line-height:1.6;">${tp.eeeApplication}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--accent);">10. Electrical Engineering &amp; Industrial Applications</h3>
+        ${formatAiMlPoints(tp.eeeApplication, '⚡', 'Industrial Applications')}
       </div>` : ''}
 
+      <!-- 11. Common Mistakes & Placement Traps -->
       ${tp.commonMistakes ? `
-      <div class="callout callout-trap" style="margin:0;">
-        <h3 style="font-size:15px;margin:0 0 6px 0;color:#ef4444;">11. Common Mistakes & Placement Traps</h3>
-        <p style="margin:0;line-height:1.6;">${tp.commonMistakes}</p>
+      <div class="callout callout-trap" style="margin:0;padding:18px;">
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:#ef4444;">11. Common Mistakes &amp; Placement Traps</h3>
+        ${formatAiMlMistakes(tp.commonMistakes)}
       </div>` : ''}
 
+      <!-- 12. Placement & GATE Focus Areas -->
       ${tp.placementFocus ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">12. Placement & GATE Focus Areas</h3>
-        <p style="margin:0;color:var(--text-dim);line-height:1.6;">${tp.placementFocus}</p>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">12. Placement &amp; GATE Focus Areas</h3>
+        ${formatAiMlPlacementFocus(tp.placementFocus)}
       </div>` : ''}
 
+      <!-- 13. Technical Interview Question & Answer -->
       ${tp.interviewQuestions ? `
       <div class="card" style="padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">13. Technical Interview Question & Answer</h3>
-        <pre style="background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:14px;font-family:sans-serif;white-space:pre-wrap;font-size:13.5px;color:var(--text);margin:4px 0 0 0;line-height:1.6;">${tp.interviewQuestions}</pre>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);border-left:3px solid var(--accent);padding-left:10px;">13. Technical Interview Question &amp; Answer</h3>
+        ${formatAiMlInterview(tp.interviewQuestions)}
       </div>` : ''}
 
+      <!-- 14. Quick Revision Points -->
       ${tp.quickRevision ? `
       <div class="card" style="background:var(--bg-elevated);border:1px solid var(--border);border-radius:8px;padding:18px;">
-        <h3 style="font-size:15px;margin:0 0 8px 0;color:var(--text);">14. Quick Revision Points</h3>
-        <pre style="background:transparent;border:none;padding:0;font-family:sans-serif;white-space:pre-wrap;font-size:13.5px;color:var(--text-dim);margin:0;line-height:1.6;">${tp.quickRevision}</pre>
+        <h3 style="font-size:15px;margin:0 0 12px 0;color:var(--text);">14. Quick Revision Points</h3>
+        ${formatAiMlPoints(tp.quickRevision, '📌', 'Quick Revision')}
       </div>` : ''}
+
       <!-- 15. Practice Topic MCQs Section -->
       ${(tp.mcqIds && tp.mcqIds.length) ? `
       <div class="card" style="padding:20px;border-left:4px solid var(--accent);background:var(--bg-elevated);border-radius:8px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px;">
           <div>
-            <h3 style="font-size:16px;margin:0 0 4px 0;color:var(--accent);">15. Practice Topic MCQs & Placement Questions</h3>
+            <h3 style="font-size:16px;margin:0 0 4px 0;color:var(--accent);">15. Practice Topic MCQs &amp; Placement Questions</h3>
             <div style="font-size:12.5px;color:var(--text-dim);">Test your understanding of Topic ${tp.num} with placement-grade multiple choice questions.</div>
           </div>
           <span class="badge" style="background:var(--accent);color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;">${tp.mcqIds.length} Questions</span>
@@ -78958,7 +79715,6 @@ function pageAiMlTopicDetail(topicId) {
           }).join('')}
         </div>
       </div>` : ''}
-
 
       <!-- Bottom Navigation Bar -->
       <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:16px;margin-top:10px;flex-wrap:wrap;gap:10px;">
