@@ -2942,6 +2942,368 @@ const PROGRAMMING_CURRICULUM = {
       "status": "COMPLETE"
     }
   ],
+  "embedded-c": [
+  {
+    "id": "ec-intro-basics",
+    "name": "Introduction to Embedded C & Microcontroller Architecture",
+    "whyItMatters": "On a normal PC, your program runs inside an operating system with gigabytes of RAM. But inside a car engine controller, medical monitor, or drone, your code runs directly on raw silicon (bare metal) with only a few kilobytes of memory! Embedded C is the master skill that gives life to electronic hardware.",
+    "simpleExplanation": "Imagine cooking in a giant restaurant kitchen with endless shelves (PC programming). Embedded C is like cooking inside a small camper van: you have very little water and storage, so you must plan every single ingredient carefully and turn the stove valves directly with your own hands!",
+    "technicalExplanation": "Embedded C is an extension of standard C tailored for microcontrollers. Code is compiled on a host computer (cross-compilation) into a raw binary hex file and flashed into non-volatile Flash ROM. When power is applied, the CPU starts executing instructions starting from the Reset Vector, initializes hardware registers, and enters an infinite event loop: while(1). Microcontrollers integrate CPU core, SRAM (volatile data), Flash (permanent code), and peripherals (GPIO, Timers, ADC, UART) on a single silicon chip.",
+    "syntaxExample": "#include <stdint.h>\n\n// Bare-metal main function\nint main(void) {\n    // 1. Hardware initialization step\n    // (Configure clock speed, pin directions)\n\n    // 2. Infinite event loop (Microcontroller never exits!)\n    while (1) {\n        // Read sensors, make decisions, control actuators\n    }\n\n    // Execution should never reach here\n    return 0;\n}",
+    "importantRules": "Embedded programs must NEVER return from main(). There is no operating system to return to! Always keep your firmware inside an infinite loop like while(1).",
+    "commonMistakes": "Treating microcontrollers like desktop computers by allocating memory with malloc() in continuous loops, leading to memory fragmentation and sudden hardware crashes.",
+    "placementFocus": "Core screening topic for firmware engineer roles at Bosch, Texas Instruments, Qualcomm, STMicroelectronics, and NXP.",
+    "interviewQuestions": "Q: What is the main difference between C and Embedded C?\nA: Standard C is hardware-independent and relies on an OS for resources. Embedded C includes hardware-specific extensions to control memory-mapped registers, interrupts, and I/O pins directly.",
+    "quickRevision": "Microcontroller = CPU + Flash + RAM + Peripherals on one chip. Firmware runs directly on bare metal in an infinite while(1) loop.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why does an embedded system main() function never terminate?' Crisp Answer: Because there is no underlying OS to catch the return code. If main() exits, the CPU program counter wanders into undefined memory, causing the chip to hang or reset uncontrollably."
+  },
+  {
+    "id": "ec-stdint-datatypes",
+    "name": "Exact-Width Integers (stdint.h) & Endianness",
+    "whyItMatters": "In standard C, the size of 'int' changes depending on the processor! On an 8-bit Arduino, int is 2 bytes (16 bits). On a 32-bit ARM chip, int is 4 bytes (32 bits). If you rely on plain 'int', your firmware will behave unpredictably when ported to another chip. In embedded engineering, exact bit-widths are mandatory.",
+    "simpleExplanation": "Imagine ordering shoes by 'Medium' instead of an exact number like 'Size 42'. In different countries, 'Medium' means different sizes, so your shoes won't fit! The stdint.h library gives every number an exact, fixed size everywhere in the world.",
+    "technicalExplanation": "The C99 header <stdint.h> provides standardized exact-width integer types: uint8_t (unsigned 8-bit, 0 to 255), int8_t (-128 to 127), uint16_t (0 to 65,535), int16_t (-32,768 to 32,767), uint32_t (0 to 4,294,967,295), and int32_t. Endianness refers to byte order in memory: Little-Endian (least significant byte stored at lowest address, standard in ARM Cortex-M) vs Big-Endian (most significant byte at lowest address, used in network protocols).",
+    "syntaxExample": "#include <stdint.h>\n#include <stdbool.h>\n\nuint8_t  sensor_status = 0xFF;    // Exactly 1 byte (0 to 255)\nuint16_t adc_reading   = 4095;    // Exactly 2 bytes (0 to 65535)\nuint32_t timestamp_ms  = 1000000; // Exactly 4 bytes\nbool     motor_active  = true;    // 1-bit boolean state",
+    "importantRules": "Never use plain 'int', 'short', or 'long' for hardware register values, communication packet buffers, or sensor measurements. Always use exact types like uint8_t and uint32_t.",
+    "commonMistakes": "Integer overflow: adding 1 to a uint8_t holding 255 silently wraps around to 0, causing unexpected sensor errors or motor control glitches.",
+    "placementFocus": "Universal baseline test in any technical written test or coding interview for embedded systems.",
+    "interviewQuestions": "Q: How do you check if a microcontroller is Little-Endian or Big-Endian in C code?\nA: Create a uint16_t x = 0x0001; and cast its address to (uint8_t *)&x. If the first byte is 1, it is Little-Endian; if 0, it is Big-Endian.",
+    "quickRevision": "Use <stdint.h> for guaranteed sizes: uint8_t (1 byte), uint16_t (2 bytes), uint32_t (4 bytes). Little-Endian puts lowest byte first.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Be ready to write the 4-line C code snippet to detect endianness on the whiteboard without hesitating."
+  },
+  {
+    "id": "ec-bitwise-operations",
+    "name": "Bitwise Operators: Setting, Clearing, and Toggling Bits",
+    "whyItMatters": "Microcontroller hardware pins are grouped into 8-bit or 32-bit registers. If Pin 3 connects to a cooling fan and Pin 2 connects to a heater, you must turn on the fan without accidentally switching off the heater! Bitwise masking allows surgical control of individual pins.",
+    "simpleExplanation": "Think of an electrical switchboard on your wall with 8 light switches. You want to flip switch #3 UP using your finger without bumping or moving any of the other 7 switches.",
+    "technicalExplanation": "Bitwise operations manipulate individual bits inside a register:\n1. SET Bit n (make it 1): REG |= (1U << n);\n2. CLEAR Bit n (make it 0): REG &= ~(1U << n);\n3. TOGGLE Bit n (invert 0 <-> 1): REG ^= (1U << n);\n4. TEST Bit n (check if 1): if (REG & (1U << n))\nBitmasking uses binary shifts (1U << n) to create a mask with a 1 at the target bit position and 0 elsewhere.",
+    "syntaxExample": "#include <stdint.h>\n\n#define LED_PIN  3U\n#define PUMP_PIN 5U\n\nvoid control_pins(void) {\n    uint8_t port = 0x00; // All pins LOW (0000 0000b)\n\n    // 1. Turn ON LED (Set bit 3 -> 0000 1000b)\n    port |= (1U << LED_PIN);\n\n    // 2. Turn ON Pump (Set bit 5 -> 0010 1000b)\n    port |= (1U << PUMP_PIN);\n\n    // 3. Toggle LED (Flip bit 3 -> 0010 0000b)\n    port ^= (1U << LED_PIN);\n\n    // 4. Turn OFF Pump (Clear bit 5 -> 0000 0000b)\n    port &= ~(1U << PUMP_PIN);\n}",
+    "importantRules": "Always append 'U' to shift literals (e.g., 1U << 31) to prevent undefined behavior caused by signed integer overflow on 32-bit registers.",
+    "commonMistakes": "Using logical operators (&&, ||) instead of bitwise operators (&, |). 'REG |= (1 << 3)' sets bit 3; 'REG ||= (1 << 3)' is a syntax error or logical boolean comparison!",
+    "placementFocus": "Guaranteed live whiteboard coding test question at every hardware and embedded software interview.",
+    "interviewQuestions": "Q: How do you clear the upper 4 bits of an 8-bit register while keeping the lower 4 bits unchanged?\nA: Use bitwise AND with mask 0x0F: reg &= 0x0F;",
+    "quickRevision": "Set: reg |= (1U << n). Clear: reg &= ~(1U << n). Toggle: reg ^= (1U << n). Test: (reg & (1U << n)) != 0.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Practice explaining the 4 golden macros: #define SET_BIT(reg, bit) ((reg) |= (1U << (bit))) and #define CLEAR_BIT(reg, bit) ((reg) &= ~(1U << (bit)))."
+  },
+  {
+    "id": "ec-memory-mapped-io",
+    "name": "Memory-Mapped I/O & Peripheral Hardware Registers",
+    "whyItMatters": "How does software actually talk to physical copper pins on a chip? In modern architectures like ARM Cortex-M and AVR, hardware peripherals are wired to regular memory addresses. Writing to address 0x40020014 sends electricity straight to a physical pin!",
+    "simpleExplanation": "Imagine numbered mailboxes in an apartment. Mailbox #0x40020014 is connected by a wire to a physical red lightbulb. Whenever you drop an envelope containing the number 1 into that mailbox, the red light turns ON instantly!",
+    "technicalExplanation": "Memory-Mapped I/O (MMIO) assigns peripheral control and data registers to specific addresses in the CPU memory map. To access a register in C, cast the numeric address into a volatile pointer and dereference it. Modern vendor libraries (like ARM CMSIS) group these registers into C structures where struct member offsets match the hardware silicon layout.",
+    "syntaxExample": "#include <stdint.h>\n\n// Raw pointer access to STM32 GPIOA Output Data Register\n#define GPIOA_ODR  (*(volatile uint32_t *)(0x40020014U))\n\n// Modern CMSIS struct mapping approach:\ntypedef struct {\n    volatile uint32_t MODER;   // Offset 0x00: Mode register\n    volatile uint32_t OTYPER;  // Offset 0x04: Output type\n    volatile uint32_t OSPEEDR; // Offset 0x08: Speed\n    volatile uint32_t PUPDR;   // Offset 0x0C: Pull-up/down\n    volatile uint32_t IDR;     // Offset 0x10: Input data\n    volatile uint32_t ODR;     // Offset 0x14: Output data\n} GPIO_TypeDef;\n\n#define GPIOA ((GPIO_TypeDef *)0x40020000U)\n\nvoid led_on(void) {\n    GPIOA->ODR |= (1U << 5); // Turn ON LED on Pin PA5\n}",
+    "importantRules": "Every hardware register pointer MUST be qualified with 'volatile' so the compiler doesn't optimize away repeated reads or writes.",
+    "commonMistakes": "Forgetting parenthesized pointer casting: *(volatile uint32_t *)ADDR is correct; (volatile uint32_t *)ADDR without dereference is just an address, not the register contents.",
+    "placementFocus": "Core architectural concept asked in STM32, ARM Cortex-M, and bare-metal device driver roles.",
+    "interviewQuestions": "Q: How does CMSIS map hardware registers using C structs?\nA: By declaring struct members in the exact physical memory offset order as specified in the microcontroller reference manual, and pointing a struct pointer to the peripheral's base memory address.",
+    "quickRevision": "Memory-Mapped I/O maps hardware registers to normal memory addresses. Access them via volatile pointers: *(volatile uint32_t *)0xAddress.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why are struct members in hardware drivers ordered strictly?' Answer: Because the compiler places struct members contiguously in memory; their relative byte offsets must match the silicon peripheral register map exactly."
+  },
+  {
+    "id": "ec-volatile-keyword",
+    "name": "The volatile Keyword: Taming the Optimizing Compiler",
+    "whyItMatters": "The 'volatile' keyword is the most important keyword in embedded C! If you omit it, an optimizing compiler will assume a variable never changes if your C code doesn't modify it, and it will delete your hardware polling loops, causing your system to freeze permanently.",
+    "simpleExplanation": "Imagine a security guard watching a bank door. If his boss tells him, 'Nobody walked in during the last 2 seconds, so stop looking at the door forever!', a thief will easily slip in. Marking the door 'volatile' tells the guard: 'Look at the door with your own eyes every single time without making any assumptions!'",
+    "technicalExplanation": "The 'volatile' qualifier instructs the C compiler that the value of a variable may change at any time through means outside the control of the current code sequence (such as hardware registers, Interrupt Service Routines, or concurrent RTOS tasks). The compiler is strictly forbidden from caching the value in a CPU register; it must perform a fresh memory read/write operation every single time the variable is accessed.",
+    "syntaxExample": "#include <stdint.h>\n#include <stdbool.h>\n\n// 1. Shared flag between an Interrupt Service Routine (ISR) and main loop\nvolatile bool sensor_data_ready = false;\n\n// 2. Hardware peripheral status register\n#define UART_STATUS_REG (*(volatile uint32_t *)0x4000C000U)\n\nvoid wait_for_data(void) {\n    // Compiler MUST read memory on EVERY iteration\n    while (!sensor_data_ready) {\n        // Waiting for ISR to set flag to true\n    }\n    sensor_data_ready = false; // Reset flag\n}",
+    "importantRules": "Always use 'volatile' for: (1) Hardware peripheral registers, (2) Global variables shared between an ISR and the main loop, (3) Variables shared between multiple concurrent RTOS tasks.",
+    "commonMistakes": "Believing 'volatile' guarantees thread-safe atomic access. It does NOT! It only prevents compiler caching. For multi-byte variables on small CPUs, interrupts must still be disabled during reads.",
+    "placementFocus": "The #1 favorite interview question at Qualcomm, Intel, Texas Instruments, and Bosch.",
+    "interviewQuestions": "Q: Can a variable be both 'const' and 'volatile'?\nA: YES! A read-only hardware register (like a microcontroller Input Pin or Status Register) cannot be modified by your code (const), but its value changes when external hardware states change (volatile).",
+    "quickRevision": "volatile tells the compiler: never cache this variable in a CPU register; always fetch its fresh value from physical memory.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Can a pointer itself be volatile vs pointing to volatile data?' Answer: Yes! 'volatile int *p' is a pointer to volatile data; 'int * volatile p' is a volatile pointer to regular data."
+  },
+  {
+    "id": "ec-const-flash-ram",
+    "name": "Constants, Flash ROM vs SRAM Memory Placement",
+    "whyItMatters": "Microcontrollers typically have 256 KB or 1 MB of Flash ROM (plentiful and permanent) but only 16 KB or 64 KB of SRAM (scarce and precious). If you store large lookup tables or font bitmaps without proper qualifiers, they get copied into precious SRAM at boot, quickly exhausting your memory!",
+    "simpleExplanation": "Flash ROM is like a giant library bookshelf (huge, permanent, read-only). SRAM is like your tiny study desk (fast, temporary, small). You should keep big reference dictionaries on the bookshelf, not cluttering up your desk!",
+    "technicalExplanation": "In 32-bit architectures (ARM Cortex-M), declaring data as 'const' places it into the Flash ROM '.rodata' (read-only data) section, consuming zero SRAM. In 8-bit architectures (like AVR ATmega328P with separate Harvard buses), const variables still get copied into SRAM during startup unless special macros like PROGMEM and pgm_read_byte() are used.",
+    "syntaxExample": "#include <stdint.h>\n\n// Stored in Flash ROM (.rodata) - Consumes 0 bytes of precious SRAM!\nconst uint16_t SINE_LOOKUP_TABLE[16] = {\n    2048, 2831, 3495, 3939, 4095, 3939, 3495, 2831,\n    2048, 1264,  600,  156,     0,  156,  600, 1264\n};\n\n// Stored in SRAM (.data) - Modifiable at runtime\nuint16_t current_dac_output = 0;\n\nvoid update_wave(uint8_t step) {\n    current_dac_output = SINE_LOOKUP_TABLE[step & 0x0F];\n}",
+    "importantRules": "Use 'const' for any lookup table, font bitmap, calibration table, or UI text string that does not need to change during program execution.",
+    "commonMistakes": "Passing constant strings to functions without 'const char *', which can lead to accidental write attempts causing hard fault exceptions.",
+    "placementFocus": "Critical optimization topic tested in automotive, aerospace, and battery-operated IoT design interviews.",
+    "interviewQuestions": "Q: What is the difference between const int *p, int * const p, and const int * const p?\nA: const int *p = pointer to constant data; int * const p = constant pointer to variable data; const int * const p = constant pointer to constant data.",
+    "quickRevision": "const keeps data in permanent Flash ROM (.rodata), saving precious runtime SRAM. Essential for large tables and fixed strings.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Remember the right-to-left rule when reading C pointer declarations to immediately decode complex const pointer questions."
+  },
+  {
+    "id": "ec-gpio-config",
+    "name": "GPIO Port Configuration: Direction, Pull-Up, and Push-Pull",
+    "whyItMatters": "Every microcontroller pin is multipurpose: it can read a sensor, drive an LED, act as an analog input, or transmit serial data. Configuring the GPIO registers correctly is the very first step in every embedded driver.",
+    "simpleExplanation": "Think of a walkie-talkie radio. You must choose whether you are pressing the button to talk (Output) or releasing the button to listen (Input). A GPIO pin must be told whether it is a talker or a listener!",
+    "technicalExplanation": "A General Purpose Input/Output (GPIO) peripheral has several control registers:\n1. Direction / Mode Register (DDRx / MODER): Sets pin as Input (0) or Output (1).\n2. Output Type (OTYPER): Push-Pull (actively drives 0V and 3.3V) vs Open-Drain (drives 0V only, requires pull-up resistor; used for I2C and level shifting).\n3. Pull-Up/Pull-Down (PUPDR): Enables internal weak resistors (~40k) to prevent floating inputs.\n4. Input Data Register (IDR / PINx): Reads digital voltage on the pin.\n5. Output Data Register (ODR / PORTx): Writes digital state.",
+    "syntaxExample": "#include <stdint.h>\n\n// Direct bit manipulation for AVR (ATmega328P / Arduino)\n#define DDRB_REG   (*(volatile uint8_t *)0x24)\n#define PORTB_REG  (*(volatile uint8_t *)0x25)\n#define PINB_REG   (*(volatile uint8_t *)0x23)\n\nvoid gpio_setup(void) {\n    // Configure Pin 5 as OUTPUT (Set bit 5 in Direction Register)\n    DDRB_REG |= (1U << 5);\n\n    // Configure Pin 2 as INPUT with internal PULL-UP resistor\n    DDRB_REG &= ~(1U << 2);  // 0 = Input\n    PORTB_REG |= (1U << 2);  // Enable internal pull-up\n}\n\nuint8_t read_button(void) {\n    // Returns 1 if button released (HIGH), 0 if pressed to GND (LOW)\n    return (PINB_REG & (1U << 2)) ? 1 : 0;\n}",
+    "importantRules": "Never leave an input pin floating! A floating pin acts like an antenna, picking up electromagnetic noise and flipping rapidly between 0 and 1, wasting power and causing erratic software behavior.",
+    "commonMistakes": "Trying to read input status from the Output register (PORTx) instead of the Input register (PINx/IDR).",
+    "placementFocus": "Every hardware coding challenge starts with setting up GPIO direction and reading pin state.",
+    "interviewQuestions": "Q: What is the difference between Push-Pull and Open-Drain outputs?\nA: Push-Pull actively connects to VCC for HIGH and GND for LOW. Open-Drain connects to GND for LOW, but disconnects (floats high-impedance) for HIGH, requiring an external pull-up resistor.",
+    "quickRevision": "Direction register sets Input (0) or Output (1). Push-Pull drives 0/VCC; Open-Drain pulls to GND only. Pull-ups prevent floating inputs.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why do we use Open-Drain outputs in I2C buses?' Answer: So multiple chips can share the same communication wire without causing a short circuit if two chips transmit at the same time (wired-AND logic)."
+  },
+  {
+    "id": "ec-button-debouncing",
+    "name": "Mechanical Pushbutton Interfacing & Software Debouncing",
+    "whyItMatters": "When you press a real physical button, metal contacts bounce microscopically for 5 to 20 milliseconds before settling. Without debouncing code, a single button press will register as 20 distinct button presses, causing your device to behave erratically!",
+    "simpleExplanation": "Imagine dropping a bouncy ball onto a wooden table. It bounces several times before coming to a complete rest. A mechanical button's metal spring bounces in the exact same way!",
+    "technicalExplanation": "Contact bounce produces a rapid train of high/low pulses lasting 5-20 ms. Software debouncing filters out these false transitions:\n1. Delay-based Debouncing (Simple but blocks CPU): Wait 15-20 ms after first edge, then read again.\n2. State-Machine / Non-blocking Debouncing (Professional): Sample pin every 5 ms using a timer tick. If state is steady for 4 consecutive samples (20 ms), confirm the valid press event.",
+    "syntaxExample": "#include <stdint.h>\n#include <stdbool.h>\n\n// Non-blocking button debouncer using 5ms timer tick\nbool debounce_button(uint8_t raw_pin_state) {\n    static uint8_t history = 0xFF;\n    // Shift history left and insert newest sample at bit 0\n    history = (history << 1) | (raw_pin_state & 0x01);\n\n    // If button active LOW, 8 consecutive 0s means steady press\n    if (history == 0x00) {\n        return true; // Confirmed pressed!\n    }\n    return false;\n}",
+    "importantRules": "Never use delay_ms() inside an interrupt service routine to debounce a button! It will freeze all system timers and lock up the CPU.",
+    "commonMistakes": "Using delay-based debouncing in high-speed applications, which blocks the CPU from updating motor control loops or handling communication packets.",
+    "placementFocus": "Standard practical problem asked in embedded software engineering tests.",
+    "interviewQuestions": "Q: How would you debounce a button in hardware vs software?\nA: In hardware: Use an RC low-pass filter (10k resistor + 100nF capacitor) with a Schmitt-trigger inverter. In software: Sample the pin periodically with a timer and verify state stability.",
+    "quickRevision": "Physical contacts bounce for 5-20 ms. Filter them using periodic timer sampling or shift-register history to detect clean presses.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: The 8-bit shift register debounce algorithm (shown above) is highly praised by interviewers because it is lightweight, fast, and 100% non-blocking."
+  },
+  {
+    "id": "ec-interrupts-isr",
+    "name": "Interrupts & Interrupt Service Routines (ISRs)",
+    "whyItMatters": "Polling (checking a pin continuously in a while loop) wastes 99% of your CPU power and can easily miss microsecond-fast safety events (like an emergency stop button or car airbag sensor). Interrupts allow hardware to wake the CPU only when an event actually happens!",
+    "simpleExplanation": "Instead of walking to your front door every 10 seconds to check if a package arrived (polling), you install a doorbell (interrupt) that chimes only when the delivery person presses it!",
+    "technicalExplanation": "When an interrupt trigger occurs (pin edge, timer overflow, serial byte arrived), the hardware automatically: (1) finishes current CPU instruction, (2) pushes registers and Program Counter onto the stack, (3) looks up the ISR function address in the Interrupt Vector Table, (4) executes the ISR, and (5) restores CPU state via the Return From Interrupt (RFI/BX LR) instruction.",
+    "syntaxExample": "#include <stdint.h>\n#include <stdbool.h>\n\n// Volatile flag to signal main loop\nvolatile bool emergency_stop_triggered = false;\n\n// Interrupt Service Routine for External Pin Interrupt\nvoid EXTI0_IRQHandler(void) {\n    // 1. Check interrupt pending flag\n    // 2. Clear interrupt pending flag (CRITICAL: prevents infinite ISR loop!)\n    EXTI_CLEAR_FLAG(0);\n\n    // 3. Do minimal urgent work\n    emergency_stop_triggered = true;\n}\n\nint main(void) {\n    while (1) {\n        if (emergency_stop_triggered) {\n            emergency_stop_triggered = false;\n            shutdown_all_motors();\n        }\n    }\n}",
+    "importantRules": "The 3 Golden Rules of ISRs: (1) Keep it short and fast (do not do heavy math), (2) Never call delay() or blocking functions, (3) Never call printf() or dynamic allocation (malloc).",
+    "commonMistakes": "Forgetting to clear the interrupt pending flag inside the ISR! If you don't clear it, the CPU exits the ISR and immediately jumps right back into it forever.",
+    "placementFocus": "Core competency tested in every embedded firm (Qualcomm, Microchip, Texas Instruments).",
+    "interviewQuestions": "Q: Can an ISR take parameters or return a value?\nA: NO! ISRs are invoked by physical hardware signals, not by software function calls, so there is no caller to provide arguments or receive a return value.",
+    "quickRevision": "ISRs handle urgent hardware events immediately. Keep them tiny, clear the pending flag, and communicate with main() via volatile flags.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'What is Interrupt Latency?' Answer: The exact time delay between the assertion of the hardware interrupt signal and the execution of the first instruction in the ISR."
+  },
+  {
+    "id": "ec-timers-systick",
+    "name": "Hardware Timers & System Tick (SysTick)",
+    "whyItMatters": "Using software loops like for(volatile int i=0; i<100000; i++) for time delays is terrible: it freezes the processor, changes speed if CPU clock changes, and wastes battery. Hardware timers tick independently in silicon, giving microsecond precision without burning CPU cycles!",
+    "simpleExplanation": "A hardware timer is like a mechanical kitchen egg timer with a physical bell. You set the dial, go back to reading your book (CPU does real work), and when the time is up, the bell rings (interrupts)!",
+    "technicalExplanation": "A Hardware Timer is a digital counter register (CNT) clocked by the microcontroller clock divided by a Prescaler (PSC). When the counter reaches the Auto-Reload Register (ARR) value, it triggers an Update Interrupt and rolls back to 0. ARM Cortex-M processors include a dedicated 24-bit SysTick timer that generates periodic 1 ms ticks, serving as the heartbeat for delays and RTOS schedulers.",
+    "syntaxExample": "#include <stdint.h>\n\nvolatile uint32_t system_ticks_ms = 0;\n\n// Called every 1 millisecond by hardware SysTick timer\nvoid SysTick_Handler(void) {\n    system_ticks_ms++;\n}\n\n// Non-blocking millisecond delay utility\nvoid delay_ms_nonblocking(uint32_t duration) {\n    uint32_t start_time = system_ticks_ms;\n    while ((system_ticks_ms - start_time) < duration) {\n        // CPU can do background monitoring here\n    }\n}",
+    "importantRules": "Always calculate timer frequency: Timer_Freq = Clock_Freq / (Prescaler + 1). Use unsigned integer arithmetic for time differences (current_ms - start_ms) to handle 49-day overflow wrapping cleanly.",
+    "commonMistakes": "Forgetting that timer prescaler registers are often zero-indexed: writing PSC = 79 divides the clock by 80, not 79.",
+    "placementFocus": "Essential practical skill in robotics, motor speed measurement, and scheduling.",
+    "interviewQuestions": "Q: How do you measure the pulse width of an incoming signal using a timer?\nA: Use Timer Input Capture mode. The timer hardware captures the exact counter value into a register on the rising edge and falling edge without CPU software intervention.",
+    "quickRevision": "Timers count clock ticks via prescalers. SysTick provides a 1 ms system heartbeat. Unsigned difference handles counter wrap-around.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why does (system_ticks_ms - start_time) work even when the 32-bit integer wraps from 0xFFFFFFFF back to 0?' Answer: Because two's complement unsigned subtraction automatically yields the correct difference across a single overflow wrap."
+  },
+  {
+    "id": "ec-pwm-signals",
+    "name": "Pulse Width Modulation (PWM): Analog Control via Digital Pulses",
+    "whyItMatters": "Microcontroller digital pins can only output 0V or 3.3V. But real actuators—like an LED dimmer, electric car traction motor, or drone propeller—need variable power levels. PWM creates variable average voltage by pulsing power rapidly!",
+    "simpleExplanation": "Imagine flicking a room light switch ON and OFF 1,000 times a second. If it is ON for half the time and OFF for half the time, your eyes won't see any blinking; you will just see a gentle half-brightness glow!",
+    "technicalExplanation": "PWM is characterized by two parameters: Frequency (how fast the pulse repeats, in Hz) and Duty Cycle (percentage of time the signal is HIGH). Duty Cycle D = (Ton / Tperiod) * 100%. The average DC voltage is V_avg = Duty_Cycle * V_max. A timer counter compares its value against a Capture/Compare Register (CCR); when counter < CCR, output is HIGH; when counter >= CCR, output is LOW.",
+    "syntaxExample": "#include <stdint.h>\n\n// Configure PWM Duty Cycle on Timer 2 Channel 1 (0 to 100%)\nvoid set_pwm_duty(uint8_t duty_percent) {\n    if (duty_percent > 100) duty_percent = 100;\n\n    // Auto-reload value (Period = 1000 ticks)\n    const uint16_t timer_period = 1000;\n\n    // Calculate compare register value\n    uint16_t compare_val = (timer_period * duty_percent) / 100;\n\n    // Update hardware register\n    TIM2_CCR1 = compare_val;\n}",
+    "importantRules": "Choose the right PWM frequency: for audio/motors, use > 20 kHz to stay above the human hearing range so the motor coils don't emit an annoying high-pitched whine.",
+    "commonMistakes": "Dividing before multiplying in integer math: (duty_percent / 100) * timer_period equals ZERO for any duty under 100%! Always multiply first: (timer_period * duty_percent) / 100.",
+    "placementFocus": "Core requirement for power electronics, EV motor drives, and robotics interviews.",
+    "interviewQuestions": "Q: How does a microcontroller drive a servo motor using PWM?\nA: RC Servos use a 50 Hz PWM signal (20 ms period). A pulse width of 1.0 ms commands 0 degrees, 1.5 ms commands 90 degrees (center), and 2.0 ms commands 180 degrees.",
+    "quickRevision": "PWM controls average power by varying Duty Cycle: D = (Ton / Tperiod). Implemented using timer counter and compare registers.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Be prepared to sketch a PWM waveform on paper showing Ton, Toff, Period, and calculate average voltage for a given supply."
+  },
+  {
+    "id": "ec-adc-sensors",
+    "name": "Analog-to-Digital Converter (ADC): Reading Sensors",
+    "whyItMatters": "The physical world is completely analog: temperatures rise continuously, batteries discharge smoothly, and pressure changes gradually. The ADC is the bridge that converts smooth physical voltages into digital numbers your code can calculate with.",
+    "simpleExplanation": "Imagine a measuring tape with millimeter markings measuring the height of water in a glass. The water level is continuous analog; your measurement reading in millimeters is the digital ADC value!",
+    "technicalExplanation": "An ADC samples an analog input voltage and converts it into an N-bit integer. Common resolutions are 10-bit (0 to 1023) and 12-bit (0 to 4095). The digital output is: ADC_Val = (Vin / Vref) * (2^N - 1). To convert the raw ADC integer back into millivolts: Vin_mV = (ADC_Val * Vref_mV) / (2^N - 1). Successive Approximation Register (SAR) ADCs are standard in microcontrollers.",
+    "syntaxExample": "#include <stdint.h>\n\n// Convert 12-bit ADC reading to physical voltage in millivolts\n// Vref = 3300 mV (3.3V), Resolution = 12 bits (4095 levels)\nuint32_t adc_to_millivolts(uint16_t raw_adc) {\n    const uint32_t vref_mv = 3300;\n    const uint32_t max_adc = 4095;\n    return (uint32_t)((raw_adc * vref_mv) / max_adc);\n}\n\n// Read temperature from LM35 sensor (10 mV per degree Celsius)\nint32_t read_temperature_celsius(uint16_t raw_adc) {\n    uint32_t mv = adc_to_millivolts(raw_adc);\n    return (int32_t)(mv / 10); // 10mV = 1 deg C\n}",
+    "importantRules": "Never apply an input voltage higher than the microcontroller's analog reference voltage (Vref, usually 3.3V or 5V)! Exceeding Vref causes clamping and can permanently burn the analog input pin.",
+    "commonMistakes": "Integer overflow during conversion math: (raw_adc * 3300) can exceed 16-bit limits (65,535). Always promote to uint32_t before multiplying!",
+    "placementFocus": "Featured in sensor instrumentation, battery monitoring, and IoT device interviews.",
+    "interviewQuestions": "Q: What is ADC Quantization Error?\nA: It is the inherent uncertainty between the analog input voltage and the nearest discrete digital level, equal to +/- 0.5 LSB (Least Significant Bit).",
+    "quickRevision": "ADC converts analog voltage to discrete numbers. 12-bit ADC = 4096 levels. Voltage = (ADC_raw * Vref) / (2^N - 1).",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why do we place a small capacitor (e.g. 100nF) between the ADC pin and ground?' Answer: To provide a low-impedance reservoir charge for the ADC's internal sample-and-hold capacitor during high-speed sampling."
+  },
+  {
+    "id": "ec-uart-protocol",
+    "name": "UART / USART: Point-to-Point Serial Communication",
+    "whyItMatters": "UART is the universal debugging tool of every hardware engineer! It is how your microcontroller prints debug logs to your computer screen, talks to GPS navigation modules, and communicates with Bluetooth and GSM modems.",
+    "simpleExplanation": "Imagine two people talking through paper cups connected by a tight string (TX wire to RX wire). Both people must agree beforehand on how fast they will talk (the Baud Rate) so words don't get scrambled!",
+    "technicalExplanation": "Universal Asynchronous Receiver-Transmitter (UART) is a full-duplex, asynchronous protocol requiring 2 data wires: TX (Transmit) and RX (Receive), plus common GND. Asynchronous means there is no shared clock wire; both chips synchronize using Start and Stop framing bits. Frame structure: 1 Start Bit (LOW), 5-9 Data Bits (LSB first), optional Parity Bit, and 1-2 Stop Bits (HIGH). Standard Baud rates: 9600, 115200 bps.",
+    "syntaxExample": "#include <stdint.h>\n\n// Transmit a single byte over UART (Polling mode)\nvoid uart_send_char(char c) {\n    // Wait until Transmit Data Register is Empty (TXE bit set)\n    while (!(UART1_SR & (1U << 7))) {\n        // Waiting for hardware transmitter ready\n    }\n    UART1_DR = (uint8_t)c; // Write byte to send\n}\n\n// Transmit full text string\nvoid uart_send_string(const char *str) {\n    while (*str) {\n        uart_send_char(*str++);\n    }\n}",
+    "importantRules": "Both devices MUST share a common Ground (GND) wire! Without a common ground reference, voltages float and data becomes total gibberish.",
+    "commonMistakes": "Wiring TX to TX and RX to RX. UART must always be crossed: Transmit (TX) goes to Receive (RX) of the other device!",
+    "placementFocus": "Core diagnostic and peripheral protocol asked across all hardware and firmware engineering interviews.",
+    "interviewQuestions": "Q: What causes framing errors in UART communication?\nA: When the receiver fails to detect a valid HIGH Stop bit at the expected time, usually caused by mismatched baud rates or clock frequency drift exceeding 2%.",
+    "quickRevision": "UART is 2-wire asynchronous serial (TX and RX). Frame = Start bit + Data bits + optional Parity + Stop bit. Always cross TX to RX.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'What is the maximum allowed clock tolerance between two UART devices?' Answer: Approximately +/- 2.5% to 3% before sampling drifts into the wrong bit period over an 8-bit frame."
+  },
+  {
+    "id": "ec-spi-bus",
+    "name": "SPI (Serial Peripheral Interface): High-Speed Synchronous Bus",
+    "whyItMatters": "When you need blazing-fast data transfer (up to 50 MHz or more) to drive high-resolution OLED displays, read high-speed SD cards, or stream accelerometer data, SPI is the undisputed industry standard.",
+    "simpleExplanation": "Imagine an orchestra conductor with musicians. The conductor holds a metronome (Clock wire). When the conductor points his baton directly at Violinist #1 (Chip Select line pulled LOW), they start playing notes synchronously with the metronome beats!",
+    "technicalExplanation": "SPI is a synchronous, full-duplex, master-slave serial bus using 4 physical lines:\n1. MOSI (Master Out Slave In): Data from master to peripheral.\n2. MISO (Master In Slave Out): Data from peripheral to master.\n3. SCK (Serial Clock): Clock generated strictly by Master.\n4. CS / SS (Chip Select / Slave Select): Active-LOW line to pick which peripheral talks.\nSPI has 4 clock modes configured by CPOL (Clock Polarity: 0=idle low, 1=idle high) and CPHA (Clock Phase: 0=sample on first edge, 1=sample on second edge).",
+    "syntaxExample": "#include <stdint.h>\n\n// Full-duplex SPI transfer: sends one byte and reads one byte simultaneously\nuint8_t spi_transfer(uint8_t tx_data) {\n    // 1. Wait until Transmit Buffer is empty\n    while (!(SPI1_SR & (1U << 1)));\n\n    // 2. Put byte into data register (starts clock generation)\n    SPI1_DR = tx_data;\n\n    // 3. Wait until Receive Buffer contains response byte\n    while (!(SPI1_SR & (1U << 0)));\n\n    // 4. Return incoming byte\n    return (uint8_t)SPI1_DR;\n}",
+    "importantRules": "SPI is a circular shift register exchange: to read a byte from a peripheral, the master MUST transmit a dummy byte (like 0xFF) to generate the clock ticks on the SCK line!",
+    "commonMistakes": "Forgetting to pull Chip Select (CS) HIGH after finishing a transaction, which prevents the peripheral from latching command data or entering low-power sleep.",
+    "placementFocus": "Crucial protocol for display drivers, memory chips (Flash/EEPROM), and IMU sensor interfacing.",
+    "interviewQuestions": "Q: What are SPI Clock Polarity (CPOL) and Clock Phase (CPHA)?\nA: CPOL defines whether the clock line rests LOW (0) or HIGH (1) when idle. CPHA defines whether data is sampled on the leading clock edge (0) or trailing edge (1).",
+    "quickRevision": "SPI has 4 wires: MOSI, MISO, SCK, CS. Fast, synchronous, full-duplex. Master generates clock. CS is active-LOW.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Always remember SPI Mode 0 (CPOL=0, CPHA=0) and Mode 3 (CPOL=1, CPHA=1) are the two most common configurations in commercial sensors."
+  },
+  {
+    "id": "ec-i2c-bus",
+    "name": "I2C (Inter-Integrated Circuit / TWI): Two-Wire Multi-Sensor Bus",
+    "whyItMatters": "Imagine having 20 different sensors on a circuit board: temperature, humidity, pressure, gyroscope, clock. Wiring 4 SPI lines to each would require 80 pins! I2C connects ALL 20 sensors using only TWO shared wires!",
+    "simpleExplanation": "Imagine a classroom where everyone shares one microphone (SDA wire). The teacher (Master) speaks into the microphone and calls out a student's roll number (7-bit address). Only the student with that exact number answers, 'Yes Sir!' (ACK bit), and begins talking.",
+    "technicalExplanation": "I2C is a synchronous, multi-master, multi-slave, half-duplex bus using 2 bidirectional lines: SDA (Serial Data) and SCL (Serial Clock). Both lines are Open-Drain and require external Pull-Up resistors (typically 4.7k). Protocol Sequence:\n1. START Condition: SDA pulled LOW while SCL is HIGH.\n2. Address Byte: 7-bit slave address + R/W bit (0=Write, 1=Read).\n3. ACK/NACK: Receiver pulls SDA LOW to acknowledge (ACK).\n4. Data Transfer: 8 bits of data followed by ACK.\n5. STOP Condition: SDA released HIGH while SCL is HIGH. Speeds: Standard (100 kHz), Fast (400 kHz), Fast-Plus (1 MHz).",
+    "syntaxExample": "#include <stdint.h>\n#include <stdbool.h>\n\n// Write a single register byte to an I2C sensor\nbool i2c_write_register(uint8_t dev_addr, uint8_t reg_addr, uint8_t data) {\n    i2c_start();\n\n    // Send 7-bit device address with Write bit (0)\n    if (!i2c_send_byte((dev_addr << 1) | 0x00)) {\n        i2c_stop();\n        return false; // NACK received - device missing!\n    }\n\n    // Send register address\n    i2c_send_byte(reg_addr);\n\n    // Send data payload\n    i2c_send_byte(data);\n\n    i2c_stop();\n    return true;\n}",
+    "importantRules": "Pull-up resistors on both SDA and SCL lines are strictly mandatory! Without pull-up resistors, lines stay at 0V and communication is 100% dead.",
+    "commonMistakes": "Confusing 7-bit addresses with 8-bit addresses: some datasheets specify 0x68 (7-bit), while others specify 0xD0 (7-bit shifted left by 1 with write bit).",
+    "placementFocus": "Universally asked in hardware board bring-up, sensor integration, and IoT device roles.",
+    "interviewQuestions": "Q: What is Clock Stretching in I2C?\nA: When a slower slave peripheral needs more time to process data, it holds the SCL clock line LOW, forcing the master to wait until the slave is ready.",
+    "quickRevision": "I2C uses 2 open-drain wires (SDA and SCL) with pull-ups. 7-bit address + R/W bit + ACK handshake. START/STOP signaled by SDA transition while SCL is HIGH.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why does an I2C bus lock up and how do you recover it?' Answer: If a master resets mid-transaction, a slave may hold SDA LOW waiting for clock ticks. Recovery: Master pulses SCL 9 times manually until slave releases SDA, then sends a STOP condition."
+  },
+  {
+    "id": "ec-circular-ring-buffer",
+    "name": "Circular Ring Buffers for Asynchronous Serial Data",
+    "whyItMatters": "Serial bytes from GPS or Wi-Fi modules arrive at high speed at unpredictable times. If your main loop is busy calculating or drawing on an LCD, incoming bytes will be overwritten and lost forever! A circular ring buffer is the industry solution to buffer incoming data safely.",
+    "simpleExplanation": "Imagine a revolving baggage carousel at an airport. Baggage handlers (Interrupt Service Routine) place bags onto the carousel continuously at the back. Passengers (Main program) pick up bags from the front at their own pace.",
+    "technicalExplanation": "A Circular Ring Buffer uses a fixed-size array with two index pointers: 'head' (write position, updated by ISR) and 'tail' (read position, updated by main). When an index reaches the end of the array, it wraps around to 0. If buffer size is a power of 2 (e.g., 64, 128, 256), the slow modulo division (%) can be replaced by a single fast bitwise AND: next_idx = (idx + 1) & (BUFFER_SIZE - 1).",
+    "syntaxExample": "#include <stdint.h>\n#include <stdbool.h>\n\n#define RING_BUF_SIZE 64U // Must be power of 2!\n#define RING_BUF_MASK (RING_BUF_SIZE - 1U)\n\ntypedef struct {\n    uint8_t buffer[RING_BUF_SIZE];\n    volatile uint16_t head; // Write index (ISR)\n    volatile uint16_t tail; // Read index (Main)\n} RingBuffer;\n\n// Add byte (called inside UART RX ISR)\nbool ring_put(RingBuffer *rb, uint8_t byte) {\n    uint16_t next_head = (rb->head + 1) & RING_BUF_MASK;\n    if (next_head == rb->tail) return false; // Buffer Full!\n    rb->buffer[rb->head] = byte;\n    rb->head = next_head;\n    return true;\n}\n\n// Read byte (called inside main loop)\nbool ring_get(RingBuffer *rb, uint8_t *byte) {\n    if (rb->head == rb->tail) return false; // Buffer Empty!\n    *byte = rb->buffer[rb->tail];\n    rb->tail = (rb->tail + 1) & RING_BUF_MASK;\n    return true;\n}",
+    "importantRules": "Always mark head and tail as 'volatile' because they are shared between interrupt context and normal main program flow.",
+    "commonMistakes": "Not sizing buffers to powers of two. Using modulo operator (idx % 50) compiles to a slow software division routine on Cortex-M0/M3 chips that takes dozens of CPU cycles.",
+    "placementFocus": "One of the most frequently asked practical coding test questions for firmware engineers.",
+    "interviewQuestions": "Q: Is a single-producer single-consumer circular buffer thread-safe without mutexes?\nA: YES, provided head and tail updates are atomic (single CPU instruction) and memory barrier operations prevent compiler reordering.",
+    "quickRevision": "Circular buffer decouples fast producer (ISR) from slow consumer (main). Sizing to power-of-2 allows fast bitwise masking: (idx + 1) & mask.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Write the power-of-two mask optimization on the whiteboard. Interviewers love seeing candidate awareness of division overhead on microcontrollers."
+  },
+  {
+    "id": "ec-watchdog-timer",
+    "name": "Watchdog Timer (WDT): Hardware Safety Net Against Freezes",
+    "whyItMatters": "In an industrial motor drive or pacemaker, high electrical noise or a cosmic ray can corrupt memory, trapping the CPU in an infinite dead loop. A human cannot reach in to press a reset button; the hardware Watchdog Timer automatically detects the freeze and reboots the chip to safety!",
+    "simpleExplanation": "Imagine a dead-man's pedal switch on a train. The train driver must tap the pedal every 30 seconds to prove he is awake. If the driver faints, the pedal sounds an alarm and automatically stops the train to prevent a crash!",
+    "technicalExplanation": "A Watchdog Timer (WDT) is an autonomous hardware down-counter clocked by an independent on-chip low-frequency RC oscillator (completely separate from main CPU clock). If the counter reaches zero, it triggers an immediate hardware System Reset. In normal operation, your firmware must periodically reload the counter ('kicking the dog' or 'petting the watchdog') before it counts down to zero. Windowed Watchdogs (WWDG) enforce that the refresh must happen neither too late nor too early.",
+    "syntaxExample": "#include <stdint.h>\n\n// Initialize hardware watchdog with 500 ms timeout\nvoid watchdog_init(void) {\n    WDT_PRESCALER = WDT_DIV_64;\n    WDT_RELOAD_VAL = 500;\n    WDT_START();\n}\n\n// Must be called periodically inside main super-loop\nvoid watchdog_refresh(void) {\n    WDT_KEY_REGISTER = 0xAAAA; // Hardware unlock key resets counter\n}\n\nint main(void) {\n    watchdog_init();\n    while (1) {\n        process_sensors();\n        update_actuators();\n        watchdog_refresh(); // Proves the system completed all tasks safely\n    }\n}",
+    "importantRules": "NEVER refresh the watchdog timer inside a periodic timer interrupt service routine (ISR)! If your main loop crashes or deadlocks, the timer ISR will keep refreshing the watchdog, defeating its entire safety purpose!",
+    "commonMistakes": "Scattering watchdog refresh calls everywhere throughout code to prevent resets instead of fixing the root cause slow algorithm.",
+    "placementFocus": "Crucial safety requirement in automotive (ISO 26262), medical (IEC 62304), and aerospace systems.",
+    "interviewQuestions": "Q: What is a Windowed Watchdog (WWDG) and why is it safer than a normal watchdog?\nA: A normal watchdog only checks if code is too slow. A Windowed Watchdog triggers a reset if refreshed too late OR too early, catching code that enters high-speed runaway loops.",
+    "quickRevision": "Watchdog reboots frozen microcontrollers automatically. Powered by separate clock. Must be refreshed regularly in main loop, never in an ISR.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why must the watchdog clock be independent of the main system oscillator?' Answer: Because if the external crystal oscillator fails or stops oscillating, the watchdog must still function to trigger a recovery reset."
+  },
+  {
+    "id": "ec-low-power-modes",
+    "name": "Low-Power & Sleep Modes for Battery-Operated IoT",
+    "whyItMatters": "A smart water meter or wireless heart rate patch must run on a tiny lithium coin battery for 5 to 10 years! Running a microcontroller at full speed drains the battery in a single weekend. Using low-power sleep modes reduces current consumption from 20 mA down to 1 microampere!",
+    "simpleExplanation": "Think of your television. When you press the power button, the screen turns off and speakers go silent (Sleep Mode), but a tiny infrared sensor stays awake using almost zero electricity, waiting for you to press the remote power button to wake up!",
+    "technicalExplanation": "Microcontrollers feature graded power-saving modes:\n1. Sleep / Idle: CPU clock stops; peripherals (Timers, UART, ADC) continue running. Wakes via any interrupt. Fast microsecond wakeup.\n2. Stop / Deep Sleep: Both CPU and all high-speed clocks stopped. SRAM content preserved. Wakes via external pin interrupt or Real-Time Clock (RTC) alarm. Current drops to ~1-5 uA.\n3. Standby / Shutdown: Entire chip powered down except RTC and backup registers. SRAM lost. Wakes via Reset or dedicated Wakeup Pin.",
+    "syntaxExample": "#include <stdint.h>\n\nvoid enter_low_power_sleep(void) {\n    // 1. Turn off unused peripheral clocks to stop wasted dynamic power\n    CLOCK_DISABLE_UART();\n    CLOCK_DISABLE_ADC();\n\n    // 2. Configure wake-up source (External Button Pin or RTC alarm)\n    ENABLE_WAKEUP_PIN_INTERRUPT();\n\n    // 3. Execute ARM Wait-For-Interrupt instruction\n    __WFI(); // CPU sleeps immediately here until interrupt arrives\n\n    // 4. Code resumes here immediately after wake-up interrupt!\n    CLOCK_ENABLE_ADC();\n    CLOCK_ENABLE_UART();\n}",
+    "importantRules": "Configure all unused GPIO pins as Analog Inputs or pull them to a defined level before sleeping. Leaving pins floating causes CMOS transistors to draw hundreds of microamps of wasted leakage current.",
+    "commonMistakes": "Forgetting that in Deep Sleep/Standby mode, SRAM variables may be lost unless stored in designated low-power backup domain registers.",
+    "placementFocus": "High-priority topic for wearable technology, IoT sensor node, and battery management roles.",
+    "interviewQuestions": "Q: What is the difference between ARM Cortex-M instructions __WFI() and __WFE()?\nA: __WFI() (Wait For Interrupt) sleeps until an active interrupt occurs. __WFE() (Wait For Event) sleeps until a hardware event occurs, without necessarily executing an ISR.",
+    "quickRevision": "Sleep modes drop power from 20 mA to 1 uA. Dynamic power = C * V^2 * f. Turn off unused clocks and wake with __WFI() on pin interrupts.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Mentioning dynamic CMOS power formula P = C * V^2 * f and the leakage current of floating pins will immediately score top marks."
+  },
+  {
+    "id": "ec-finite-state-machines",
+    "name": "Finite State Machines (FSM): Clean Architecture Without Spaghetti Code",
+    "whyItMatters": "Writing complex embedded logic—like a microwave oven, traffic light system, or drone flight controller—using 50 nested 'if-else' statements quickly turns into unmaintainable 'spaghetti code' filled with hidden bugs. FSMs make state transitions clean, safe, and testable.",
+    "simpleExplanation": "Imagine an automatic turnstile gate at a train station. It only has two states: LOCKED or UNLOCKED. Inserting a ticket transitions it from LOCKED to UNLOCKED. Walking through transitions it back to LOCKED. It can never be in both states at once!",
+    "technicalExplanation": "A Finite State Machine (FSM) models a system with a defined set of states, inputs, and transition rules. In Embedded C, an FSM is implemented using an 'enum' for state names and a 'switch-case' block inside the main loop. Advanced production systems use state transition tables with arrays of function pointers for O(1) state dispatch.",
+    "syntaxExample": "#include <stdint.h>\n\ntypedef enum {\n    STATE_IDLE,\n    STATE_MEASURING,\n    STATE_TRANSMITTING,\n    STATE_ERROR\n} SystemState;\n\nSystemState current_state = STATE_IDLE;\n\nvoid run_fsm(void) {\n    switch (current_state) {\n        case STATE_IDLE:\n            if (button_pressed()) {\n                start_sensors();\n                current_state = STATE_MEASURING;\n            }\n            break;\n        case STATE_MEASURING:\n            if (adc_conversion_complete()) {\n                prepare_packet();\n                current_state = STATE_TRANSMITTING;\n            }\n            break;\n        case STATE_TRANSMITTING:\n            if (radio_send_done()) {\n                current_state = STATE_IDLE;\n            }\n            break;\n        case STATE_ERROR:\n            sound_buzzer();\n            break;\n    }\n}",
+    "importantRules": "Always include a 'default' case in your state machine switch-case! If electrical noise corrupts the state variable to an invalid number, the default case catches it and resets to a safe IDLE or ERROR state.",
+    "commonMistakes": "Performing long blocking delays inside a state, preventing other events from being handled and freezing the state machine.",
+    "placementFocus": "Core software architecture design question in embedded interviews.",
+    "interviewQuestions": "Q: What is the difference between a Moore and a Mealy State Machine?\nA: In a Moore machine, outputs depend ONLY on the current state. In a Mealy machine, outputs depend on both the current state AND the current inputs.",
+    "quickRevision": "FSM structure replaces tangled if-else logic. Built with enum states + switch-case. Always have a default case for fault safety.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'How do you prevent state variables from getting corrupted by radiation or noise?' Answer: Use Hamming-distance encodings for enum states (e.g., states differing by 2+ bits) rather than 0, 1, 2, 3, and add a default fault handler."
+  },
+  {
+    "id": "ec-structs-bitfields-packets",
+    "name": "Bitfields, Packed Structs, & Telemetry Packets",
+    "whyItMatters": "When transmitting telemetry data over low-bandwidth wireless links (like LoRa, CAN Bus, or Bluetooth Low Energy), every single byte matters! Bitfields and packed structs compress status flags and sensor data into dense, byte-perfect binary packets.",
+    "simpleExplanation": "Imagine packing a suitcase for an airplane flight. Instead of throwing loose shoes and bulky coats into a big box, you pack everything tightly into vacuum-sealed bags so that every cubic inch is utilized!",
+    "technicalExplanation": "C structs by default align members to 2-byte or 4-byte memory boundaries for CPU speed, adding hidden 'padding bytes'. The GCC attribute __attribute__((packed)) eliminates padding bytes, guaranteeing the struct matches the exact wire packet format. Bitfields allow assigning exact bit-widths to variables: uint8_t flag : 1.",
+    "syntaxExample": "#include <stdint.h>\n\n// Packed binary packet structure for CAN Bus / Wireless Telemetry\ntypedef struct __attribute__((packed)) {\n    uint16_t sensor_id;      // 2 bytes\n    int16_t  temperature;    // 2 bytes (scaled by 100)\n    uint16_t battery_mv;     // 2 bytes\n    // Bitfield flags: total 8 bits (1 byte)\n    uint8_t  pump_active : 1; // Bit 0\n    uint8_t  valve_open  : 1; // Bit 1\n    uint8_t  fault_code  : 4; // Bits 2-5\n    uint8_t  reserved    : 2; // Bits 6-7\n    uint8_t  checksum;       // 1 byte\n} TelemetryPacket; // Total size = exactly 8 bytes!\n\n_Static_assert(sizeof(TelemetryPacket) == 8, \"Size must be 8 bytes!\");",
+    "importantRules": "Always verify struct size using sizeof() or _Static_assert() to ensure your compiler hasn't inserted unwanted padding bytes into your communication packet.",
+    "commonMistakes": "Assuming bitfield bit ordering is portable across compilers. The C standard leaves the order of bits (LSB-to-MSB vs MSB-to-LSB) compiler-dependent.",
+    "placementFocus": "Standard requirement for automotive CAN bus, aerospace telemetry, and embedded protocol design.",
+    "interviewQuestions": "Q: Why do compilers insert padding bytes into C structs?\nA: Because 32-bit CPUs access memory significantly faster when 32-bit words are aligned to memory addresses that are multiples of 4 bytes.",
+    "quickRevision": "__attribute__((packed)) removes compiler padding bytes for exact on-the-wire binary packet layouts. Bitfields pack multiple boolean flags into 1 byte.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Demonstrate knowledge of _Static_assert(sizeof(Packet) == N) to show you write bulletproof safety-critical firmware."
+  },
+  {
+    "id": "ec-dma-transfers",
+    "name": "Direct Memory Access (DMA): High-Speed Hardware Transfers",
+    "whyItMatters": "Transferring a 4,096-sample ADC audio buffer or writing 10,000 pixels to an LCD screen one byte at a time in a CPU loop hogs 100% of processor power. DMA transfers data completely in silicon while the CPU is free to do complex math!",
+    "simpleExplanation": "Imagine a business owner carrying individual shipping boxes from the warehouse to the postal truck all day. Instead, the owner hires a delivery assistant (DMA controller) to move the boxes while the owner focuses on designing products!",
+    "technicalExplanation": "Direct Memory Access (DMA) is a specialized hardware coprocessor that transfers data blocks between peripherals (ADC, SPI, UART) and memory (SRAM) without CPU intervention. The CPU sets Source Address, Destination Address, Transfer Count, and enables the DMA channel. When complete, the DMA controller raises a Transfer Complete Interrupt (TCIF).",
+    "syntaxExample": "#include <stdint.h>\n\n#define BUFFER_SIZE 256\nuint16_t adc_buffer[BUFFER_SIZE];\n\nvoid start_dma_adc(void) {\n    // Configure DMA Channel:\n    DMA1_CPAR1 = (uint32_t)&ADC1_DR;     // Source: ADC Data Register\n    DMA1_CMAR1 = (uint32_t)adc_buffer;   // Destination: RAM buffer\n    DMA1_CNDTR1 = BUFFER_SIZE;           // Number of samples to transfer\n    DMA1_CCR1 |= DMA_CIRCULAR_MODE;      // Circular mode (auto-repeating)\n    DMA1_CCR1 |= DMA_ENABLE;             // Launch autonomous transfer!\n\n    // CPU is now 100% free while hardware streams ADC data into RAM!\n}",
+    "importantRules": "Cache coherency: On high-end microcontrollers with CPU data caches (ARM Cortex-M7), invalidate the cache before reading DMA-populated buffers so the CPU doesn't read stale cached data.",
+    "commonMistakes": "Allocating DMA destination buffers on the local stack inside a function! If the function returns, the stack frame is destroyed while the DMA hardware is still writing into it.",
+    "placementFocus": "Advanced firmware question in audio DSP, motor control, and high-speed communication.",
+    "interviewQuestions": "Q: What is Circular DMA mode?\nA: When the DMA finishes transferring the last element in the buffer, it automatically resets its pointers back to the beginning and restarts without any CPU intervention.",
+    "quickRevision": "DMA moves data between peripherals and RAM without CPU cycles. Crucial for high-speed ADC streaming, audio, and display rendering.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'What is a DMA Half-Transfer interrupt and why is it useful?' Answer: It signals when the first half of a buffer is full, allowing the CPU to process the first half while DMA fills the second half (Ping-Pong double-buffering)."
+  },
+  {
+    "id": "ec-linker-scripts-memory",
+    "name": "Microcontroller Memory Layout & Linker Scripts (.ld)",
+    "whyItMatters": "How does the compiler know that address 0x08000000 is permanent Flash ROM and 0x20000000 is volatile SRAM? The Linker Script (.ld) is the master architectural blueprint that maps compiled C code into physical silicon memory!",
+    "simpleExplanation": "A linker script is like an architect's floor plan. It marks which rooms are permanent concrete storage vaults (Flash ROM for code) and which rooms are temporary office desks (SRAM for variables and scratchpad calculations).",
+    "technicalExplanation": "A Linker Script partitions the chip into standard memory sections:\n1. .text: Executable machine code instructions and Interrupt Vector Table (stored in Flash).\n2. .rodata: Read-only constants and string literals (stored in Flash).\n3. .data: Global variables initialized with non-zero values (initial values stored in Flash, copied to SRAM at boot).\n4. .bss: Uninitialized global variables (allocated in SRAM, zeroed out at boot).\n5. Stack: Grows downwards from highest SRAM address for local function variables.\n6. Heap: Grows upwards for dynamic memory.",
+    "syntaxExample": "/* Minimal GNU Linker Script (.ld) snippet for ARM Cortex-M */\nMEMORY\n{\n    FLASH (rx)  : ORIGIN = 0x08000000, LENGTH = 512K\n    RAM   (xrw) : ORIGIN = 0x20000000, LENGTH = 128K\n}\n\nSECTIONS\n{\n    .text : {\n        *(.isr_vector) /* Vector table at address 0x08000000 */\n        *(.text*)       /* Compiled program code */\n        *(.rodata*)     /* Constants */\n    } > FLASH\n\n    .data : {\n        _sdata = .;     /* Start of .data in RAM */\n        *(.data*)\n        _edata = .;\n    } > RAM AT > FLASH  /* Run in RAM, loaded from FLASH */\n\n    .bss : {\n        _sbss = .;\n        *(.bss*)\n        _ebss = .;\n    } > RAM\n}",
+    "importantRules": "Watch out for Stack-Heap collision! If your call stack grows downwards and meets your heap growing upwards, memory corruption occurs silently, leading to catastrophic hard faults.",
+    "commonMistakes": "Assuming uninitialized local variables are set to zero. Only global .bss variables are zeroed by startup code; local stack variables contain random leftover garbage values!",
+    "placementFocus": "Favorite technical screening topic for bare-metal systems, bootloader, and BSP (Board Support Package) roles.",
+    "interviewQuestions": "Q: What is the difference between the .data section and the .bss section?\nA: .data holds initialized global variables (its initial values take up space in Flash). .bss holds uninitialized global variables (takes zero Flash space; startup code zeroes it in RAM).",
+    "quickRevision": ".text = code (Flash). .rodata = constants (Flash). .data = initialized globals (Flash -> RAM). .bss = zeroed globals (RAM). Stack grows down.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Remember the acronym BSS stands historically for 'Block Started by Symbol' and represents zero-initialized RAM."
+  },
+  {
+    "id": "ec-boot-sequence-startup",
+    "name": "The Microcontroller Boot Sequence: From Power-On to main()",
+    "whyItMatters": "What happens in the first 50 microseconds when power is connected to a circuit board? Before your C main() function ever executes, low-level assembly startup code initializes the hardware clock, copies memory, and sets up the C runtime environment!",
+    "simpleExplanation": "Turning on a microcontroller is like turning the ignition key in a car. The starter motor spins, oil pumps prime, dashboard diagnostics check all gauges, and only when the engine is purring smoothly are you handed the steering wheel (main)!",
+    "technicalExplanation": "The ARM Cortex-M hardware boot sequence:\n1. Power applied: Hardware samples boot mode pins (Flash vs System Bootloader vs SRAM).\n2. Hardware automatically reads address 0x00000000 and loads the Initial Main Stack Pointer (MSP).\n3. Hardware reads address 0x00000004 and loads the Reset Handler function address into the Program Counter (PC).\n4. Reset Handler executes: copies .data section from Flash to RAM; zeroes out the .bss section in RAM; calls SystemInit() to configure system PLL clock speed.\n5. Calls main()!",
+    "syntaxExample": "// Minimal C representation of the Reset_Handler\nextern uint32_t _sidata; // Flash address of initial data values\nextern uint32_t _sdata;  // Start of .data in RAM\nextern uint32_t _edata;  // End of .data in RAM\nextern uint32_t _sbss;   // Start of .bss in RAM\nextern uint32_t _ebss;   // End of .bss in RAM\n\nvoid Reset_Handler(void) {\n    // 1. Copy initialized data from Flash to SRAM\n    uint32_t *src = &_sidata;\n    uint32_t *dst = &_sdata;\n    while (dst < &_edata) *dst++ = *src++;\n\n    // 2. Zero-out the .bss section in SRAM\n    dst = &_sbss;\n    while (dst < &_ebss) *dst++ = 0;\n\n    // 3. Configure hardware clocks (PLL, oscillators)\n    SystemInit();\n\n    // 4. Branch to user application entry point!\n    main();\n\n    // Trap in infinite loop if main ever returns\n    while (1);\n}",
+    "importantRules": "The first entry in the ARM Cortex-M Vector Table is NOT code; it is the physical address of the Initial Stack Pointer (MSP). The second entry is the Reset Handler address.",
+    "commonMistakes": "Modifying global variables before the .data copy loop finishes in the startup code, which causes them to be immediately overwritten with stale Flash data.",
+    "placementFocus": "Distinguishes junior programmers from true bare-metal embedded system engineers in technical interviews.",
+    "interviewQuestions": "Q: What does the Reset Handler do before calling main()?\nA: It copies the .data segment from Flash to RAM, zeroes out the .bss segment in RAM, configures the system clock (SystemInit), and finally calls main().",
+    "quickRevision": "Power on -> Load Stack Pointer -> Load Reset Vector -> Copy .data to RAM -> Zero .bss in RAM -> SystemInit() -> call main().",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Question: 'Why does an uninitialized global variable have a value of 0 in C?' Answer: Because the Reset Handler startup code explicitly writes zeros to the entire .bss section in RAM before calling main()."
+  },
+  {
+    "id": "ec-rtos-freertos-basics",
+    "name": "Real-Time Operating Systems (RTOS): FreeRTOS Fundamentals",
+    "whyItMatters": "When your product has multiple simultaneous jobs—reading sensors, running a high-speed motor control loop, refreshing a touchscreen, and transmitting wireless telemetry—a simple while(1) superloop becomes impossible to manage. An RTOS gives each job its own dedicated task and priority!",
+    "simpleExplanation": "Imagine an airport runway controller. Flights with critical emergencies (high-priority tasks like motor safety) get immediate clearance to land, while routine baggage flights (low-priority tasks like updating a screen) wait patiently until the runway is clear!",
+    "technicalExplanation": "A Real-Time Operating System (like FreeRTOS) provides deterministic task scheduling. Key concepts:\n1. Tasks: Independent threads of execution with their own stack, infinite while(1) loop, and priority level.\n2. Scheduler: Uses a periodic timer interrupt (SysTick) to perform preemptive context switching (saving CPU registers of current task, loading registers of highest-priority Ready task).\n3. Synchronization: Semaphores (signaling between ISR and task), Mutexes (mutual exclusion for shared resources with Priority Inheritance to prevent priority inversion), and Queues (thread-safe data passing).",
+    "syntaxExample": "#include \"FreeRTOS.h\"\n#include \"task.h\"\n#include \"semphr.h\"\n\nSemaphoreHandle_t xSensorMutex;\n\n// Task 1: High priority sensor reading\nvoid vSensorTask(void *pvParameters) {\n    while (1) {\n        // Take mutex before accessing shared I2C bus\n        if (xSemaphoreTake(xSensorMutex, portMAX_DELAY) == pdTRUE) {\n            read_i2c_sensor();\n            xSemaphoreGive(xSensorMutex); // Release bus\n        }\n        vTaskDelay(pdMS_TO_TICKS(100)); // Sleep for 100ms (yields CPU!)\n    }\n}\n\nint main(void) {\n    xSensorMutex = xSemaphoreCreateMutex();\n    xTaskCreate(vSensorTask, \"SensorTask\", 256, NULL, 2, NULL);\n    vTaskStartScheduler(); // Launch RTOS kernel!\n    while (1); // Never reached\n}",
+    "importantRules": "Never use delay_ms() inside a FreeRTOS task! Always use vTaskDelay(), which puts the task into the Blocked state so lower-priority tasks can use the CPU.",
+    "commonMistakes": "Stack Overflow in tasks: underestimating the stack size when calling xTaskCreate(), causing task stacks to overwrite neighboring memory when local buffers or printf() are used.",
+    "placementFocus": "Crucial requirement for mid-to-senior firmware roles at Qualcomm, Tesla, Amazon Robotics, and Apple.",
+    "interviewQuestions": "Q: What is Priority Inversion and how does a Mutex solve it?\nA: Priority Inversion occurs when a low-priority task holds a mutex needed by a high-priority task, but a medium-priority task preempts the low-priority task, starving the high-priority task! Mutexes solve this via Priority Inheritance: temporarily elevating the low-priority task's priority until it releases the mutex.",
+    "quickRevision": "FreeRTOS provides priority-based preemptive scheduling. Tasks yield via vTaskDelay(). Use Mutexes with Priority Inheritance for shared hardware.",
+    "status": "COMPLETE",
+    "placementNotes": "Interview Tip: Always emphasize the difference between a Binary Semaphore (used for signaling events from an ISR to a task) and a Mutex (used for mutual exclusion and includes priority inheritance)."
+  }
+],
   "cpp": [
     {
       "id": "cxx-overview",
@@ -4820,11 +5182,203 @@ const PROGRAMMING_PROBLEMS = [
     "solution": "public class WordSearch {\n    public boolean exist(char[][] board, String word) {\n        int m = board.length;\n        int n = board[0].length;\n        for (int r = 0; r < m; r++) {\n            for (int c = 0; c < n; c++) {\n                if (dfs(board, word, r, c, 0)) return true;\n            }\n        }\n        return false;\n    }\n\n    private boolean dfs(char[][] board, String word, int r, int c, int idx) {\n        if (idx == word.length()) return true;\n        if (r < 0 || r >= board.length || c < 0 || c >= board[0].length || board[r][c] != word.charAt(idx)) {\n            return false;\n        }\n\n        char temp = board[r][c];\n        board[r][c] = '#'; // Mark as visited in-place\n\n        boolean found = dfs(board, word, r + 1, c, idx + 1) ||\n                        dfs(board, word, r - 1, c, idx + 1) ||\n                        dfs(board, word, r, c + 1, idx + 1) ||\n                        dfs(board, word, r, c - 1, idx + 1);\n\n        board[r][c] = temp; // Backtrack restore\n        return found;\n    }\n}",
     "explanation": "In-place grid marking avoids secondary visited sets, and state backtracking restores the board upon recursion unwind."
   }
+,
+  {
+    "id": "prob-ec-1",
+    "title": "Bitwise GPIO Register Manipulation (Set, Clear, Toggle, Read)",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "GPIO & Registers",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] In microcontroller firmware (e.g. STM32, AVR, PIC), configure and control an 8-bit GPIO register. Write functions to: (1) set a target pin HIGH (1), (2) clear a target pin LOW (0), (3) toggle a target pin (flip 0 <-> 1), and (4) read a pin state (return 1 or 0), without changing any other pins in the register.",
+    "inputDesc": "Initial 8-bit register value 'port' (0 to 255) and pin index 'pin' (0 to 7).",
+    "outputDesc": "Updated 8-bit register value after modification, or 0/1 for read.",
+    "constraints": "0 <= port <= 255 (8-bit unsigned integer); 0 <= pin <= 7.",
+    "exampleInput": "port = 0x00 (00000000b), pin = 3\nCommand: SET_PIN",
+    "exampleOutput": "port = 0x08 (00001000b)",
+    "scenario": "Fundamental embedded driver task required in every microcontroller board bring-up.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n// 1. Set pin HIGH without altering other pins\nuint8_t gpio_set_pin(uint8_t port, uint8_t pin) {\n    return port | (uint8_t)(1U << pin);\n}\n\n// 2. Clear pin LOW without altering other pins\nuint8_t gpio_clear_pin(uint8_t port, uint8_t pin) {\n    return port & (uint8_t)(~(1U << pin));\n}\n\n// 3. Toggle pin state\nuint8_t gpio_toggle_pin(uint8_t port, uint8_t pin) {\n    return port ^ (uint8_t)(1U << pin);\n}\n\n// 4. Read pin status (returns 1 or 0)\nuint8_t gpio_read_pin(uint8_t port, uint8_t pin) {\n    return (port & (uint8_t)(1U << pin)) ? 1U : 0U;\n}\n\nint main(void) {\n    uint8_t port = 0x00; // All pins LOW\n    port = gpio_set_pin(port, 3);    // 0x08 (00001000b)\n    port = gpio_set_pin(port, 5);    // 0x28 (00101000b)\n    printf(\"After Set: 0x%02X\\n\", port);\n    \n    port = gpio_clear_pin(port, 3);  // 0x20 (00100000b)\n    printf(\"After Clear: 0x%02X\\n\", port);\n    \n    port = gpio_toggle_pin(port, 5); // 0x00 (00000000b)\n    printf(\"After Toggle: 0x%02X\\n\", port);\n    \n    uint8_t bit5 = gpio_read_pin(port, 5);\n    printf(\"Read Pin 5: %u\\n\", bit5);\n    return 0;\n}",
+    "explanation": "1. SET PIN: (1U << pin) creates a bitmask with a single 1 at the target pin. Bitwise OR (|) turns that specific bit to 1 while leaving all other bits unchanged.\n2. CLEAR PIN: ~(1U << pin) inverts the mask so all bits are 1 except the target bit (which is 0). Bitwise AND (&) forces that bit to 0 while keeping all other bits identical.\n3. TOGGLE PIN: Bitwise XOR (^) flips a bit: 0 ^ 1 = 1, and 1 ^ 1 = 0.\n4. READ PIN: Bitwise AND with (1U << pin) isolates the bit. If non-zero, return 1; else 0.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-2",
+    "title": "Software Pushbutton Debouncing & Falling-Edge Detection",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "GPIO & Hardware",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Mechanical switch contacts bounce for 10-20 ms upon press, causing false multiple triggers. Implement a non-blocking software debouncer using an 8-bit shift register history. Given periodic 5ms raw pin samples (0 for pressed to GND, 1 for released), return true ONLY on a confirmed falling-edge transition (valid new button press).",
+    "inputDesc": "Raw pin digital sample (0 or 1) received every 5 milliseconds.",
+    "outputDesc": "Return 1 (true) on a confirmed button press event; return 0 (false) otherwise.",
+    "constraints": "Pin is sampled at steady 5 ms intervals; raw_pin is 0 or 1.",
+    "exampleInput": "Pin sequence: 1, 1, 0, 1, 0, 0, 0, 0, 0",
+    "exampleOutput": "Event triggered once steady low is established.",
+    "scenario": "Standard user input handling on medical equipment, automotive dashboards, and consumer appliances.",
+    "code": "#include <stdint.h>\n#include <stdbool.h>\n#include <stdio.h>\n\n// Debounce using 8-bit shift register history\n// Active-LOW button (1 = released, 0 = pressed)\nbool check_button_pressed(uint8_t raw_sample) {\n    static uint8_t history = 0xFF;\n    static bool was_pressed = false;\n    \n    // Shift history left and insert newest sample at bit 0\n    history = (uint8_t)((history << 1) | (raw_sample & 0x01));\n    \n    // If history has 4 consecutive 0s (0xF0 mask check: 1111 0000b)\n    // it means signal has settled to LOW for 20ms\n    if ((history & 0x0F) == 0x00) {\n        if (!was_pressed) {\n            was_pressed = true; // Latch press state\n            return true;        // Confirmed valid NEW press event!\n        }\n    }\n    \n    // Reset latch when button is released (history settles to 1s)\n    if ((history & 0x0F) == 0x0F) {\n        was_pressed = false;\n    }\n    \n    return false;\n}\n\nint main(void) {\n    // Simulate button press with contact bounce: 1 -> 0 -> 1 -> 0 -> 0 -> 0 -> 0\n    uint8_t samples[] = {1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1};\n    for (int i = 0; i < 12; i++) {\n        bool pressed = check_button_pressed(samples[i]);\n        printf(\"Sample %2d: val=%u -> Pressed Event: %s\\n\", i, samples[i], pressed ? \"YES (Trigger!)\" : \"no\");\n    }\n    return 0;\n}",
+    "explanation": "1. Every 5 ms timer tick, the newest pin reading is shifted into an 8-bit history variable.\n2. When 4 consecutive samples are 0 (mask check 0x0F == 0x00), the signal has remained stable for 20 ms, proving the mechanical bounce has completed.\n3. The 'was_pressed' state latch ensures that holding the button down triggers only ONE event on the falling edge, not continuous repeating triggers.\n4. When released (0x0F == 0x0F), the latch resets.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-3",
+    "title": "ADC Raw Reading to Voltage & Temperature Conversion",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "ADC & Sensors",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] A 12-bit Analog-to-Digital Converter (ADC) has a 3.3V (3300 mV) reference voltage and returns values from 0 to 4095. It is connected to an analog temperature sensor with a sensitivity of 10 mV / °C (0 mV = 0 °C). Write a function to convert the raw 12-bit integer reading into voltage in millivolts and temperature in degrees Celsius using pure integer math without slow floating-point operations.",
+    "inputDesc": "Unsigned 16-bit integer 'raw_adc' (0 <= raw_adc <= 4095).",
+    "outputDesc": "Calculated voltage in millivolts and temperature in degrees Celsius.",
+    "constraints": "0 <= raw_adc <= 4095; Vref = 3300 mV; Resolution = 4095.",
+    "exampleInput": "raw_adc = 2048",
+    "exampleOutput": "Voltage = 1650 mV, Temperature = 165 °C (16.5 °C scaled by 10)",
+    "scenario": "Battery monitoring, ambient sensor reading, and motor thermal protection in IoT devices.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n#define ADC_MAX_COUNT 4095U\n#define VREF_MILLIVOLTS 3300U\n\n// Convert raw ADC count to millivolts\nuint32_t adc_to_millivolts(uint16_t raw_adc) {\n    if (raw_adc > ADC_MAX_COUNT) raw_adc = ADC_MAX_COUNT;\n    // Promote to uint32_t to avoid integer overflow: 4095 * 3300 = 13,513,500 (fits in 32-bit)\n    return ((uint32_t)raw_adc * VREF_MILLIVOLTS) / ADC_MAX_COUNT;\n}\n\n// Convert to temperature in tenths of a degree (255 = 25.5 deg C)\n// Sensitivity: 10 mV = 1 deg C -> 1 mV = 0.1 deg C\nint32_t adc_to_temperature_tenths(uint16_t raw_adc) {\n    uint32_t mv = adc_to_millivolts(raw_adc);\n    return (int32_t)mv; // 1 mV corresponds directly to 0.1 deg C\n}\n\nint main(void) {\n    uint16_t test_adc = 1241; // Raw reading\n    uint32_t mv = adc_to_millivolts(test_adc);\n    int32_t temp_tenths = adc_to_temperature_tenths(test_adc);\n    \n    printf(\"Raw ADC: %u\\n\", test_adc);\n    printf(\"Voltage: %u mV\\n\", mv);\n    printf(\"Temperature: %d.%d deg C\\n\", temp_tenths / 10, temp_tenths % 10);\n    return 0;\n}",
+    "explanation": "1. In microcontrollers without a hardware Floating Point Unit (FPU), floating-point math adds thousands of bytes of code and executes slowly.\n2. We use fixed-point integer scaling: promoting raw_adc to uint32_t allows multiplying by 3300 without 16-bit integer overflow (max value 13.5M fits safely in 32 bits).\n3. Dividing by 4095 yields exact millivolts.\n4. Representing temperature in tenths of a degree (e.g. 25.5 °C stored as 255) preserves fractional precision with pure integer math!\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-4",
+    "title": "Circular Ring Buffer for Interrupt-Driven UART Driver",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "Data Structures & Buffers",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Implement an asynchronous, interrupt-safe circular ring buffer for incoming serial bytes from a UART receiver. Implement: (1) ring_init, (2) ring_put (called inside UART RX ISR to save incoming byte), (3) ring_get (called in main loop to read byte), and (4) ring_available (returns count of unread bytes), using a power-of-two buffer size with fast bitwise mask wrap-around.",
+    "inputDesc": "Byte stream arriving asynchronously via UART interrupts.",
+    "outputDesc": "FIFO byte retrieval in main loop without lost characters.",
+    "constraints": "Buffer size = 64 (must be power of two); head and tail are volatile.",
+    "exampleInput": "UART receives: 'H', 'E', 'L', 'L', 'O'",
+    "exampleOutput": "ring_get returns: 'H', 'E', 'L', 'L', 'O' in exact arrival order.",
+    "scenario": "GPS NMEA stream parsing, Wi-Fi AT command reception, and telemetry buffering.",
+    "code": "#include <stdint.h>\n#include <stdbool.h>\n#include <stdio.h>\n\n#define RING_BUF_SIZE 64U // Must be power of 2!\n#define RING_BUF_MASK (RING_BUF_SIZE - 1U)\n\ntypedef struct {\n    uint8_t buffer[RING_BUF_SIZE];\n    volatile uint16_t head; // Written by ISR\n    volatile uint16_t tail; // Read by Main program\n} RingBuffer;\n\nvoid ring_init(RingBuffer *rb) {\n    rb->head = 0;\n    rb->tail = 0;\n}\n\n// Write byte into buffer (Called inside UART RX ISR)\nbool ring_put(RingBuffer *rb, uint8_t byte) {\n    uint16_t next_head = (rb->head + 1U) & RING_BUF_MASK;\n    if (next_head == rb->tail) {\n        return false; // Buffer Full - byte dropped!\n    }\n    rb->buffer[rb->head] = byte;\n    rb->head = next_head;\n    return true;\n}\n\n// Read byte from buffer (Called inside main loop)\nbool ring_get(RingBuffer *rb, uint8_t *byte) {\n    if (rb->head == rb->tail) {\n        return false; // Buffer Empty!\n    }\n    *byte = rb->buffer[rb->tail];\n    rb->tail = (rb->tail + 1U) & RING_BUF_MASK;\n    return true;\n}\n\n// Number of unread bytes currently available\nuint16_t ring_available(const RingBuffer *rb) {\n    return (rb->head - rb->tail) & RING_BUF_MASK;\n}\n\nint main(void) {\n    RingBuffer rx_buf;\n    ring_init(&rx_buf);\n    \n    // Simulate incoming bytes from ISR\n    const char *msg = \"VOLT_MCU\";\n    for (int i = 0; msg[i] != '\\0'; i++) {\n        ring_put(&rx_buf, (uint8_t)msg[i]);\n    }\n    \n    printf(\"Bytes available: %u\\n\", ring_available(&rx_buf));\n    \n    // Read out in main loop\n    uint8_t ch;\n    printf(\"Extracted: \");\n    while (ring_get(&rx_buf, &ch)) {\n        putchar(ch);\n    }\n    printf(\"\\n\");\n    return 0;\n}",
+    "explanation": "1. Head points to the next write slot; Tail points to the next read slot.\n2. When head reaches 64, (head + 1) & 63 rolls back to 0 instantaneously without slow modulo division (%).\n3. Single-producer (ISR) and single-consumer (main) access is lock-free because the ISR only modifies 'head' and the main program only modifies 'tail'.\n4. volatile qualifiers ensure the compiler does not optimize memory reads into CPU registers.\n\nTime Complexity: O(1) for put and get\nSpace Complexity: O(N) where N = buffer capacity",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "prob-ec-5",
+    "title": "PWM Timer Compare Register Calculation for Motor Speed Control",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "Timers & PWM",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] An electric DC motor driver is connected to a hardware timer running a 20 kHz PWM signal. The timer's Auto-Reload Register (ARR / Period) is configured to 3999 ticks (4000 total states). Given a target motor speed percentage from 0 to 100%, write a function to calculate the exact Capture/Compare Register (CCR) value to set the duty cycle, clamping out-of-range inputs and avoiding integer truncation.",
+    "inputDesc": "Unsigned integer 'arr' (timer period ticks) and 'duty_percent' (0 to 100).",
+    "outputDesc": "Calculated CCR value to load into the timer hardware compare register.",
+    "constraints": "0 <= duty_percent <= 100; arr <= 65535 (16-bit timer).",
+    "exampleInput": "arr = 3999, duty_percent = 75",
+    "exampleOutput": "CCR = 3000 ticks (75% of 4000 ticks)",
+    "scenario": "Brushless DC (BLDC) motor speed control, LED backlighting, and solenoid drivers.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\nuint16_t calculate_pwm_ccr(uint16_t arr, uint8_t duty_percent) {\n    if (duty_percent == 0) return 0;\n    if (duty_percent >= 100) return (uint16_t)(arr + 1U);\n    \n    // Total period counts = (ARR + 1)\n    uint32_t total_period = (uint32_t)arr + 1U;\n    \n    // Multiply first, then divide by 100 to prevent zero truncation!\n    uint32_t ccr = (total_period * duty_percent) / 100U;\n    \n    return (uint16_t)ccr;\n}\n\nint main(void) {\n    uint16_t arr = 3999; // 20 kHz PWM\n    printf(\"Duty  0%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 0));\n    printf(\"Duty 25%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 25));\n    printf(\"Duty 50%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 50));\n    printf(\"Duty 75%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 75));\n    printf(\"Duty 100%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 100));\n    return 0;\n}",
+    "explanation": "1. A timer with Auto-Reload ARR = 3999 has 4000 total clock states (from 0 to 3999).\n2. If you write: (duty_percent / 100) * total_period, integer division computes 75 / 100 = 0! The motor would never spin!\n3. Always multiply first: (4000 * 75) = 300,000, then divide by 100 = 3000 ticks.\n4. Promoting to uint32_t guarantees that intermediate products up to 65,536 * 100 = 6.5M never overflow.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-6",
+    "title": "CRC-8 & Additive Checksum Calculation for Sensor Packets",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "Protocols & Packets",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] When sending telemetry data over noisy industrial cables (RS-485, CAN, Modbus) or wireless links, electrical noise can flip bits. Write two functions to verify packet integrity: (1) Simple Additive Checksum (sum of all bytes modulo 256), and (2) Standard CRC-8 (polynomial 0x07: x^8 + x^2 + x + 1, initial value 0x00).",
+    "inputDesc": "Pointer to byte buffer 'data' and buffer length 'length'.",
+    "outputDesc": "Single 8-bit checksum or CRC-8 value.",
+    "constraints": "1 <= length <= 256 bytes; data bytes are 0x00 to 0xFF.",
+    "exampleInput": "data = {0x01, 0x02, 0x03, 0x04}, length = 4",
+    "exampleOutput": "Additive Checksum = 0x0A (10); CRC-8 = computed polynomial remainder.",
+    "scenario": "Sensor packets, bootloader firmware verification, and safety-critical serial protocols.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n// 1. Simple Additive Checksum (Modulo 256)\nuint8_t calculate_checksum(const uint8_t *data, uint16_t length) {\n    uint8_t sum = 0;\n    for (uint16_t i = 0; i < length; i++) {\n        sum += data[i]; // Natural 8-bit unsigned overflow wraps at 256\n    }\n    return sum;\n}\n\n// 2. Standard CRC-8 (Polynomial: 0x07, x^8 + x^2 + x + 1)\nuint8_t calculate_crc8(const uint8_t *data, uint16_t length) {\n    uint8_t crc = 0x00; // Initial value\n    const uint8_t polynomial = 0x07;\n    \n    for (uint16_t i = 0; i < length; i++) {\n        crc ^= data[i]; // XOR input byte into CRC\n        for (uint8_t bit = 0; bit < 8; bit++) {\n            if (crc & 0x80) { // If MSB is 1\n                crc = (uint8_t)((crc << 1) ^ polynomial);\n            } else {\n                crc = (uint8_t)(crc << 1);\n            }\n        }\n    }\n    return crc;\n}\n\nint main(void) {\n    uint8_t packet[] = {0xAA, 0x01, 0x14, 0x28}; // Header, ID, Data1, Data2\n    uint8_t sum = calculate_checksum(packet, 4);\n    uint8_t crc = calculate_crc8(packet, 4);\n    \n    printf(\"Packet: [0xAA, 0x01, 0x14, 0x28]\\n\");\n    printf(\"Additive Checksum: 0x%02X\\n\", sum);\n    printf(\"CRC-8 Remainder:  0x%02X\\n\", crc);\n    return 0;\n}",
+    "explanation": "1. Additive Checksum: Adds all bytes together. In uint8_t, addition naturally overflows modulo 256. Fast, but misses swapped bytes (e.g. [1, 2] has same sum as [2, 1]).\n2. CRC-8: Treats the data as coefficients of a large polynomial and computes the remainder of division by a generator polynomial (0x07) using bitwise shifts and XOR.\n3. CRC catches 100% of single-bit errors, two-bit errors, and burst errors up to 8 bits long!\n\nTime Complexity: O(N) where N is number of bytes\nSpace Complexity: O(1)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-7",
+    "title": "Finite State Machine (FSM) for Industrial Traffic Signal Controller",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "System Architecture",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Design a robust Finite State Machine for an intersection traffic signal with three states: RED (stays 30 ticks) -> GREEN (stays 25 ticks) -> YELLOW (stays 5 ticks) -> RED. Write a state machine tick function that advances timers, executes transitions, sets the hardware GPIO lamp mask (RED=bit 0, YELLOW=bit 1, GREEN=bit 2), and includes a fault-recovery default case.",
+    "inputDesc": "Clock tick events (called once per second).",
+    "outputDesc": "Updated 8-bit GPIO lamp bitmask: 0x01 (Red), 0x04 (Green), 0x02 (Yellow).",
+    "constraints": "No blocking delay functions; must execute in O(1) time per tick.",
+    "exampleInput": "Ticks 0 to 30: Red; Ticks 31 to 55: Green; Ticks 56 to 60: Yellow",
+    "exampleOutput": "Lamp bitmask updates synchronously with state transitions.",
+    "scenario": "Automotive electronic control units (ECUs), traffic controllers, and industrial robotics.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\ntypedef enum {\n    LIGHT_RED,\n    LIGHT_GREEN,\n    LIGHT_YELLOW\n} TrafficState;\n\n// GPIO Lamp Bitmask Definitions\n#define LAMP_RED    (1U << 0) // Bit 0 (0x01)\n#define LAMP_YELLOW (1U << 1) // Bit 1 (0x02)\n#define LAMP_GREEN  (1U << 2) // Bit 2 (0x04)\n\ntypedef struct {\n    TrafficState current_state;\n    uint16_t state_timer;\n    uint8_t lamp_output;\n} TrafficFSM;\n\nvoid traffic_fsm_init(TrafficFSM *fsm) {\n    fsm->current_state = LIGHT_RED;\n    fsm->state_timer = 30;\n    fsm->lamp_output = LAMP_RED;\n}\n\nvoid traffic_fsm_tick(TrafficFSM *fsm) {\n    if (fsm->state_timer > 0) {\n        fsm->state_timer--;\n    }\n    \n    // When timer expires, transition to next state\n    if (fsm->state_timer == 0) {\n        switch (fsm->current_state) {\n            case LIGHT_RED:\n                fsm->current_state = LIGHT_GREEN;\n                fsm->state_timer = 25;\n                fsm->lamp_output = LAMP_GREEN;\n                break;\n            case LIGHT_GREEN:\n                fsm->current_state = LIGHT_YELLOW;\n                fsm->state_timer = 5;\n                fsm->lamp_output = LAMP_YELLOW;\n                break;\n            case LIGHT_YELLOW:\n                fsm->current_state = LIGHT_RED;\n                fsm->state_timer = 30;\n                fsm->lamp_output = LAMP_RED;\n                break;\n            default:\n                // Fault recovery: reset to safe RED state if memory corrupted\n                traffic_fsm_init(fsm);\n                break;\n        }\n    }\n}\n\nint main(void) {\n    TrafficFSM fsm;\n    traffic_fsm_init(&fsm);\n    printf(\"Starting Traffic Light FSM:\\n\");\n    for (int sec = 1; sec <= 65; sec++) {\n        traffic_fsm_tick(&fsm);\n        if (sec == 1 || sec == 31 || sec == 56 || sec == 61) {\n            printf(\"Sec %2d: State = %d, Lamp Mask = 0x%02X\\n\", sec, fsm.current_state, fsm.lamp_output);\n        }\n    }\n    return 0;\n}",
+    "explanation": "1. The FSM is defined using an 'enum' representing valid operational states.\n2. Non-blocking timing: The state machine executes in O(1) time on each tick by decrementing a timer counter, never locking the CPU with delay().\n3. Upon timer expiration, a switch-case block dispatches transitions and updates the hardware lamp mask.\n4. Safety Default Case: In high-noise environments, electromagnetic interference (EMI) can corrupt register bits. The 'default' case catches undefined states and resets the controller to safe RED immediately.\n\nTime Complexity: O(1) per tick\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-8",
+    "title": "Fixed-Point Arithmetic Multiplication (Q16.16 Format)",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "Math & DSP",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Low-cost microcontrollers (like ARM Cortex-M0+, PIC, AVR) do not have a hardware Floating Point Unit (FPU). Software float operations take hundreds of CPU cycles and bloat Flash memory. Implement Q16.16 fixed-point multiplication (16 bits for integer part, 16 bits for fractional part) that performs decimal multiplication using pure 32-bit/64-bit integer instructions.",
+    "inputDesc": "Two Q16.16 fixed-point signed integers 'a' and 'b'.",
+    "outputDesc": "Result of a * b in Q16.16 format.",
+    "constraints": "Inputs fit in signed 32-bit int32_t; intermediate product handled in int64_t.",
+    "exampleInput": "a = 2.5 (163840 in Q16.16), b = 4.0 (262144 in Q16.16)",
+    "exampleOutput": "Result = 10.0 (655360 in Q16.16)",
+    "scenario": "Digital filters (IIR/FIR), PID motor controllers, and audio DSP on low-cost microcontrollers.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n#define Q16_SHIFT 16\n#define FLOAT_TO_Q16(f) ((int32_t)((f) * (1 << Q16_SHIFT)))\n#define Q16_TO_FLOAT(q) ((float)(q) / (1 << Q16_SHIFT))\n\n// Multiply two Q16.16 numbers: (a * b) >> 16\nint32_t q16_multiply(int32_t a, int32_t b) {\n    // 1. Promote to 64-bit integer to prevent overflow during multiplication\n    int64_t product = (int64_t)a * (int64_t)b;\n    \n    // 2. Shift right by 16 to re-align fractional point\n    return (int32_t)(product >> Q16_SHIFT);\n}\n\nint main(void) {\n    // Represent 3.5 and 2.0 in Q16.16 format\n    int32_t num1 = FLOAT_TO_Q16(3.5f); // 3.5 * 65536 = 229376\n    int32_t num2 = FLOAT_TO_Q16(2.25f); // 2.25 * 65536 = 147456\n    \n    int32_t result = q16_multiply(num1, num2);\n    \n    printf(\"3.5 * 2.25 = %f (Expected: 7.875)\\n\", Q16_TO_FLOAT(result));\n    printf(\"Raw Q16.16 integer: %d\\n\", result);\n    return 0;\n}",
+    "explanation": "1. In Q16.16 fixed-point, the number is conceptually scaled by 2^16 (65,536). The upper 16 bits hold the whole integer; the lower 16 bits hold the fraction.\n2. When multiplying: (A * 2^16) * (B * 2^16) = (A * B) * 2^32. The result has 32 fractional bits instead of 16!\n3. Shifting right by 16 (>> 16) discards the extra scale factor, returning the result to Q16.16 format.\n4. Casting to int64_t before multiplying prevents 32-bit overflow.\n\nTime Complexity: O(1) (single CPU multiplication + shift)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-9",
+    "title": "Non-Blocking Software Timer (Millis Counter Scheduling)",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "Timers & Scheduling",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] In embedded systems, delay functions like delay_ms(1000) freeze the CPU, preventing sensor monitoring or button presses. Implement a non-blocking timer function 'is_timer_expired(uint32_t *last_time, uint32_t interval_ms, uint32_t current_ms)' that returns true when the duration has elapsed and advances *last_time, correctly handling 32-bit unsigned overflow wrapping (which occurs every ~49.7 days).",
+    "inputDesc": "Pointers to last trigger timestamp 'last_time', duration 'interval_ms', and current timestamp 'current_ms'.",
+    "outputDesc": "Returns true (1) if interval elapsed; false (0) otherwise.",
+    "constraints": "Timestamps are 32-bit unsigned integers; calculation must be overflow-safe.",
+    "exampleInput": "last_time = 1000, interval = 500, current = 1550",
+    "exampleOutput": "Returns true, updates last_time to 1500.",
+    "scenario": "Periodic sensor sampling, LED blinking, and telemetry heartbeats without an RTOS.",
+    "code": "#include <stdint.h>\n#include <stdbool.h>\n#include <stdio.h>\n\n// Non-blocking timer check with automatic overflow protection\nbool is_timer_expired(uint32_t *last_time, uint32_t interval_ms, uint32_t current_ms) {\n    // Unsigned subtraction automatically handles 32-bit overflow!\n    if ((current_ms - *last_time) >= interval_ms) {\n        *last_time += interval_ms; // Advance time window\n        return true;\n    }\n    return false;\n}\n\nint main(void) {\n    uint32_t blink_timer = 0;\n    uint32_t sensor_timer = 0;\n    \n    // Simulate time running from 0 to 2500 ms\n    for (uint32_t current_ms = 0; current_ms <= 2500; current_ms += 250) {\n        // Blink LED every 500 ms\n        if (is_timer_expired(&blink_timer, 500, current_ms)) {\n            printf(\"[%4u ms] LED Toggled!\\n\", current_ms);\n        }\n        // Read Sensor every 1000 ms\n        if (is_timer_expired(&sensor_timer, 1000, current_ms)) {\n            printf(\"[%4u ms] >> SENSOR READ!\\n\", current_ms);\n        }\n    }\n    return 0;\n}",
+    "explanation": "1. Non-blocking timers enable cooperative multi-tasking inside a while(1) loop without requiring an RTOS.\n2. The subtraction (current_ms - last_time) relies on two's complement unsigned integer arithmetic.\n3. Even when current_ms overflows from 0xFFFFFFFF back to 0, (0 - 0xFFFFFFFE) wraps around to positive 2, so the condition remains 100% correct across rollover!\n4. Incrementing *last_time += interval_ms prevents time drift.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-10",
+    "title": "Atomic Read of 16-Bit Register Shared with Interrupt Service Routine",
+    "lang": "embedded-c",
+    "difficulty": "Hard",
+    "category": "Interrupts & Concurrency",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] On an 8-bit or 16-bit processor (like AVR, 8051, or PIC), reading a 32-bit or 16-bit variable updated by a high-speed Interrupt Service Routine (ISR) takes multiple CPU instructions. If an interrupt fires halfway between reading byte 0 and byte 1, data corruption occurs (a torn read). Write a function to atomically read a shared 16-bit variable by saving the global interrupt status register, disabling interrupts, copying the data, and restoring the previous interrupt state.",
+    "inputDesc": "Shared 16-bit volatile variable updated asynchronously by an ISR.",
+    "outputDesc": "Guaranteed uncorrupted, consistent 16-bit value.",
+    "constraints": "Interrupt latency must be minimized (critical section kept strictly to 2-3 instructions).",
+    "exampleInput": "ISR updates timer from 0x00FF to 0x0100 while main is reading.",
+    "exampleOutput": "Atomic read returns either exact 0x00FF or 0x0100, never corrupted 0x0000 or 0x01FF.",
+    "scenario": "Pulse encoder position reading, high-speed tachometer counts, and energy meter accumulation.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n// Simulated hardware interrupt enable / disable functions\nstatic volatile uint8_t SIMULATED_CPU_FLAGS = 0x80; // Bit 7: Global Interrupt Enable\nstatic volatile uint16_t isr_shared_encoder_ticks = 0;\n\n// Inline assembly equivalents for AVR / ARM Cortex-M\nstatic inline uint8_t enter_critical_section(void) {\n    uint8_t prev_flags = SIMULATED_CPU_FLAGS;\n    SIMULATED_CPU_FLAGS &= ~0x80; // Disable interrupts (e.g. __disable_irq() or cli())\n    return prev_flags;\n}\n\nstatic inline void exit_critical_section(uint8_t prev_flags) {\n    SIMULATED_CPU_FLAGS = prev_flags; // Restore previous state (e.g. __set_PRIMASK() or sei())\n}\n\n// Safe Atomic Read of 16-bit value\nuint16_t read_encoder_atomic(volatile uint16_t *shared_var) {\n    uint8_t sreg = enter_critical_section(); // 1. Save state & disable interrupts\n    uint16_t safe_val = *shared_var;         // 2. Atomic copy (uninterruptible)\n    exit_critical_section(sreg);             // 3. Restore previous interrupt state\n    return safe_val;\n}\n\nint main(void) {\n    isr_shared_encoder_ticks = 0x01FF;\n    uint16_t count = read_encoder_atomic(&isr_shared_encoder_ticks);\n    printf(\"Safely read encoder count: 0x%04X (%u ticks)\\n\", count, count);\n    return 0;\n}",
+    "explanation": "1. Torn Read Problem: On an 8-bit CPU, reading a 16-bit variable takes 2 separate instructions (LDS r24, low_byte then LDS r25, high_byte). If an interrupt increments 0x00FF to 0x0100 between the two instructions, the CPU reads low_byte=0xFF and high_byte=0x01, yielding false 0x01FF!\n2. The critical section disables interrupts for only 2 CPU cycles while the copy is made.\n3. Saving and restoring the previous status register (sreg) is essential: if the function was called from a place where interrupts were ALREADY disabled, blindly re-enabling them would break the caller's critical section!\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  }
 ];
 
 const PROGRAMMING_TRACK = {
   languages: [
-    { id: "c", name: "C", icon: "🔵", desc: "Core language for embedded firmware, microcontroller registers, and hardware drivers.", topicsCount: 24, problemsCount: 5, mcqsCount: 20, ivCount: 10 },
+    { id: "c", name: "C", icon: "🔵", desc: "Core language for system software, low-level algorithms, and foundational programming.", topicsCount: 24, problemsCount: 5, mcqsCount: 20, ivCount: 10 },
+    { id: "embedded-c", name: "Embedded C", icon: "📟", desc: "Bare-metal firmware, microcontroller registers, bit-masking, interrupts, timers, ADC, PWM, UART, SPI, I2C, and RTOS fundamentals.", topicsCount: 24, problemsCount: 10, mcqsCount: 30, ivCount: 20 },
     { id: "cpp", name: "C++", icon: "🔷", desc: "High-performance object-oriented systems, simulation engines, and modern STL.", topicsCount: 28, problemsCount: 5, mcqsCount: 20, ivCount: 10 },
     { id: "python", name: "Python", icon: "🐍", desc: "Scripting, rapid prototyping, instrumentation automation, and algorithmic placement.", topicsCount: 24, problemsCount: 5, mcqsCount: 20, ivCount: 10 },
     { id: "java", name: "Java", icon: "☕", desc: "Enterprise services, cross-platform JVM architecture, and Collections Framework.", topicsCount: 28, problemsCount: 5, mcqsCount: 20, ivCount: 10 }
@@ -68063,7 +68617,7 @@ function highlightCode(code, lang) {
   esc = esc.replace(/\b(\d+\.?\d*)\b/g, '<span style="color:#fbbf24;">$1</span>');
   
   // Highlight keywords
-  const keywords = /\b(int|float|double|char|void|long|short|unsigned|struct|typedef|return|if|else|for|while|do|switch|case|break|continue|class|public|private|protected|static|const|import|package|def|elif|in|is|not|and|or|True|False|None|self|new|using|namespace|include)\b/g;
+  const keywords = /\b(int|float|double|char|void|long|short|unsigned|signed|struct|typedef|return|if|else|for|while|do|switch|case|break|continue|class|public|private|protected|static|const|volatile|uint8_t|uint16_t|uint32_t|int8_t|int16_t|int32_t|size_t|bool|true|false|inline|extern|register|enum|union|import|package|def|elif|in|is|not|and|or|True|False|None|self|new|using|namespace|include)\b/g;
   esc = esc.replace(keywords, '<span style="color:#38bdf8;font-weight:600;">$1</span>');
   
   // Restore protected tokens
@@ -68140,7 +68694,7 @@ function pageProgramming(activeLang, activeTopic){
   // Language tabs
   const langTabs = allTracks.map(l => {
     const isActive = l.id === lang;
-    const countVal = l.id === "c" ? cCount : l.id === "cpp" ? cppCount : l.id === "python" ? pyCount : l.id === "java" ? javaCount : baseTrackProblems.length;
+    const countVal = allProbs.filter(p => l.id === "dsa" || p.lang === l.id).length;
     return `
       <button class="btn ${isActive ? 'btn-primary' : 'btn-secondary'}" data-nav="lang:${l.id}" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;">
         <span style="font-size:16px;">${l.icon}</span>
@@ -68205,6 +68759,26 @@ function pageProgramming(activeLang, activeTopic){
                 <div style="font-size:11.5px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;">4. Implementation Example</div>
                 <pre style="background:#0f172a;color:#f8fafc;padding:14px;border-radius:8px;border:1px solid #2a3348;font-family:monospace;font-size:13px;overflow-x:auto;margin:0;"><code>${highlightCode(tp.syntaxExample || '', lang)}</code></pre>
               </div>
+              ${tp.importantRules ? `
+              <div style="margin-bottom:14px;background:rgba(239,68,68,0.08);padding:10px 14px;border-radius:6px;border-left:3px solid #ef4444;">
+                <div style="font-size:11.5px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">5. Important Rules & Safety Pitfalls</div>
+                <div style="font-size:13.5px;color:var(--text);">${tp.importantRules}</div>
+              </div>` : ''}
+              ${tp.commonMistakes ? `
+              <div style="margin-bottom:14px;background:rgba(245,158,11,0.08);padding:10px 14px;border-radius:6px;border-left:3px solid #f59e0b;">
+                <div style="font-size:11.5px;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">6. Common Mistakes to Avoid</div>
+                <div style="font-size:13.5px;color:var(--text);">${tp.commonMistakes}</div>
+              </div>` : ''}
+              ${tp.quickRevision ? `
+              <div style="margin-bottom:14px;background:rgba(59,130,246,0.08);padding:10px 14px;border-radius:6px;border-left:3px solid #3b82f6;">
+                <div style="font-size:11.5px;font-weight:700;color:#3b82f6;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">7. Quick Revision Key Takeaways</div>
+                <div style="font-size:13.5px;color:var(--text);">${tp.quickRevision}</div>
+              </div>` : ''}
+              ${(tp.interviewQuestions || tp.placementNotes) ? `
+              <div style="margin-bottom:14px;background:rgba(168,85,247,0.08);padding:10px 14px;border-radius:6px;border-left:3px solid #a855f7;">
+                <div style="font-size:11.5px;font-weight:700;color:#a855f7;text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px;">8. Hardware & Embedded Interview Focus</div>
+                <div style="font-size:13.5px;color:var(--text);line-height:1.5;">${tp.interviewQuestions ? `<div style='white-space:pre-line;margin-bottom:6px;'>${tp.interviewQuestions}</div>` : ''}${tp.placementNotes ? `<div>${tp.placementNotes}</div>` : ''}</div>
+              </div>` : ''}
             </div>
           ` : ''}
         </div>

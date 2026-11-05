@@ -21840,6 +21840,197 @@ const PROGRAMMING_PROBLEMS_BANK = [
     "commonMistakes": "Failing edge case validations or choosing non-optimal algorithmic data structures.",
     "placementRelevance": "High frequency software-company coding assessment question."
   }
+,
+  {
+    "id": "prob-ec-1",
+    "title": "Bitwise GPIO Register Manipulation (Set, Clear, Toggle, Read)",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "GPIO & Registers",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] In microcontroller firmware (e.g. STM32, AVR, PIC), configure and control an 8-bit GPIO register. Write functions to: (1) set a target pin HIGH (1), (2) clear a target pin LOW (0), (3) toggle a target pin (flip 0 <-> 1), and (4) read a pin state (return 1 or 0), without changing any other pins in the register.",
+    "inputDesc": "Initial 8-bit register value 'port' (0 to 255) and pin index 'pin' (0 to 7).",
+    "outputDesc": "Updated 8-bit register value after modification, or 0/1 for read.",
+    "constraints": "0 <= port <= 255 (8-bit unsigned integer); 0 <= pin <= 7.",
+    "exampleInput": "port = 0x00 (00000000b), pin = 3\nCommand: SET_PIN",
+    "exampleOutput": "port = 0x08 (00001000b)",
+    "scenario": "Fundamental embedded driver task required in every microcontroller board bring-up.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n// 1. Set pin HIGH without altering other pins\nuint8_t gpio_set_pin(uint8_t port, uint8_t pin) {\n    return port | (uint8_t)(1U << pin);\n}\n\n// 2. Clear pin LOW without altering other pins\nuint8_t gpio_clear_pin(uint8_t port, uint8_t pin) {\n    return port & (uint8_t)(~(1U << pin));\n}\n\n// 3. Toggle pin state\nuint8_t gpio_toggle_pin(uint8_t port, uint8_t pin) {\n    return port ^ (uint8_t)(1U << pin);\n}\n\n// 4. Read pin status (returns 1 or 0)\nuint8_t gpio_read_pin(uint8_t port, uint8_t pin) {\n    return (port & (uint8_t)(1U << pin)) ? 1U : 0U;\n}\n\nint main(void) {\n    uint8_t port = 0x00; // All pins LOW\n    port = gpio_set_pin(port, 3);    // 0x08 (00001000b)\n    port = gpio_set_pin(port, 5);    // 0x28 (00101000b)\n    printf(\"After Set: 0x%02X\\n\", port);\n    \n    port = gpio_clear_pin(port, 3);  // 0x20 (00100000b)\n    printf(\"After Clear: 0x%02X\\n\", port);\n    \n    port = gpio_toggle_pin(port, 5); // 0x00 (00000000b)\n    printf(\"After Toggle: 0x%02X\\n\", port);\n    \n    uint8_t bit5 = gpio_read_pin(port, 5);\n    printf(\"Read Pin 5: %u\\n\", bit5);\n    return 0;\n}",
+    "explanation": "1. SET PIN: (1U << pin) creates a bitmask with a single 1 at the target pin. Bitwise OR (|) turns that specific bit to 1 while leaving all other bits unchanged.\n2. CLEAR PIN: ~(1U << pin) inverts the mask so all bits are 1 except the target bit (which is 0). Bitwise AND (&) forces that bit to 0 while keeping all other bits identical.\n3. TOGGLE PIN: Bitwise XOR (^) flips a bit: 0 ^ 1 = 1, and 1 ^ 1 = 0.\n4. READ PIN: Bitwise AND with (1U << pin) isolates the bit. If non-zero, return 1; else 0.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-2",
+    "title": "Software Pushbutton Debouncing & Falling-Edge Detection",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "GPIO & Hardware",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Mechanical switch contacts bounce for 10-20 ms upon press, causing false multiple triggers. Implement a non-blocking software debouncer using an 8-bit shift register history. Given periodic 5ms raw pin samples (0 for pressed to GND, 1 for released), return true ONLY on a confirmed falling-edge transition (valid new button press).",
+    "inputDesc": "Raw pin digital sample (0 or 1) received every 5 milliseconds.",
+    "outputDesc": "Return 1 (true) on a confirmed button press event; return 0 (false) otherwise.",
+    "constraints": "Pin is sampled at steady 5 ms intervals; raw_pin is 0 or 1.",
+    "exampleInput": "Pin sequence: 1, 1, 0, 1, 0, 0, 0, 0, 0",
+    "exampleOutput": "Event triggered once steady low is established.",
+    "scenario": "Standard user input handling on medical equipment, automotive dashboards, and consumer appliances.",
+    "code": "#include <stdint.h>\n#include <stdbool.h>\n#include <stdio.h>\n\n// Debounce using 8-bit shift register history\n// Active-LOW button (1 = released, 0 = pressed)\nbool check_button_pressed(uint8_t raw_sample) {\n    static uint8_t history = 0xFF;\n    static bool was_pressed = false;\n    \n    // Shift history left and insert newest sample at bit 0\n    history = (uint8_t)((history << 1) | (raw_sample & 0x01));\n    \n    // If history has 4 consecutive 0s (0xF0 mask check: 1111 0000b)\n    // it means signal has settled to LOW for 20ms\n    if ((history & 0x0F) == 0x00) {\n        if (!was_pressed) {\n            was_pressed = true; // Latch press state\n            return true;        // Confirmed valid NEW press event!\n        }\n    }\n    \n    // Reset latch when button is released (history settles to 1s)\n    if ((history & 0x0F) == 0x0F) {\n        was_pressed = false;\n    }\n    \n    return false;\n}\n\nint main(void) {\n    // Simulate button press with contact bounce: 1 -> 0 -> 1 -> 0 -> 0 -> 0 -> 0\n    uint8_t samples[] = {1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1};\n    for (int i = 0; i < 12; i++) {\n        bool pressed = check_button_pressed(samples[i]);\n        printf(\"Sample %2d: val=%u -> Pressed Event: %s\\n\", i, samples[i], pressed ? \"YES (Trigger!)\" : \"no\");\n    }\n    return 0;\n}",
+    "explanation": "1. Every 5 ms timer tick, the newest pin reading is shifted into an 8-bit history variable.\n2. When 4 consecutive samples are 0 (mask check 0x0F == 0x00), the signal has remained stable for 20 ms, proving the mechanical bounce has completed.\n3. The 'was_pressed' state latch ensures that holding the button down triggers only ONE event on the falling edge, not continuous repeating triggers.\n4. When released (0x0F == 0x0F), the latch resets.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-3",
+    "title": "ADC Raw Reading to Voltage & Temperature Conversion",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "ADC & Sensors",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] A 12-bit Analog-to-Digital Converter (ADC) has a 3.3V (3300 mV) reference voltage and returns values from 0 to 4095. It is connected to an analog temperature sensor with a sensitivity of 10 mV / °C (0 mV = 0 °C). Write a function to convert the raw 12-bit integer reading into voltage in millivolts and temperature in degrees Celsius using pure integer math without slow floating-point operations.",
+    "inputDesc": "Unsigned 16-bit integer 'raw_adc' (0 <= raw_adc <= 4095).",
+    "outputDesc": "Calculated voltage in millivolts and temperature in degrees Celsius.",
+    "constraints": "0 <= raw_adc <= 4095; Vref = 3300 mV; Resolution = 4095.",
+    "exampleInput": "raw_adc = 2048",
+    "exampleOutput": "Voltage = 1650 mV, Temperature = 165 °C (16.5 °C scaled by 10)",
+    "scenario": "Battery monitoring, ambient sensor reading, and motor thermal protection in IoT devices.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n#define ADC_MAX_COUNT 4095U\n#define VREF_MILLIVOLTS 3300U\n\n// Convert raw ADC count to millivolts\nuint32_t adc_to_millivolts(uint16_t raw_adc) {\n    if (raw_adc > ADC_MAX_COUNT) raw_adc = ADC_MAX_COUNT;\n    // Promote to uint32_t to avoid integer overflow: 4095 * 3300 = 13,513,500 (fits in 32-bit)\n    return ((uint32_t)raw_adc * VREF_MILLIVOLTS) / ADC_MAX_COUNT;\n}\n\n// Convert to temperature in tenths of a degree (255 = 25.5 deg C)\n// Sensitivity: 10 mV = 1 deg C -> 1 mV = 0.1 deg C\nint32_t adc_to_temperature_tenths(uint16_t raw_adc) {\n    uint32_t mv = adc_to_millivolts(raw_adc);\n    return (int32_t)mv; // 1 mV corresponds directly to 0.1 deg C\n}\n\nint main(void) {\n    uint16_t test_adc = 1241; // Raw reading\n    uint32_t mv = adc_to_millivolts(test_adc);\n    int32_t temp_tenths = adc_to_temperature_tenths(test_adc);\n    \n    printf(\"Raw ADC: %u\\n\", test_adc);\n    printf(\"Voltage: %u mV\\n\", mv);\n    printf(\"Temperature: %d.%d deg C\\n\", temp_tenths / 10, temp_tenths % 10);\n    return 0;\n}",
+    "explanation": "1. In microcontrollers without a hardware Floating Point Unit (FPU), floating-point math adds thousands of bytes of code and executes slowly.\n2. We use fixed-point integer scaling: promoting raw_adc to uint32_t allows multiplying by 3300 without 16-bit integer overflow (max value 13.5M fits safely in 32 bits).\n3. Dividing by 4095 yields exact millivolts.\n4. Representing temperature in tenths of a degree (e.g. 25.5 °C stored as 255) preserves fractional precision with pure integer math!\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-4",
+    "title": "Circular Ring Buffer for Interrupt-Driven UART Driver",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "Data Structures & Buffers",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Implement an asynchronous, interrupt-safe circular ring buffer for incoming serial bytes from a UART receiver. Implement: (1) ring_init, (2) ring_put (called inside UART RX ISR to save incoming byte), (3) ring_get (called in main loop to read byte), and (4) ring_available (returns count of unread bytes), using a power-of-two buffer size with fast bitwise mask wrap-around.",
+    "inputDesc": "Byte stream arriving asynchronously via UART interrupts.",
+    "outputDesc": "FIFO byte retrieval in main loop without lost characters.",
+    "constraints": "Buffer size = 64 (must be power of two); head and tail are volatile.",
+    "exampleInput": "UART receives: 'H', 'E', 'L', 'L', 'O'",
+    "exampleOutput": "ring_get returns: 'H', 'E', 'L', 'L', 'O' in exact arrival order.",
+    "scenario": "GPS NMEA stream parsing, Wi-Fi AT command reception, and telemetry buffering.",
+    "code": "#include <stdint.h>\n#include <stdbool.h>\n#include <stdio.h>\n\n#define RING_BUF_SIZE 64U // Must be power of 2!\n#define RING_BUF_MASK (RING_BUF_SIZE - 1U)\n\ntypedef struct {\n    uint8_t buffer[RING_BUF_SIZE];\n    volatile uint16_t head; // Written by ISR\n    volatile uint16_t tail; // Read by Main program\n} RingBuffer;\n\nvoid ring_init(RingBuffer *rb) {\n    rb->head = 0;\n    rb->tail = 0;\n}\n\n// Write byte into buffer (Called inside UART RX ISR)\nbool ring_put(RingBuffer *rb, uint8_t byte) {\n    uint16_t next_head = (rb->head + 1U) & RING_BUF_MASK;\n    if (next_head == rb->tail) {\n        return false; // Buffer Full - byte dropped!\n    }\n    rb->buffer[rb->head] = byte;\n    rb->head = next_head;\n    return true;\n}\n\n// Read byte from buffer (Called inside main loop)\nbool ring_get(RingBuffer *rb, uint8_t *byte) {\n    if (rb->head == rb->tail) {\n        return false; // Buffer Empty!\n    }\n    *byte = rb->buffer[rb->tail];\n    rb->tail = (rb->tail + 1U) & RING_BUF_MASK;\n    return true;\n}\n\n// Number of unread bytes currently available\nuint16_t ring_available(const RingBuffer *rb) {\n    return (rb->head - rb->tail) & RING_BUF_MASK;\n}\n\nint main(void) {\n    RingBuffer rx_buf;\n    ring_init(&rx_buf);\n    \n    // Simulate incoming bytes from ISR\n    const char *msg = \"VOLT_MCU\";\n    for (int i = 0; msg[i] != '\\0'; i++) {\n        ring_put(&rx_buf, (uint8_t)msg[i]);\n    }\n    \n    printf(\"Bytes available: %u\\n\", ring_available(&rx_buf));\n    \n    // Read out in main loop\n    uint8_t ch;\n    printf(\"Extracted: \");\n    while (ring_get(&rx_buf, &ch)) {\n        putchar(ch);\n    }\n    printf(\"\\n\");\n    return 0;\n}",
+    "explanation": "1. Head points to the next write slot; Tail points to the next read slot.\n2. When head reaches 64, (head + 1) & 63 rolls back to 0 instantaneously without slow modulo division (%).\n3. Single-producer (ISR) and single-consumer (main) access is lock-free because the ISR only modifies 'head' and the main program only modifies 'tail'.\n4. volatile qualifiers ensure the compiler does not optimize memory reads into CPU registers.\n\nTime Complexity: O(1) for put and get\nSpace Complexity: O(N) where N = buffer capacity",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(N)"
+  },
+  {
+    "id": "prob-ec-5",
+    "title": "PWM Timer Compare Register Calculation for Motor Speed Control",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "Timers & PWM",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] An electric DC motor driver is connected to a hardware timer running a 20 kHz PWM signal. The timer's Auto-Reload Register (ARR / Period) is configured to 3999 ticks (4000 total states). Given a target motor speed percentage from 0 to 100%, write a function to calculate the exact Capture/Compare Register (CCR) value to set the duty cycle, clamping out-of-range inputs and avoiding integer truncation.",
+    "inputDesc": "Unsigned integer 'arr' (timer period ticks) and 'duty_percent' (0 to 100).",
+    "outputDesc": "Calculated CCR value to load into the timer hardware compare register.",
+    "constraints": "0 <= duty_percent <= 100; arr <= 65535 (16-bit timer).",
+    "exampleInput": "arr = 3999, duty_percent = 75",
+    "exampleOutput": "CCR = 3000 ticks (75% of 4000 ticks)",
+    "scenario": "Brushless DC (BLDC) motor speed control, LED backlighting, and solenoid drivers.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\nuint16_t calculate_pwm_ccr(uint16_t arr, uint8_t duty_percent) {\n    if (duty_percent == 0) return 0;\n    if (duty_percent >= 100) return (uint16_t)(arr + 1U);\n    \n    // Total period counts = (ARR + 1)\n    uint32_t total_period = (uint32_t)arr + 1U;\n    \n    // Multiply first, then divide by 100 to prevent zero truncation!\n    uint32_t ccr = (total_period * duty_percent) / 100U;\n    \n    return (uint16_t)ccr;\n}\n\nint main(void) {\n    uint16_t arr = 3999; // 20 kHz PWM\n    printf(\"Duty  0%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 0));\n    printf(\"Duty 25%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 25));\n    printf(\"Duty 50%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 50));\n    printf(\"Duty 75%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 75));\n    printf(\"Duty 100%%: CCR = %u\\n\", calculate_pwm_ccr(arr, 100));\n    return 0;\n}",
+    "explanation": "1. A timer with Auto-Reload ARR = 3999 has 4000 total clock states (from 0 to 3999).\n2. If you write: (duty_percent / 100) * total_period, integer division computes 75 / 100 = 0! The motor would never spin!\n3. Always multiply first: (4000 * 75) = 300,000, then divide by 100 = 3000 ticks.\n4. Promoting to uint32_t guarantees that intermediate products up to 65,536 * 100 = 6.5M never overflow.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-6",
+    "title": "CRC-8 & Additive Checksum Calculation for Sensor Packets",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "Protocols & Packets",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] When sending telemetry data over noisy industrial cables (RS-485, CAN, Modbus) or wireless links, electrical noise can flip bits. Write two functions to verify packet integrity: (1) Simple Additive Checksum (sum of all bytes modulo 256), and (2) Standard CRC-8 (polynomial 0x07: x^8 + x^2 + x + 1, initial value 0x00).",
+    "inputDesc": "Pointer to byte buffer 'data' and buffer length 'length'.",
+    "outputDesc": "Single 8-bit checksum or CRC-8 value.",
+    "constraints": "1 <= length <= 256 bytes; data bytes are 0x00 to 0xFF.",
+    "exampleInput": "data = {0x01, 0x02, 0x03, 0x04}, length = 4",
+    "exampleOutput": "Additive Checksum = 0x0A (10); CRC-8 = computed polynomial remainder.",
+    "scenario": "Sensor packets, bootloader firmware verification, and safety-critical serial protocols.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n// 1. Simple Additive Checksum (Modulo 256)\nuint8_t calculate_checksum(const uint8_t *data, uint16_t length) {\n    uint8_t sum = 0;\n    for (uint16_t i = 0; i < length; i++) {\n        sum += data[i]; // Natural 8-bit unsigned overflow wraps at 256\n    }\n    return sum;\n}\n\n// 2. Standard CRC-8 (Polynomial: 0x07, x^8 + x^2 + x + 1)\nuint8_t calculate_crc8(const uint8_t *data, uint16_t length) {\n    uint8_t crc = 0x00; // Initial value\n    const uint8_t polynomial = 0x07;\n    \n    for (uint16_t i = 0; i < length; i++) {\n        crc ^= data[i]; // XOR input byte into CRC\n        for (uint8_t bit = 0; bit < 8; bit++) {\n            if (crc & 0x80) { // If MSB is 1\n                crc = (uint8_t)((crc << 1) ^ polynomial);\n            } else {\n                crc = (uint8_t)(crc << 1);\n            }\n        }\n    }\n    return crc;\n}\n\nint main(void) {\n    uint8_t packet[] = {0xAA, 0x01, 0x14, 0x28}; // Header, ID, Data1, Data2\n    uint8_t sum = calculate_checksum(packet, 4);\n    uint8_t crc = calculate_crc8(packet, 4);\n    \n    printf(\"Packet: [0xAA, 0x01, 0x14, 0x28]\\n\");\n    printf(\"Additive Checksum: 0x%02X\\n\", sum);\n    printf(\"CRC-8 Remainder:  0x%02X\\n\", crc);\n    return 0;\n}",
+    "explanation": "1. Additive Checksum: Adds all bytes together. In uint8_t, addition naturally overflows modulo 256. Fast, but misses swapped bytes (e.g. [1, 2] has same sum as [2, 1]).\n2. CRC-8: Treats the data as coefficients of a large polynomial and computes the remainder of division by a generator polynomial (0x07) using bitwise shifts and XOR.\n3. CRC catches 100% of single-bit errors, two-bit errors, and burst errors up to 8 bits long!\n\nTime Complexity: O(N) where N is number of bytes\nSpace Complexity: O(1)",
+    "timeComplexity": "O(N)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-7",
+    "title": "Finite State Machine (FSM) for Industrial Traffic Signal Controller",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "System Architecture",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Design a robust Finite State Machine for an intersection traffic signal with three states: RED (stays 30 ticks) -> GREEN (stays 25 ticks) -> YELLOW (stays 5 ticks) -> RED. Write a state machine tick function that advances timers, executes transitions, sets the hardware GPIO lamp mask (RED=bit 0, YELLOW=bit 1, GREEN=bit 2), and includes a fault-recovery default case.",
+    "inputDesc": "Clock tick events (called once per second).",
+    "outputDesc": "Updated 8-bit GPIO lamp bitmask: 0x01 (Red), 0x04 (Green), 0x02 (Yellow).",
+    "constraints": "No blocking delay functions; must execute in O(1) time per tick.",
+    "exampleInput": "Ticks 0 to 30: Red; Ticks 31 to 55: Green; Ticks 56 to 60: Yellow",
+    "exampleOutput": "Lamp bitmask updates synchronously with state transitions.",
+    "scenario": "Automotive electronic control units (ECUs), traffic controllers, and industrial robotics.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\ntypedef enum {\n    LIGHT_RED,\n    LIGHT_GREEN,\n    LIGHT_YELLOW\n} TrafficState;\n\n// GPIO Lamp Bitmask Definitions\n#define LAMP_RED    (1U << 0) // Bit 0 (0x01)\n#define LAMP_YELLOW (1U << 1) // Bit 1 (0x02)\n#define LAMP_GREEN  (1U << 2) // Bit 2 (0x04)\n\ntypedef struct {\n    TrafficState current_state;\n    uint16_t state_timer;\n    uint8_t lamp_output;\n} TrafficFSM;\n\nvoid traffic_fsm_init(TrafficFSM *fsm) {\n    fsm->current_state = LIGHT_RED;\n    fsm->state_timer = 30;\n    fsm->lamp_output = LAMP_RED;\n}\n\nvoid traffic_fsm_tick(TrafficFSM *fsm) {\n    if (fsm->state_timer > 0) {\n        fsm->state_timer--;\n    }\n    \n    // When timer expires, transition to next state\n    if (fsm->state_timer == 0) {\n        switch (fsm->current_state) {\n            case LIGHT_RED:\n                fsm->current_state = LIGHT_GREEN;\n                fsm->state_timer = 25;\n                fsm->lamp_output = LAMP_GREEN;\n                break;\n            case LIGHT_GREEN:\n                fsm->current_state = LIGHT_YELLOW;\n                fsm->state_timer = 5;\n                fsm->lamp_output = LAMP_YELLOW;\n                break;\n            case LIGHT_YELLOW:\n                fsm->current_state = LIGHT_RED;\n                fsm->state_timer = 30;\n                fsm->lamp_output = LAMP_RED;\n                break;\n            default:\n                // Fault recovery: reset to safe RED state if memory corrupted\n                traffic_fsm_init(fsm);\n                break;\n        }\n    }\n}\n\nint main(void) {\n    TrafficFSM fsm;\n    traffic_fsm_init(&fsm);\n    printf(\"Starting Traffic Light FSM:\\n\");\n    for (int sec = 1; sec <= 65; sec++) {\n        traffic_fsm_tick(&fsm);\n        if (sec == 1 || sec == 31 || sec == 56 || sec == 61) {\n            printf(\"Sec %2d: State = %d, Lamp Mask = 0x%02X\\n\", sec, fsm.current_state, fsm.lamp_output);\n        }\n    }\n    return 0;\n}",
+    "explanation": "1. The FSM is defined using an 'enum' representing valid operational states.\n2. Non-blocking timing: The state machine executes in O(1) time on each tick by decrementing a timer counter, never locking the CPU with delay().\n3. Upon timer expiration, a switch-case block dispatches transitions and updates the hardware lamp mask.\n4. Safety Default Case: In high-noise environments, electromagnetic interference (EMI) can corrupt register bits. The 'default' case catches undefined states and resets the controller to safe RED immediately.\n\nTime Complexity: O(1) per tick\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-8",
+    "title": "Fixed-Point Arithmetic Multiplication (Q16.16 Format)",
+    "lang": "embedded-c",
+    "difficulty": "Medium",
+    "category": "Math & DSP",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] Low-cost microcontrollers (like ARM Cortex-M0+, PIC, AVR) do not have a hardware Floating Point Unit (FPU). Software float operations take hundreds of CPU cycles and bloat Flash memory. Implement Q16.16 fixed-point multiplication (16 bits for integer part, 16 bits for fractional part) that performs decimal multiplication using pure 32-bit/64-bit integer instructions.",
+    "inputDesc": "Two Q16.16 fixed-point signed integers 'a' and 'b'.",
+    "outputDesc": "Result of a * b in Q16.16 format.",
+    "constraints": "Inputs fit in signed 32-bit int32_t; intermediate product handled in int64_t.",
+    "exampleInput": "a = 2.5 (163840 in Q16.16), b = 4.0 (262144 in Q16.16)",
+    "exampleOutput": "Result = 10.0 (655360 in Q16.16)",
+    "scenario": "Digital filters (IIR/FIR), PID motor controllers, and audio DSP on low-cost microcontrollers.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n#define Q16_SHIFT 16\n#define FLOAT_TO_Q16(f) ((int32_t)((f) * (1 << Q16_SHIFT)))\n#define Q16_TO_FLOAT(q) ((float)(q) / (1 << Q16_SHIFT))\n\n// Multiply two Q16.16 numbers: (a * b) >> 16\nint32_t q16_multiply(int32_t a, int32_t b) {\n    // 1. Promote to 64-bit integer to prevent overflow during multiplication\n    int64_t product = (int64_t)a * (int64_t)b;\n    \n    // 2. Shift right by 16 to re-align fractional point\n    return (int32_t)(product >> Q16_SHIFT);\n}\n\nint main(void) {\n    // Represent 3.5 and 2.0 in Q16.16 format\n    int32_t num1 = FLOAT_TO_Q16(3.5f); // 3.5 * 65536 = 229376\n    int32_t num2 = FLOAT_TO_Q16(2.25f); // 2.25 * 65536 = 147456\n    \n    int32_t result = q16_multiply(num1, num2);\n    \n    printf(\"3.5 * 2.25 = %f (Expected: 7.875)\\n\", Q16_TO_FLOAT(result));\n    printf(\"Raw Q16.16 integer: %d\\n\", result);\n    return 0;\n}",
+    "explanation": "1. In Q16.16 fixed-point, the number is conceptually scaled by 2^16 (65,536). The upper 16 bits hold the whole integer; the lower 16 bits hold the fraction.\n2. When multiplying: (A * 2^16) * (B * 2^16) = (A * B) * 2^32. The result has 32 fractional bits instead of 16!\n3. Shifting right by 16 (>> 16) discards the extra scale factor, returning the result to Q16.16 format.\n4. Casting to int64_t before multiplying prevents 32-bit overflow.\n\nTime Complexity: O(1) (single CPU multiplication + shift)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-9",
+    "title": "Non-Blocking Software Timer (Millis Counter Scheduling)",
+    "lang": "embedded-c",
+    "difficulty": "Easy",
+    "category": "Timers & Scheduling",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] In embedded systems, delay functions like delay_ms(1000) freeze the CPU, preventing sensor monitoring or button presses. Implement a non-blocking timer function 'is_timer_expired(uint32_t *last_time, uint32_t interval_ms, uint32_t current_ms)' that returns true when the duration has elapsed and advances *last_time, correctly handling 32-bit unsigned overflow wrapping (which occurs every ~49.7 days).",
+    "inputDesc": "Pointers to last trigger timestamp 'last_time', duration 'interval_ms', and current timestamp 'current_ms'.",
+    "outputDesc": "Returns true (1) if interval elapsed; false (0) otherwise.",
+    "constraints": "Timestamps are 32-bit unsigned integers; calculation must be overflow-safe.",
+    "exampleInput": "last_time = 1000, interval = 500, current = 1550",
+    "exampleOutput": "Returns true, updates last_time to 1500.",
+    "scenario": "Periodic sensor sampling, LED blinking, and telemetry heartbeats without an RTOS.",
+    "code": "#include <stdint.h>\n#include <stdbool.h>\n#include <stdio.h>\n\n// Non-blocking timer check with automatic overflow protection\nbool is_timer_expired(uint32_t *last_time, uint32_t interval_ms, uint32_t current_ms) {\n    // Unsigned subtraction automatically handles 32-bit overflow!\n    if ((current_ms - *last_time) >= interval_ms) {\n        *last_time += interval_ms; // Advance time window\n        return true;\n    }\n    return false;\n}\n\nint main(void) {\n    uint32_t blink_timer = 0;\n    uint32_t sensor_timer = 0;\n    \n    // Simulate time running from 0 to 2500 ms\n    for (uint32_t current_ms = 0; current_ms <= 2500; current_ms += 250) {\n        // Blink LED every 500 ms\n        if (is_timer_expired(&blink_timer, 500, current_ms)) {\n            printf(\"[%4u ms] LED Toggled!\\n\", current_ms);\n        }\n        // Read Sensor every 1000 ms\n        if (is_timer_expired(&sensor_timer, 1000, current_ms)) {\n            printf(\"[%4u ms] >> SENSOR READ!\\n\", current_ms);\n        }\n    }\n    return 0;\n}",
+    "explanation": "1. Non-blocking timers enable cooperative multi-tasking inside a while(1) loop without requiring an RTOS.\n2. The subtraction (current_ms - last_time) relies on two's complement unsigned integer arithmetic.\n3. Even when current_ms overflows from 0xFFFFFFFF back to 0, (0 - 0xFFFFFFFE) wraps around to positive 2, so the condition remains 100% correct across rollover!\n4. Incrementing *last_time += interval_ms prevents time drift.\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  },
+  {
+    "id": "prob-ec-10",
+    "title": "Atomic Read of 16-Bit Register Shared with Interrupt Service Routine",
+    "lang": "embedded-c",
+    "difficulty": "Hard",
+    "category": "Interrupts & Concurrency",
+    "isPlacement": true,
+    "problemStatement": "[Embedded C] On an 8-bit or 16-bit processor (like AVR, 8051, or PIC), reading a 32-bit or 16-bit variable updated by a high-speed Interrupt Service Routine (ISR) takes multiple CPU instructions. If an interrupt fires halfway between reading byte 0 and byte 1, data corruption occurs (a torn read). Write a function to atomically read a shared 16-bit variable by saving the global interrupt status register, disabling interrupts, copying the data, and restoring the previous interrupt state.",
+    "inputDesc": "Shared 16-bit volatile variable updated asynchronously by an ISR.",
+    "outputDesc": "Guaranteed uncorrupted, consistent 16-bit value.",
+    "constraints": "Interrupt latency must be minimized (critical section kept strictly to 2-3 instructions).",
+    "exampleInput": "ISR updates timer from 0x00FF to 0x0100 while main is reading.",
+    "exampleOutput": "Atomic read returns either exact 0x00FF or 0x0100, never corrupted 0x0000 or 0x01FF.",
+    "scenario": "Pulse encoder position reading, high-speed tachometer counts, and energy meter accumulation.",
+    "code": "#include <stdint.h>\n#include <stdio.h>\n\n// Simulated hardware interrupt enable / disable functions\nstatic volatile uint8_t SIMULATED_CPU_FLAGS = 0x80; // Bit 7: Global Interrupt Enable\nstatic volatile uint16_t isr_shared_encoder_ticks = 0;\n\n// Inline assembly equivalents for AVR / ARM Cortex-M\nstatic inline uint8_t enter_critical_section(void) {\n    uint8_t prev_flags = SIMULATED_CPU_FLAGS;\n    SIMULATED_CPU_FLAGS &= ~0x80; // Disable interrupts (e.g. __disable_irq() or cli())\n    return prev_flags;\n}\n\nstatic inline void exit_critical_section(uint8_t prev_flags) {\n    SIMULATED_CPU_FLAGS = prev_flags; // Restore previous state (e.g. __set_PRIMASK() or sei())\n}\n\n// Safe Atomic Read of 16-bit value\nuint16_t read_encoder_atomic(volatile uint16_t *shared_var) {\n    uint8_t sreg = enter_critical_section(); // 1. Save state & disable interrupts\n    uint16_t safe_val = *shared_var;         // 2. Atomic copy (uninterruptible)\n    exit_critical_section(sreg);             // 3. Restore previous interrupt state\n    return safe_val;\n}\n\nint main(void) {\n    isr_shared_encoder_ticks = 0x01FF;\n    uint16_t count = read_encoder_atomic(&isr_shared_encoder_ticks);\n    printf(\"Safely read encoder count: 0x%04X (%u ticks)\\n\", count, count);\n    return 0;\n}",
+    "explanation": "1. Torn Read Problem: On an 8-bit CPU, reading a 16-bit variable takes 2 separate instructions (LDS r24, low_byte then LDS r25, high_byte). If an interrupt increments 0x00FF to 0x0100 between the two instructions, the CPU reads low_byte=0xFF and high_byte=0x01, yielding false 0x01FF!\n2. The critical section disables interrupts for only 2 CPU cycles while the copy is made.\n3. Saving and restoring the previous status register (sreg) is essential: if the function was called from a place where interrupts were ALREADY disabled, blindly re-enabling them would break the caller's critical section!\n\nTime Complexity: O(1)\nSpace Complexity: O(1)",
+    "timeComplexity": "O(1)",
+    "spaceComplexity": "O(1)"
+  }
 ];
 
 if (typeof window !== 'undefined') {
@@ -23528,4 +23719,219 @@ const PROGRAMMING_MCQ_BANK = [
     "exp": "All Java object instances are allocated on the heap.",
     "d": "P"
   }
+,
+  {
+    "id": "prog-mcq-ec-1",
+    "topic": "Bit Manipulation",
+    "q": "Which bitwise expression correctly clears (forces to 0) bit 5 in an 8-bit register PORTB without changing any other bits?",
+    "opts": [
+      "PORTB |= (1 << 5);",
+      "PORTB &= ~(1 << 5);",
+      "PORTB ^= (1 << 5);",
+      "PORTB = ~(1 << 5);"
+    ],
+    "a": 1,
+    "exp": "Bitwise AND with the inverted bitmask ~(1 << 5) forces bit 5 to 0 while leaving all other bits completely unchanged.",
+    "d": "E"
+  },
+  {
+    "id": "prog-mcq-ec-2",
+    "topic": "Volatile Qualifier",
+    "q": "What is the primary effect of qualifying a variable as 'volatile' in Embedded C?",
+    "opts": [
+      "It prevents the variable from ever being modified at runtime",
+      "It forces the compiler to read/write the variable from physical memory every time, preventing register caching",
+      "It automatically allocates the variable in non-volatile Flash ROM",
+      "It guarantees hardware atomic access without needing to disable interrupts"
+    ],
+    "a": 1,
+    "exp": "volatile instructs the compiler that the variable's value can change outside program flow (e.g. by hardware or an ISR), forbidding the compiler from caching it in CPU registers.",
+    "d": "E"
+  },
+  {
+    "id": "prog-mcq-ec-3",
+    "topic": "Memory-Mapped I/O",
+    "q": "In an ARM Cortex-M microcontroller, how are peripheral hardware registers accessed in Embedded C?",
+    "opts": [
+      "By calling the special OS function 'inportb()' and 'outportb()'",
+      "By casting physical 32-bit memory addresses into volatile pointers and dereferencing them",
+      "By sending SQL database queries to the memory bus",
+      "By using the 'extern register' keyword"
+    ],
+    "a": 1,
+    "exp": "In Memory-Mapped I/O architectures, peripheral registers occupy memory addresses accessed via volatile pointer dereferencing: *(volatile uint32_t *)ADDR.",
+    "d": "M"
+  },
+  {
+    "id": "prog-mcq-ec-4",
+    "topic": "Exact-Width Integers",
+    "q": "Why is 'stdint.h' strictly preferred over standard types like 'int' and 'long' in embedded systems?",
+    "opts": [
+      "Because stdint.h makes the code execute 10 times faster",
+      "Because standard 'int' size changes across 8-bit, 16-bit, and 32-bit microcontroller compilers",
+      "Because standard 'int' cannot be stored in Flash memory",
+      "Because stdint.h automatically manages memory allocation"
+    ],
+    "a": 1,
+    "exp": "On an 8-bit MCU 'int' is 16 bits, whereas on a 32-bit MCU 'int' is 32 bits. Using uint8_t and uint32_t guarantees exact bit-widths across all hardware platforms.",
+    "d": "E"
+  },
+  {
+    "id": "prog-mcq-ec-5",
+    "topic": "Interrupt Service Routines",
+    "q": "Which of the following actions is strictly FORBIDDEN inside an Interrupt Service Routine (ISR)?",
+    "opts": [
+      "Setting a volatile flag variable",
+      "Calling a long blocking delay function like delay_ms(100)",
+      "Reading a hardware status register",
+      "Clearing the interrupt pending flag"
+    ],
+    "a": 1,
+    "exp": "An ISR must execute as quickly as possible. Calling delay() freezes the entire system, misses subsequent interrupts, and ruins real-time responsiveness.",
+    "d": "E"
+  },
+  {
+    "id": "prog-mcq-ec-6",
+    "topic": "I2C Communication",
+    "q": "Why are pull-up resistors strictly required on both SDA and SCL lines of an I2C bus?",
+    "opts": [
+      "To limit excessive current from the power supply",
+      "Because I2C pins use open-drain outputs that can pull the lines LOW to 0V but cannot actively drive them HIGH",
+      "To step down 5V signals to 3.3V",
+      "To absorb high-frequency electromagnetic radio signals"
+    ],
+    "a": 1,
+    "exp": "I2C devices use open-drain output transistors. They can pull the lines to GND (LOW), but depend on external pull-up resistors to restore lines to VCC (HIGH) when released.",
+    "d": "M"
+  },
+  {
+    "id": "prog-mcq-ec-7",
+    "topic": "Watchdog Timer",
+    "q": "Where should the Watchdog Timer reload/refresh function be placed in well-architected firmware?",
+    "opts": [
+      "Inside a periodic high-frequency timer Interrupt Service Routine (ISR)",
+      "Inside the main event super-loop after all critical tasks complete",
+      "At the very beginning of the Reset_Handler assembly file",
+      "Inside an infinite empty while loop"
+    ],
+    "a": 1,
+    "exp": "The watchdog proves the main program is executing properly. If placed in an ISR, the timer ISR will keep resetting the watchdog even if main() deadlocks or crashes!",
+    "d": "M"
+  },
+  {
+    "id": "prog-mcq-ec-8",
+    "topic": "ADC Sampling",
+    "q": "If a 10-bit ADC has an analog reference voltage (Vref) of 5.0V, what is the analog voltage corresponding to a raw reading of 512?",
+    "opts": [
+      "1.25 V",
+      "2.50 V",
+      "3.30 V",
+      "5.00 V"
+    ],
+    "a": 1,
+    "exp": "A 10-bit ADC has 1024 discrete levels (0 to 1023). A reading of 512 is exactly half of full scale: (512 / 1023) * 5.0V = 2.50V.",
+    "d": "E"
+  },
+  {
+    "id": "prog-mcq-ec-9",
+    "topic": "PWM Duty Cycle",
+    "q": "A microcontroller generates a 1 kHz PWM signal with a 25% duty cycle from a 3.3V supply. What is the average DC voltage?",
+    "opts": [
+      "0.825 V",
+      "1.65 V",
+      "2.475 V",
+      "3.3 V"
+    ],
+    "a": 0,
+    "exp": "Average DC voltage = Supply Voltage * Duty Cycle = 3.3V * 0.25 = 0.825 V.",
+    "d": "E"
+  },
+  {
+    "id": "prog-mcq-ec-10",
+    "topic": "Memory Sections",
+    "q": "Which memory section in a microcontroller stores uninitialized global and static variables?",
+    "opts": [
+      ".text",
+      ".rodata",
+      ".data",
+      ".bss"
+    ],
+    "a": 3,
+    "exp": "The .bss section holds uninitialized global and static variables. It occupies zero space in permanent Flash; startup code writes zeros to its SRAM addresses at boot.",
+    "d": "M"
+  },
+  {
+    "id": "prog-mcq-ec-11",
+    "topic": "Direct Memory Access",
+    "q": "What is the primary benefit of using Direct Memory Access (DMA) for serial or ADC data transfers?",
+    "opts": [
+      "It eliminates the need for RAM memory",
+      "It transfers blocks of data between memory and peripherals without burning CPU instruction cycles",
+      "It automatically encrypts communication packets",
+      "It increases the CPU clock frequency"
+    ],
+    "a": 1,
+    "exp": "DMA moves data directly across internal chip buses in hardware, freeing the CPU to execute real-time control algorithms concurrently.",
+    "d": "M"
+  },
+  {
+    "id": "prog-mcq-ec-12",
+    "topic": "FreeRTOS Scheduling",
+    "q": "In FreeRTOS, what mechanism prevents Priority Inversion when multiple tasks share a common peripheral?",
+    "opts": [
+      "Round-Robin scheduling",
+      "Priority Inheritance implemented in Mutexes",
+      "Disabling the hardware crystal oscillator",
+      "Recursive binary counting"
+    ],
+    "a": 1,
+    "exp": "FreeRTOS Mutexes implement Priority Inheritance: the priority of the task holding the mutex is temporarily boosted to match the highest-priority waiting task, preventing intermediate tasks from preempting it.",
+    "d": "H"
+  },
+  {
+    "id": "prog-mcq-ec-13",
+    "topic": "Button Debouncing",
+    "q": "Why is mechanical switch debouncing necessary in microcontroller systems?",
+    "opts": [
+      "To prevent high voltage sparks from damaging the chip",
+      "Because mechanical metal contacts physically bounce for 5 to 20 ms, generating multiple false digital transitions",
+      "To convert AC current into DC current",
+      "To increase the button's physical pressing resistance"
+    ],
+    "a": 1,
+    "exp": "When a mechanical contact closes, metal springs bounce microscopically for 5-20 ms. Without debouncing, a single press can register as dozens of distinct presses.",
+    "d": "E"
+  },
+  {
+    "id": "prog-mcq-ec-14",
+    "topic": "SPI Clock Modes",
+    "q": "In the SPI protocol, what does Clock Polarity CPOL = 1 specify?",
+    "opts": [
+      "The Serial Clock (SCK) rests at a HIGH voltage level when the bus is idle",
+      "The Serial Clock (SCK) rests at a LOW voltage level when the bus is idle",
+      "Data is sampled on the falling edge of the clock only",
+      "The master transmits at double frequency"
+    ],
+    "a": 0,
+    "exp": "CPOL = 0 means clock is LOW when idle. CPOL = 1 means clock is HIGH when idle.",
+    "d": "M"
+  },
+  {
+    "id": "prog-mcq-ec-15",
+    "topic": "Circular Buffer Wrap",
+    "q": "When a circular ring buffer's capacity is a power of 2 (e.g. 64), which expression performs the fastest index wrap-around?",
+    "opts": [
+      "next_idx = (idx + 1) % 64;",
+      "next_idx = (idx + 1) & 63;",
+      "next_idx = (idx + 1) * 64;",
+      "next_idx = (idx + 1) / 64;"
+    ],
+    "a": 1,
+    "exp": "Bitwise AND with (SIZE - 1) takes a single CPU cycle, whereas modulo division (%) requires a slow software division routine taking dozens of cycles on small microcontrollers.",
+    "d": "E"
+  }
 ];
+
+if (typeof window !== 'undefined') {
+  window.PROGRAMMING_MCQ_BANK = PROGRAMMING_MCQ_BANK;
+}
