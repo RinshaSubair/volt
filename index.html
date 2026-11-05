@@ -7895,12 +7895,12 @@ V_{\\text{pwm, avg}} = D \\cdot V_{DD} = \\frac{t_{\\text{on}}}{T_{\\text{period
 <p>Have you ever wondered why India, UK, and Europe operate their power grids at 50 Hz, while the USA and Japan operate at 60 Hz — Why didn't engineers choose 10 Hz or 1,000 Hz — Understanding frequency selection reveals the classic engineering trade-offs between transformer core sizes, human eye flicker, transmission line reactances, and generator rotational speeds.</p>
 
 <h3>2. Simple Explanation</h3>
-<p>Why not 10 Hz — At 10 Hz, incandescent electric bulbs would flicker visibly to the human eye like a disco strobe light, giving everyone severe headaches! Also, transformers at 10 Hz would have to be 5 times bigger and heavier. Why not 1,000 Hz — At 1,000 Hz, power transmission lines would suffer massive inductive reactance voltage drops ($X_L = 2\pi f L$) and loud corona buzz, making long-distance power transmission impossible. <strong>50 Hz / 60 Hz is the 'Goldilocks' sweet spot: not too fast, not too slow, just right!</strong></p>
+<p>Why not 10 Hz — At 10 Hz, incandescent electric bulbs would flicker visibly to the human eye like a disco strobe light, giving everyone severe headaches! Also, transformers at 10 Hz would have to be 5 times bigger and heavier. Why not 1,000 Hz — At 1,000 Hz, power transmission lines would suffer massive inductive reactance voltage drops ($X_L = 2\\pi f L$) and loud corona buzz, making long-distance power transmission impossible. <strong>50 Hz / 60 Hz is the 'Goldilocks' sweet spot: not too fast, not too slow, just right!</strong></p>
 
 <h3>3. Core Engineering Trade-offs</h3>
 <ul>
-  <li><strong>Transformer Core Size ($A_{\text{core}} \propto 1/f$):</strong> Higher frequency means transformers require smaller iron cores to transfer the same power. That is why aircraft and spacecraft use <strong>400 Hz</strong> electrical systems—to make onboard transformers and motors ultra-light!</li>
-  <li><strong>Transmission Line Reactance ($X_L = 2\pi f L$):</strong> Inductive reactance rises linearly with frequency. At 50 Hz, line reactance is manageable; at 500 Hz, voltage drops across 100 km lines would be so huge that no power would reach the other end.</li>
+  <li><strong>Transformer Core Size ($A_{\\text{core}} \\propto 1/f$):</strong> Higher frequency means transformers require smaller iron cores to transfer the same power. That is why aircraft and spacecraft use <strong>400 Hz</strong> electrical systems—to make onboard transformers and motors ultra-light!</li>
+  <li><strong>Transmission Line Reactance ($X_L = 2\\pi f L$):</strong> Inductive reactance rises linearly with frequency. At 50 Hz, line reactance is manageable; at 500 Hz, voltage drops across 100 km lines would be so huge that no power would reach the other end.</li>
   <li><strong>Human Eye Flicker Fusion:</strong> The human retina perceives light flicker up to roughly 45-50 Hz. At 50 Hz AC, light intensity pulsates at 100 Hz (twice per cycle), which is completely invisible and appears as solid, steady light to the human eye.</li>
 </ul>
 
@@ -7914,22 +7914,22 @@ V_{\\text{pwm, avg}} = D \\cdot V_{DD} = \\frac{t_{\\text{on}}}{T_{\\text{period
 <p>Almost all electrical power in the world—from giant 1,000 MW hydroelectric and nuclear generators to transmission towers and factory motors—is generated and transmitted using <strong>Three-Phase AC</strong>. Understanding why 3-phase won the historical battle over single-phase is one of the most fundamental questions asked in core electrical interviews.</p>
 
 <h3>2. Simple Explanation</h3>
-<p>Why 3 phases instead of 1 phase or 6 phases — Think of an automobile engine: A single-phase system is like a single-cylinder motorcycle engine—it delivers power in jerks, pulsating down to zero twice every cycle. Three-phase power is like a smooth 6-cylinder luxury car engine: three power pulses overlap smoothly at $120^\circ$ angles, delivering completely <strong>constant, smooth total power</strong> every microsecond without any vibration! Plus, 3-phase uses significantly less copper wire to transmit the exact same amount of power!</p>
+<p>Why 3 phases instead of 1 phase or 6 phases — Think of an automobile engine: A single-phase system is like a single-cylinder motorcycle engine—it delivers power in jerks, pulsating down to zero twice every cycle. Three-phase power is like a smooth 6-cylinder luxury car engine: three power pulses overlap smoothly at $120^\\circ$ angles, delivering completely <strong>constant, smooth total power</strong> every microsecond without any vibration! Plus, 3-phase uses significantly less copper wire to transmit the exact same amount of power!</p>
 
 <h3>3. Core Engineering Advantages of Three-Phase</h3>
 <ol>
-  <li><strong>Constant Instantaneous Power:</strong> In single-phase AC, power oscillates between peak and zero at 100 Hz, causing audible hum and mechanical vibration in heavy motors. In a balanced 3-phase system, the sum of instantaneous powers across all three phases is completely constant: $P_{\text{total}}(t) = 3 V_{\text{ph}} I_{\text{ph}} \cos\phi$!</li>
-  <li><strong>Copper Wire Savings (The 173% Rule):</strong> A 3-phase system delivers 173% ($\sqrt{3}$) more power than single-phase using only 150% conductor material, saving tons of expensive copper and aluminum across thousands of kilometers of grid lines!</li>
+  <li><strong>Constant Instantaneous Power:</strong> In single-phase AC, power oscillates between peak and zero at 100 Hz, causing audible hum and mechanical vibration in heavy motors. In a balanced 3-phase system, the sum of instantaneous powers across all three phases is completely constant: $P_{\\text{total}}(t) = 3 V_{\\text{ph}} I_{\\text{ph}} \\cos\\phi$!</li>
+  <li><strong>Copper Wire Savings (The 173% Rule):</strong> A 3-phase system delivers 173% ($\\sqrt{3}$) more power than single-phase using only 150% conductor material, saving tons of expensive copper and aluminum across thousands of kilometers of grid lines!</li>
   <li><strong>Self-Starting Motors:</strong> Three-phase currents flowing through stator windings naturally create a smooth <strong>Rotating Magnetic Field (RMF)</strong> spinning at synchronous speed ($N_s = 120f/P$). This means 3-phase induction motors start spinning automatically on their own without needing special starter capacitors or auxiliary windings!</li>
 </ol>
 
 <h3>4. Governing Formulas</h3>
 <p><strong>Star (Y) Connection:</strong></p>
-\[ V_L = \sqrt{3} V_{\text{ph}} \quad \text{and} \quad I_L = I_{\text{ph}} \]
-<p><strong>Delta ($\Delta$) Connection:</strong></p>
-\[ V_L = V_{\text{ph}} \quad \text{and} \quad I_L = \sqrt{3} I_{\text{ph}} \]
+\\[ V_L = \\sqrt{3} V_{\\text{ph}} \\quad \\text{and} \\quad I_L = I_{\\text{ph}} \\]
+<p><strong>Delta ($\\Delta$) Connection:</strong></p>
+\\[ V_L = V_{\\text{ph}} \\quad \\text{and} \\quad I_L = \\sqrt{3} I_{\\text{ph}} \\]
 <p><strong>Total Three-Phase Power (Identical for both Star and Delta!):</strong></p>
-\[ P_{\text{total}} = \sqrt{3} \, V_L \, I_L \, \cos\phi \]
+\\[ P_{\\text{total}} = \\sqrt{3} \, V_L \, I_L \, \\cos\\phi \\]
 
 <h3>5. Practical Application</h3>
 <p><strong>Distribution Transformers on Street Poles (Delta-Star):</strong> The primary winding facing the 11 kV grid is connected in <strong>Delta</strong> (only 3 wires needed, no neutral). The secondary winding facing our houses is connected in <strong>Star</strong>, creating a 4th wire: the <strong>Neutral point</strong>. Between any two phase wires, you get 415 V 3-phase for water pumps and factories; between any one phase and Neutral, you get 230 V single-phase for your home lights and fans!</p>
@@ -9379,7 +9379,7 @@ Q_{\\text{ac}} = \\frac{V_{\\text{conv}} \\cdot V_{\\text{ac}}}{X} \\cos\\delta 
 "z-green-hydrogen": {
   title: "Electrolyzer Power Supplies & Green Hydrogen Integration", area: "EEE From Zero · Category AI: Current Trends",
   body: `<h3>1. Why This Matters</h3>
-<p>Green Hydrogen production via water electrolysis ($\\text{H}_2\\text{O}  \rightarrow  \\text{H}_2 + \\frac{1}{2}\\text{O}_2$) requires ultra-high-current, low-voltage DC power supplies (Buck, Thyristor, or Active Front End rectifiers). Matching renewable solar/wind power to electrolyzer dynamics is key for energy transition.</p>
+<p>Green Hydrogen production via water electrolysis ($\\text{H}_2\\text{O}  \\rightarrow  \\text{H}_2 + \\frac{1}{2}\\text{O}_2$) requires ultra-high-current, low-voltage DC power supplies (Buck, Thyristor, or Active Front End rectifiers). Matching renewable solar/wind power to electrolyzer dynamics is key for energy transition.</p>
 
 <h3>2. Simple Explanation</h3>
 <p>Green hydrogen is zero-emission fuel produced by splitting water using renewable electricity. Electrolyzers act as massive DC electrical loads—requiring hundreds of thousands of amperes of low-voltage DC current (e.g., 50,000A at 200V DC) provided by specialized industrial rectifiers.</p>
@@ -15320,7 +15320,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
         <li><b>Busbar:</b> A thick horizontal or vertical solid bar indicating a common zero-impedance electrical node where incoming sources and outgoing feeders meet.</li>
         <li><b>Circuit Breaker (CB):</b> A square box with a cross ($\\boxtimes$) or solid square. It is the only switching device capable of safely making, carrying, and <i>interrupting full short-circuit fault current</i> (e.g. 25 kA or 40 kA) automatically under protective relay commands.</li>
         <li><b>Isolator / Disconnecting Switch:</b> A simple open/close blade switch symbol ($\\circ-\\circ$). An isolator is strictly an <i>off-load mechanical switch</i>. It provides visible physical galvanic air clearance for maintenance personnel after the circuit breaker has already opened the circuit. It must never be opened while carrying load current, or an explosive arc will form.</li>
-        <li><b>Earth Switch (ES):</b> A single blade switch connected to the ground symbol ($\mathrel{{\\bot}}$). Interlocked with the isolator to discharge residual capacitive trapped charges on disconnected lines before maintenance begins.</li>
+        <li><b>Earth Switch (ES):</b> A single blade switch connected to the ground symbol ($\\mathrel{{\\bot}}$). Interlocked with the isolator to discharge residual capacitive trapped charges on disconnected lines before maintenance begins.</li>
         <li><b>Two-Winding Power Transformer:</b> Two intersecting circles ($\\bigcirc\\!\\bigcirc$) or two adjacent coils, labeled with voltage ratings (e.g., $11\\text{ kV} / 415\\text{ V}$) and vector group (e.g., Dyn11).</li>
         <li><b>Current Transformer (CT):</b> A small circle enclosing the line conductor, stepping down high primary currents (e.g. 400 A) to standardized 1 A or 5 A secondary signals for protective relays and ammeters.</li>
         <li><b>Potential / Voltage Transformer (PT / VT):</b> Two small coils connected between phase and ground, stepping down high primary voltages (e.g. 11,000 V) to standardized 110 V secondary signals for relays and voltmeters.</li>
@@ -16045,18 +16045,18 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 <p>In electrical engineering, charge has two fundamental rules you must remember:</p>
 <ul>
   <li><strong>Conservation of Charge:</strong> Charge can neither be created nor destroyed; it can only move from one place to another. This is the exact physical law behind <em>Kirchhoff's Current Law (KCL)</em>! The sum of charges entering a junction must equal the sum leaving it.</li>
-  <li><strong>Quantization of Charge:</strong> Every charge in the universe is an integer multiple of the elementary electron charge: $q = n \times e$, where $e = 1.602 \times 10^{-19}\text{ Coulombs}$. One Coulomb is a massive amount of charge—it takes roughly $6.24 \times 10^{18}$ electrons to make just 1 Coulomb!</li>
+  <li><strong>Quantization of Charge:</strong> Every charge in the universe is an integer multiple of the elementary electron charge: $q = n \\times e$, where $e = 1.602 \\times 10^{-19}\\text{ Coulombs}$. One Coulomb is a massive amount of charge—it takes roughly $6.24 \\times 10^{18}$ electrons to make just 1 Coulomb!</li>
 </ul>
 
 <h3>4. Governing Formulas & Coulomb's Law</h3>
 <p>The electrostatic force between two stationary charges is given by Coulomb's Law:</p>
-\[ F = \frac{1}{4 \pi \varepsilon_0} \frac{|q_1 q_2|}{r^2} \]
+\\[ F = \\frac{1}{4 \\pi \\varepsilon_0} \\frac{|q_1 q_2|}{r^2} \\]
 <p><strong>Plain English Explanation:</strong></p>
 <ul>
   <li>$F$: Electrostatic force in Newtons (N). Push if charges have the same sign; pull if opposite signs.</li>
   <li>$q_1, q_2$: Magnitudes of the two charges in Coulombs (C).</li>
   <li>$r$: Distance between the charges in meters (m). If you double the distance, the force drops to one-fourth ($1/r^2$).</li>
-  <li>$\varepsilon_0$: Permittivity of free space ($8.854 \times 10^{-12}\text{ F/m}$).</li>
+  <li>$\\varepsilon_0$: Permittivity of free space ($8.854 \\times 10^{-12}\\text{ F/m}$).</li>
 </ul>
 
 <h3>5. Practical & Everyday Application</h3>
@@ -16064,7 +16064,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 
 <h3>6. Common Viva Questions & Traps</h3>
 <p><strong>Q: What is the difference between charge and current?</strong><br>
-<strong>A:</strong> Charge ($Q$, measured in Coulombs) is the <em>quantity</em> of electricity sitting on an object or battery. Current ($I$, measured in Amperes) is the <em>rate of flow</em> of that charge through a wire: $I = \frac{dQ}{dt}$. One Ampere means 1 Coulomb of charge flowing past every second.</p>`,
+<strong>A:</strong> Charge ($Q$, measured in Coulombs) is the <em>quantity</em> of electricity sitting on an object or battery. Current ($I$, measured in Amperes) is the <em>rate of flow</em> of that charge through a wire: $I = \\frac{dQ}{dt}$. One Ampere means 1 Coulomb of charge flowing past every second.</p>`,
     mcqIds: ["f-charge-1"]
   },
 "voltage": {
@@ -16084,10 +16084,10 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 </ul>
 
 <h3>4. Governing Formulas</h3>
-\[ V = \frac{W}{Q} \quad \text{and} \quad V = I \times R \]
+\\[ V = \\frac{W}{Q} \\quad \\text{and} \\quad V = I \\times R \\]
 <p><strong>Plain English Explanation:</strong></p>
 <ul>
-  <li>$V$: Voltage measured in Volts (V). One Volt means 1 Joule of energy is given to or taken from 1 Coulomb of charge ($1\text{ V} = 1\text{ J/C}$).</li>
+  <li>$V$: Voltage measured in Volts (V). One Volt means 1 Joule of energy is given to or taken from 1 Coulomb of charge ($1\\text{ V} = 1\\text{ J/C}$).</li>
   <li>$W$: Work done or electrical energy in Joules (J).</li>
   <li>$Q$: Electric charge in Coulombs (C).</li>
 </ul>
@@ -16123,14 +16123,14 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 </ul>
 
 <h3>4. Governing Formulas & Drift Velocity</h3>
-\[ I = \frac{dQ}{dt} \quad \text{and} \quad I = n \cdot A \cdot v_d \cdot q \]
+\\[ I = \\frac{dQ}{dt} \\quad \\text{and} \\quad I = n \\cdot A \\cdot v_d \\cdot q \\]
 <p><strong>Plain English Explanation:</strong></p>
 <ul>
-  <li>$I$: Current in Amperes (A). $1\text{ A} = 1\text{ Coulomb per second}$.</li>
-  <li>$n$: Free electron density (number of free electrons per cubic meter, roughly $8.5 \times 10^{28}\text{ m}^{-3}$ in copper).</li>
-  <li>$A$: Cross-sectional area of the wire in $\text{m}^2$.</li>
-  <li>$v_d$: Drift velocity of electrons (typically only $0.1 \text{ to } 1\text{ mm/s}$!).</li>
-  <li>$q$: Elementary electron charge ($1.602 \times 10^{-19}\text{ C}$).</li>
+  <li>$I$: Current in Amperes (A). $1\\text{ A} = 1\\text{ Coulomb per second}$.</li>
+  <li>$n$: Free electron density (number of free electrons per cubic meter, roughly $8.5 \\times 10^{28}\\text{ m}^{-3}$ in copper).</li>
+  <li>$A$: Cross-sectional area of the wire in $\\text{m}^2$.</li>
+  <li>$v_d$: Drift velocity of electrons (typically only $0.1 \\text{ to } 1\\text{ mm/s}$!).</li>
+  <li>$q$: Elementary electron charge ($1.602 \\times 10^{-19}\\text{ C}$).</li>
 </ul>
 
 <h3>5. Practical & Industry Application</h3>
@@ -16138,7 +16138,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 
 <h3>6. Common Viva Questions & Traps</h3>
 <p><strong>Q: What really kills a human during an electric shock: Voltage or Current?</strong><br>
-<strong>A:</strong> Current kills! It only takes 50 to 100 milliamperes ($0.05 - 0.1\text{ A}$) of AC current passing through the heart to cause ventricular fibrillation (fatal heart stoppage). However, high voltage is the 'pressure' required to push that lethal current through the natural electrical resistance of human skin!</p>`,
+<strong>A:</strong> Current kills! It only takes 50 to 100 milliamperes ($0.05 - 0.1\\text{ A}$) of AC current passing through the heart to cause ventricular fibrillation (fatal heart stoppage). However, high voltage is the 'pressure' required to push that lethal current through the natural electrical resistance of human skin!</p>`,
     mcqIds: ["f-current-1"]
   },
 "resistance": {
@@ -16386,7 +16386,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 "ohms-law": {
     title: "Ohm's Law & Limitations", area: "EEE From Zero",
     body: `<h3>1. Why This Matters</h3>
-<p>Ohm's Law ($V = I \times R$) is the single most famous, foundational formula in all of electrical and electronics engineering. It links Voltage, Current, and Resistance into a clean, intuitive relationship. From sizing household fuses to analyzing complex industrial power grids, Ohm's law is used every single day by engineers.</p>
+<p>Ohm's Law ($V = I \\times R$) is the single most famous, foundational formula in all of electrical and electronics engineering. It links Voltage, Current, and Resistance into a clean, intuitive relationship. From sizing household fuses to analyzing complex industrial power grids, Ohm's law is used every single day by engineers.</p>
 
 <h3>2. Simple Explanation</h3>
 <p>Imagine pushing water through a narrow pipe filled with a sponge filter. The water pressure pushing from behind is <strong>Voltage ($V$)</strong>. The volume of water flowing per second is <strong>Current ($I$)</strong>. The tightness of the sponge holding the water back is <strong>Resistance ($R$)</strong>. If you double the water pressure ($V$), twice as much water flows ($I$). If you pack the sponge tighter (increase $R$), less water flows ($I$). That is Ohm's Law in everyday life!</p>
@@ -16396,22 +16396,22 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 <p><strong>Where Ohm's Law Works (Ohmic Materials):</strong> Pure metal wires (copper, aluminum), carbon resistors, and wire-wound heaters. In these, the $V-I$ graph is a perfect straight line passing through the origin.</p>
 <p><strong>Where Ohm's Law FAILS (Non-Ohmic Devices):</strong></p>
 <ul>
-  <li><strong>Semiconductor Diodes & Transistors:</strong> Current does not flow until threshold voltage ($0.7\text{ V}$ for silicon) is reached, after which current shoots up exponentially!</li>
+  <li><strong>Semiconductor Diodes & Transistors:</strong> Current does not flow until threshold voltage ($0.7\\text{ V}$ for silicon) is reached, after which current shoots up exponentially!</li>
   <li><strong>Electric Arcs & Gas Discharge Lamps:</strong> Exhibit 'Negative Differential Resistance'—as current increases, voltage drop actually decreases!</li>
-  <li><strong>Incandescent Light Bulbs:</strong> As current flows, the tungsten filament heats up to $2,500^\circ\text{C}$, causing resistance to increase by 10x! The $V-I$ graph curves upward.</li>
+  <li><strong>Incandescent Light Bulbs:</strong> As current flows, the tungsten filament heats up to $2,500^\\circ\\text{C}$, causing resistance to increase by 10x! The $V-I$ graph curves upward.</li>
 </ul>
 
 <h3>4. Governing Formulas & The Ohm's Law Triangle</h3>
-\[ V = I \cdot R, \quad I = \frac{V}{R}, \quad R = \frac{V}{I} \]
-\[ P = V \cdot I = I^2 R = \frac{V^2}{R} \]
-<p><strong>Easy Memory Trick:</strong> Cover the letter you want with your finger! Cover $V$ to get $I \times R$. Cover $I$ to get $V / R$. Cover $R$ to get $V / I$.</p>
+\\[ V = I \\cdot R, \\quad I = \\frac{V}{R}, \\quad R = \\frac{V}{I} \\]
+\\[ P = V \\cdot I = I^2 R = \\frac{V^2}{R} \\]
+<p><strong>Easy Memory Trick:</strong> Cover the letter you want with your finger! Cover $V$ to get $I \\times R$. Cover $I$ to get $V / R$. Cover $R$ to get $V / I$.</p>
 
 <h3>5. Practical Numerical Example</h3>
 <p><strong>Problem:</strong> A standard 2,000-Watt domestic water heater is connected to a 230 V single-phase AC supply. What is the current drawn and the internal resistance of the heating element?</p>
 <ol>
-  <li>Current drawn: $I = \frac{P}{V} = \frac{2000\text{ W}}{230\text{ V}} = 8.70\text{ Amperes}$.</li>
-  <li>Resistance: $R = \frac{V}{I} = \frac{230\text{ V}}{8.70\text{ A}} = 26.44\text{ Ohms}$.</li>
-  <li>Check power using $I^2 R$: $P = (8.70)^2 \times 26.44 = 2000\text{ Watts}$. Perfect!</li>
+  <li>Current drawn: $I = \\frac{P}{V} = \\frac{2000\\text{ W}}{230\\text{ V}} = 8.70\\text{ Amperes}$.</li>
+  <li>Resistance: $R = \\frac{V}{I} = \\frac{230\\text{ V}}{8.70\\text{ A}} = 26.44\\text{ Ohms}$.</li>
+  <li>Check power using $I^2 R$: $P = (8.70)^2 \\times 26.44 = 2000\\text{ Watts}$. Perfect!</li>
 </ol>
 
 <h3>6. Common Viva Questions & Traps</h3>
@@ -18331,23 +18331,23 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
     body:`<p><b>Prerequisite:</b> <a href="#" data-nav="lesson:kcl">KCL</a>, <a href="#" data-nav="lesson:kvl">KVL</a>, Ohm's Law.</p>
 
 <h3>1. What is Thevenin's Theorem?</h3>
-<p>Imagine you have a giant, messy electrical circuit with 10 batteries, 25 resistors, and complicated loops. If all you care about is what happens to a single load resistor connected at two output terminals (A and B), you don't need to re-solve all 25 resistors every time! <strong>Thevenin's Theorem says: ANY linear circuit, no matter how complicated, can be replaced by ONE simple voltage source ($V_{\text{th}}$) in series with ONE single resistor ($R_{\text{th}}$).</strong></p>
+<p>Imagine you have a giant, messy electrical circuit with 10 batteries, 25 resistors, and complicated loops. If all you care about is what happens to a single load resistor connected at two output terminals (A and B), you don't need to re-solve all 25 resistors every time! <strong>Thevenin's Theorem says: ANY linear circuit, no matter how complicated, can be replaced by ONE simple voltage source ($V_{\\text{th}}$) in series with ONE single resistor ($R_{\\text{th}}$).</strong></p>
 
 <h3>2. Why It's Useful</h3>
-<p>Think of testing different speakers on an audio amplifier, or testing different phone chargers on a battery. Instead of solving a 50-component circuit 10 different times for each load, you simplify the entire amplifier circuit into its Thevenin equivalent once. Then, calculating current for any load resistor $R_L$ takes just 2 seconds using Ohm's Law: $I_L = \frac{V_{\text{th}}}{R_{\text{th}} + R_L}$!</p>
+<p>Think of testing different speakers on an audio amplifier, or testing different phone chargers on a battery. Instead of solving a 50-component circuit 10 different times for each load, you simplify the entire amplifier circuit into its Thevenin equivalent once. Then, calculating current for any load resistor $R_L$ takes just 2 seconds using Ohm's Law: $I_L = \\frac{V_{\\text{th}}}{R_{\\text{th}} + R_L}$!</p>
 
 <h3>3. Step-by-Step Procedure to Find Thevenin Equivalent</h3>
 <ol>
   <li><strong>Step 1: Remove the Load Resistor ($R_L$):</strong> Disconnect $R_L$ from terminals A and B, leaving them wide open.</li>
-  <li><strong>Step 2: Find Thevenin Voltage ($V_{\text{th}}$):</strong> Calculate the open-circuit voltage across terminals A and B using standard KCL, KVL, or voltage divider. That is your $V_{\text{th}}$!</li>
-  <li><strong>Step 3: Find Thevenin Resistance ($R_{\text{th}}$):</strong> Turn off all independent power sources inside the circuit:
+  <li><strong>Step 2: Find Thevenin Voltage ($V_{\\text{th}}$):</strong> Calculate the open-circuit voltage across terminals A and B using standard KCL, KVL, or voltage divider. That is your $V_{\\text{th}}$!</li>
+  <li><strong>Step 3: Find Thevenin Resistance ($R_{\\text{th}}$):</strong> Turn off all independent power sources inside the circuit:
     <ul>
       <li>Replace Independent Voltage Sources with a <strong>Short Circuit</strong> (solid copper wire, $V = 0$).</li>
       <li>Replace Independent Current Sources with an <strong>Open Circuit</strong> (cut wire, $I = 0$).</li>
     </ul>
-    Now, look back into terminals A and B and calculate the equivalent resistance. That is your $R_{\text{th}}$!
+    Now, look back into terminals A and B and calculate the equivalent resistance. That is your $R_{\\text{th}}$!
   </li>
-  <li><strong>Step 4: Draw the Final Thevenin Circuit:</strong> Connect $V_{\text{th}}$ in series with $R_{\text{th}}$, and reconnect your load resistor $R_L$ across terminals A and B.</li>
+  <li><strong>Step 4: Draw the Final Thevenin Circuit:</strong> Connect $V_{\\text{th}}$ in series with $R_{\\text{th}}$, and reconnect your load resistor $R_L$ across terminals A and B.</li>
 </ol>
 
 <h3>4. Governing Formulas</h3>
@@ -18355,11 +18355,11 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 <code>V_th</code> = open-circuit voltage across load terminals<br>
 <code>R_th</code> = resistance seen from load terminals with sources deactivated
 </div>
-\[ I_L = \frac{V_{\text{th}}}{R_{\text{th}} + R_L} \quad \text{and} \quad V_L = I_L \times R_L = V_{\text{th}} \left( \frac{R_L}{R_{\text{th}} + R_L} \right) \]
+\\[ I_L = \\frac{V_{\\text{th}}}{R_{\\text{th}} + R_L} \\quad \\text{and} \\quad V_L = I_L \\times R_L = V_{\\text{th}} \\left( \\frac{R_L}{R_{\\text{th}} + R_L} \\right) \\]
 
 <h3>5. Practical Viva Questions & Traps</h3>
 <p><strong>Q: What do you do if the circuit contains DEPENDENT (controlled) sources?</strong><br>
-<strong>A:</strong> You CANNOT turn off dependent sources! To find $R_{\text{th}}$, either: (Method 1) Find open-circuit voltage $V_{oc}$ and short-circuit current $I_{sc}$, then calculate $R_{\text{th}} = \frac{V_{oc}}{I_{sc}}$; or (Method 2) Connect an imaginary 1V test voltage source across terminals A-B and find the resulting current $I_{\text{test}}$ ($R_{\text{th}} = \frac{1\text{ V}}{I_{\text{test}}}$).</p>`,
+<strong>A:</strong> You CANNOT turn off dependent sources! To find $R_{\\text{th}}$, either: (Method 1) Find open-circuit voltage $V_{oc}$ and short-circuit current $I_{sc}$, then calculate $R_{\\text{th}} = \\frac{V_{oc}}{I_{sc}}$; or (Method 2) Connect an imaginary 1V test voltage source across terminals A-B and find the resulting current $I_{\\text{test}}$ ($R_{\\text{th}} = \\frac{1\\text{ V}}{I_{\\text{test}}}$).</p>`,
     mcqIds:["ct-thev-1", "ct-thev-2", "q-diag-circ-1", "q-circ-ext-5", "q-circ-ext-6"]
   },
 "norton": {
@@ -18371,16 +18371,16 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 
 <h3>2. The Thevenin-Norton Relationship (Source Transformation)</h3>
 <p>Because Thevenin and Norton represent the exact same circuit, you can switch between them instantly in one step:</p>
-\[ R_N = R_{\text{th}} \quad \text{and} \quad V_{\text{th}} = I_N \times R_N \quad \left( I_N = \frac{V_{\text{th}}}{R_{\text{th}}} \right) \]
+\\[ R_N = R_{\\text{th}} \\quad \\text{and} \\quad V_{\\text{th}} = I_N \\times R_N \\quad \\left( I_N = \\frac{V_{\\text{th}}}{R_{\\text{th}}} \\right) \\]
 <p>The resistance is identical in both theorems! The only difference is that in Thevenin, the resistor is in <em>series</em> with a voltage source; in Norton, the resistor is in <em>parallel</em> with a current source.</p>
 
 <h3>3. Step-by-Step Procedure to Find Norton Equivalent</h3>
 <ol>
   <li><strong>Step 1: Short-Circuit the Load Terminals:</strong> Remove load resistor $R_L$ and connect a solid short-circuit wire directly between terminals A and B.</li>
   <li><strong>Step 2: Find Norton Current ($I_N$):</strong> Calculate the current flowing through that short-circuit wire ($I_{sc}$). That is your $I_N$!</li>
-  <li><strong>Step 3: Find Norton Resistance ($R_N$):</strong> Turn off all independent sources (short voltage sources, open current sources) and calculate equivalent resistance looking into terminals A-B ($R_N = R_{\text{th}}$).</li>
+  <li><strong>Step 3: Find Norton Resistance ($R_N$):</strong> Turn off all independent sources (short voltage sources, open current sources) and calculate equivalent resistance looking into terminals A-B ($R_N = R_{\\text{th}}$).</li>
   <li><strong>Step 4: Reconnect Load in Parallel:</strong> Use the Current Divider rule to find load current:
-  \[ I_L = I_N \times \left( \frac{R_N}{R_N + R_L} \right) \]
+  \\[ I_L = I_N \\times \\left( \\frac{R_N}{R_N + R_L} \\right) \\]
   </li>
 </ol>
 
@@ -18433,12 +18433,12 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
   <li><strong>Sub-problem 1:</strong> Keep Voltage Source $V_1$ active. Short-circuit $V_2$ and open-circuit $I_1$. Calculate current $I'$ through the branch.</li>
   <li><strong>Sub-problem 2:</strong> Keep Voltage Source $V_2$ active. Short-circuit $V_1$ and open-circuit $I_1$. Calculate current $I''$ through the branch.</li>
   <li><strong>Sub-problem 3:</strong> Keep Current Source $I_1$ active. Short-circuit $V_1$ and $V_2$. Calculate current $I'''$ through the branch.</li>
-  <li><strong>Final Total:</strong> $I_{\text{total}} = I' + I'' + I'''$ (taking flow directions into account with positive and negative signs).</li>
+  <li><strong>Final Total:</strong> $I_{\\text{total}} = I' + I'' + I'''$ (taking flow directions into account with positive and negative signs).</li>
 </ol>
 
 <h3>5. The #1 Viva Trap: Can Superposition Calculate Electrical Power?</h3>
 <p><strong>DANGER! Superposition DOES NOT apply directly to power calculations!</strong><br>
-Why? Because power is non-linear—it depends on the <em>square</em> of current: $P = I^2 R$. In math, $(I' + I'')^2 \neq (I')^2 + (I'')^2$! There is a cross-product term $2 I' I''$. To find power using superposition, you must FIRST find total current $I_{\text{total}} = I' + I''$, and only THEN calculate $P = (I_{\text{total}})^2 R$.</p>`,
+Why? Because power is non-linear—it depends on the <em>square</em> of current: $P = I^2 R$. In math, $(I' + I'')^2 \\neq (I')^2 + (I'')^2$! There is a cross-product term $2 I' I''$. To find power using superposition, you must FIRST find total current $I_{\\text{total}} = I' + I''$, and only THEN calculate $P = (I_{\\text{total}})^2 R$.</p>`,
     mcqIds:["ct-sup-1", "ct-sup-2", "q-circ-ext-3"]
   },
 "reciprocity": {
@@ -18465,23 +18465,23 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
     body:`<p><b>Prerequisite:</b> <a href="#" data-nav="lesson:thevenin">Thevenin's Theorem</a>.</p>
 
 <h3>1. What is the Maximum Power Transfer Theorem?</h3>
-<p>If you connect a variable load resistor ($R_L$) across an electrical source having internal resistance ($R_{\text{th}}$), what value should you choose for $R_L$ so that it absorbs the <strong>maximum possible electrical power</strong> from the source? <strong>The Theorem states: Maximum power is transferred from a source to a load when the load resistance equals the source's internal Thevenin resistance ($R_L = R_{\text{th}}$).</strong> In AC circuits with complex impedances, the load impedance must be the complex conjugate: $Z_L = Z_{\text{th}}^*$ ($R_L = R_{\text{th}}$ and $X_L = -X_{\text{th}}$).</p>
+<p>If you connect a variable load resistor ($R_L$) across an electrical source having internal resistance ($R_{\\text{th}}$), what value should you choose for $R_L$ so that it absorbs the <strong>maximum possible electrical power</strong> from the source? <strong>The Theorem states: Maximum power is transferred from a source to a load when the load resistance equals the source's internal Thevenin resistance ($R_L = R_{\\text{th}}$).</strong> In AC circuits with complex impedances, the load impedance must be the complex conjugate: $Z_L = Z_{\\text{th}}^*$ ($R_L = R_{\\text{th}}$ and $X_L = -X_{\\text{th}}$).</p>
 
 <h3>2. The Mathematical Proof in 3 Simple Lines</h3>
-<p>Current through the load is $I_L = \frac{V_{\text{th}}}{R_{\text{th}} + R_L}$. The power delivered to $R_L$ is:</p>
-\[ P_L = I_L^2 R_L = \frac{V_{\text{th}}^2 R_L}{(R_{\text{th}} + R_L)^2} \]
-<p>To find the maximum power, differentiate $P_L$ with respect to $R_L$ and set the derivative to zero: $\frac{dP_L}{dR_L} = 0$. Using the quotient rule, this gives $(R_{\text{th}} + R_L)^2 - 2 R_L (R_{\text{th}} + R_L) = 0$, which simplifies directly to:</p>
-\[ R_L = R_{\text{th}} \]
+<p>Current through the load is $I_L = \\frac{V_{\\text{th}}}{R_{\\text{th}} + R_L}$. The power delivered to $R_L$ is:</p>
+\\[ P_L = I_L^2 R_L = \\frac{V_{\\text{th}}^2 R_L}{(R_{\\text{th}} + R_L)^2} \\]
+<p>To find the maximum power, differentiate $P_L$ with respect to $R_L$ and set the derivative to zero: $\\frac{dP_L}{dR_L} = 0$. Using the quotient rule, this gives $(R_{\\text{th}} + R_L)^2 - 2 R_L (R_{\\text{th}} + R_L) = 0$, which simplifies directly to:</p>
+\\[ R_L = R_{\\text{th}} \\]
 <p>The maximum power absorbed by the load is then:</p>
-\[ P_{\max} = \frac{V_{\text{th}}^2}{4 R_{\text{th}}} \]
+\\[ P_{\\max} = \\frac{V_{\\text{th}}^2}{4 R_{\\text{th}}} \\]
 
 <h3>3. Efficiency at Maximum Power Transfer</h3>
-<p>When $R_L = R_{\text{th}}$, the source internal resistance and the load resistance are equal, so they share the power equally! The efficiency is exactly:</p>
-\[ \eta = \frac{P_{\text{load}}}{P_{\text{total}}} = \frac{I^2 R_L}{I^2 (R_{\text{th}} + R_L)} = \frac{R_{\text{th}}}{2 R_{\text{th}}} = 50\% \]
+<p>When $R_L = R_{\\text{th}}$, the source internal resistance and the load resistance are equal, so they share the power equally! The efficiency is exactly:</p>
+\\[ \\eta = \\frac{P_{\\text{load}}}{P_{\\text{total}}} = \\frac{I^2 R_L}{I^2 (R_{\\text{th}} + R_L)} = \\frac{R_{\\text{th}}}{2 R_{\\text{th}}} = 50\% \\]
 
 <h3>4. The Classic Placement Interview Question</h3>
 <p><strong>Q: Why do power generation utilities (like NTPC or state electricity boards) NEVER operate transmission lines at Maximum Power Transfer?</strong><br>
-<strong>A:</strong> Because at maximum power transfer, the efficiency is only <strong>50%</strong>! If a power plant generates 1,000 MW, 500 MW would be wasted as heat inside the transmission lines, causing wires to melt and wasting crores of rupees. Power grids want maximum efficiency ($\eta > 95\%$), which requires keeping internal line resistance $R_{\text{th}}$ as close to ZERO as possible relative to load resistance ($R_{\text{th}} \ll R_L$). Maximum power transfer is used in <strong>communications, radio antennas, and audio electronics</strong> where signal strength is tiny (milliwatts) and maximizing transferred signal power is all that matters!</p>`,
+<strong>A:</strong> Because at maximum power transfer, the efficiency is only <strong>50%</strong>! If a power plant generates 1,000 MW, 500 MW would be wasted as heat inside the transmission lines, causing wires to melt and wasting crores of rupees. Power grids want maximum efficiency ($\\eta > 95\%$), which requires keeping internal line resistance $R_{\\text{th}}$ as close to ZERO as possible relative to load resistance ($R_{\\text{th}} \\ll R_L$). Maximum power transfer is used in <strong>communications, radio antennas, and audio electronics</strong> where signal strength is tiny (milliwatts) and maximizing transferred signal power is all that matters!</p>`,
     mcqIds:["ct-mpt-1","ct-mpt-2"]
   },
 "de-number-systems": {
@@ -19079,12 +19079,12 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 
 <h3>2. The EMF Equation</h3>
 <p>When rotor conductors spin through the stator magnetic field, Faraday's law induces an electromotive force (EMF) across the armature:</p>
-\[ E_a = \frac{P \cdot \Phi \cdot Z \cdot N}{60 \cdot A} \]
+\\[ E_a = \\frac{P \\cdot \\Phi \\cdot Z \\cdot N}{60 \\cdot A} \\]
 <p><strong>Plain English Explanation of Terms:</strong></p>
 <ul>
   <li>$E_a$: Generated EMF in Volts (V). In a generator, this is the voltage produced; in a motor, this is called the <strong>opposing counter-voltage (Back EMF $E_b$) ($E_b$)</strong> because it opposes the applied supply voltage!</li>
   <li>$P$: Number of magnetic poles on the stator (always an even number: 2, 4, 6, 8...).</li>
-  <li>$\Phi$: Magnetic flux per pole in Webers (Wb).</li>
+  <li>$\\Phi$: Magnetic flux per pole in Webers (Wb).</li>
   <li>$Z$: Total number of active armature conductors.</li>
   <li>$N$: Rotational speed of the shaft in RPM (Revolutions Per Minute).</li>
   <li>$A$: Number of parallel electrical paths through the armature winding:
@@ -19097,16 +19097,16 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 
 <h3>3. The Torque Equation</h3>
 <p>When current-carrying armature conductors sit inside the stator magnetic field, Lorentz force ($F = B I L$) creates mechanical rotational torque:</p>
-\[ T = \frac{P \cdot \Phi \cdot Z \cdot I_a}{2 \pi \cdot A} = 0.159 \times \left( \frac{P Z}{A} \right) \Phi I_a \]
-<p>Notice the magic: The constant term $\frac{P Z}{A}$ is IDENTICAL in both the EMF and Torque formulas! This proves that internal electrical power ($E_a I_a$) equals mechanical power ($\omega_m T$).</p>
+\\[ T = \\frac{P \\cdot \\Phi \\cdot Z \\cdot I_a}{2 \\pi \\cdot A} = 0.159 \\times \\left( \\frac{P Z}{A} \\right) \\Phi I_a \\]
+<p>Notice the magic: The constant term $\\frac{P Z}{A}$ is IDENTICAL in both the EMF and Torque formulas! This proves that internal electrical power ($E_a I_a$) equals mechanical power ($\\omega_m T$).</p>
 
 <h3>4. Why opposing counter-voltage (Back EMF $E_b$) is the Motor's 'Natural Speed Governor'</h3>
 <p>In a DC motor, applied voltage $V = E_b + I_a R_a$, which means armature current is:</p>
-\[ I_a = \frac{V - E_b}{R_a} \]
-<p>Armature resistance $R_a$ is tiny (under $0.5\ \Omega$). When the motor is running at normal speed, opposing counter-voltage (Back EMF $E_b$) $E_b$ rises to nearly equal supply voltage $V$ (e.g. $E_b = 225\text{ V}$ when $V = 230\text{ V}$), keeping current at a safe $10\text{ A}$. If the mechanical load on the shaft increases, the motor slows down slightly; $N$ drops, which makes $E_b$ drop, allowing MORE current $I_a$ to flow, which instantly increases torque to handle the heavy load! opposing counter-voltage (Back EMF $E_b$) automatically regulates motor current to match the load.</p>
+\\[ I_a = \\frac{V - E_b}{R_a} \\]
+<p>Armature resistance $R_a$ is tiny (under $0.5\ \\Omega$). When the motor is running at normal speed, opposing counter-voltage (Back EMF $E_b$) $E_b$ rises to nearly equal supply voltage $V$ (e.g. $E_b = 225\\text{ V}$ when $V = 230\\text{ V}$), keeping current at a safe $10\\text{ A}$. If the mechanical load on the shaft increases, the motor slows down slightly; $N$ drops, which makes $E_b$ drop, allowing MORE current $I_a$ to flow, which instantly increases torque to handle the heavy load! opposing counter-voltage (Back EMF $E_b$) automatically regulates motor current to match the load.</p>
 
 <h3>5. Viva Trap: Why do DC Motors Need a Starter at Turn-On?</h3>
-<p>At the exact instant of startup, the motor is stationary ($N = 0$). Therefore, opposing counter-voltage (Back EMF $E_b$) is ZERO ($E_b = 0$)! If you connect full 230 V directly to the armature, current spikes to $I_a = \frac{230 - 0}{0.5\ \Omega} = 460\text{ Amperes}$! This massive starting current would melt the copper windings, burn the commutator, and trip all circuit breakers. A <strong>3-point or 4-point starter</strong> inserts temporary external resistance in series with the armature at startup, gradually cutting it out as the motor speeds up and builds its protective opposing counter-voltage (Back EMF $E_b$).</p>`,
+<p>At the exact instant of startup, the motor is stationary ($N = 0$). Therefore, opposing counter-voltage (Back EMF $E_b$) is ZERO ($E_b = 0$)! If you connect full 230 V directly to the armature, current spikes to $I_a = \\frac{230 - 0}{0.5\ \\Omega} = 460\\text{ Amperes}$! This massive starting current would melt the copper windings, burn the commutator, and trip all circuit breakers. A <strong>3-point or 4-point starter</strong> inserts temporary external resistance in series with the armature at startup, gradually cutting it out as the motor speeds up and builds its protective opposing counter-voltage (Back EMF $E_b$).</p>`,
     mcqIds: ["dc-et-1", "dc-et-2", "dc-et-3", "dc-et-4"]
   },
 "dc-gen-armature-reaction": {
@@ -23381,7 +23381,7 @@ A system is <strong>invertible</strong> if distinct input signals always produce
 </p>
 <div class="formula-box">
   \\[
-  w(t) = \\mathcal{T}^{-1}\{\\mathcal{T}\{x(t)\}\phantom{\}} = x(t)
+  w(t) = \\mathcal{T}^{-1}\{\\mathcal{T}\{x(t)\}\\phantom{\}} = x(t)
   \\]
 </div>
 <p>
@@ -23394,7 +23394,7 @@ A system is <strong>causal (non-anticipative)</strong> if its output at any pres
 </p>
 <div class="formula-box">
   \\[
-  y(t_0) = \\mathcal{T}\{x(t) \mid t \\le t_0\}
+  y(t_0) = \\mathcal{T}\{x(t) \\mid t \\le t_0\}
   \\]
 </div>
 <p>
@@ -23420,7 +23420,7 @@ A system is <strong>time-invariant</strong> if a time delay or advance in the in
 </p>
 <div class="formula-box">
   \\[
-  x(t) \overset{\\mathcal{T}}{\\longrightarrow} y(t) \\implies x(t - t_0) \overset{\\mathcal{T}}{\\longrightarrow} y(t - t_0) \\quad \\text{for all } t_0
+  x(t) \\overset{\\mathcal{T}}{\\longrightarrow} y(t) \\implies x(t - t_0) \\overset{\\mathcal{T}}{\\longrightarrow} y(t - t_0) \\quad \\text{for all } t_0
   \\]
 </div>
 <p>
@@ -25302,7 +25302,7 @@ At a depth of \\(5\\delta\\), the field decays to \\(e^{-5} \\approx 0.0067\\) (
 <br>
 <strong>High-Frequency Surface Resistance:</strong>
 The effective AC resistance per unit square (surface resistivity) of a conductor of thickness \\(\\gg \\delta\\) is:
-\\[ R_s = \\frac{1}{\\sigma\\delta} = \\sqrt{\\frac{\\pi f \\mu}{\\sigma}} \\quad [\\Omega/\square] \\]
+\\[ R_s = \\frac{1}{\\sigma\\delta} = \\sqrt{\\frac{\\pi f \\mu}{\\sigma}} \\quad [\\Omega/\\square] \\]
 Because \\(R_s \\propto \\sqrt{f}\\), AC wire resistance increases with the square root of frequency.
 </p>
 
@@ -25324,7 +25324,7 @@ Calculate: (a) Skin depth \\(\\delta\\), (b) Propagation constant \\(\\gamma\\),
 \\[ \\gamma = (1.513 \\times 10^5) + j(1.513 \\times 10^5)\\text{ m}^{-1} \\]
 Attenuation is \\(1.513 \\times 10^5\\text{ Np/m}\\).
 <br>4. Surface resistance \\(R_s\\):
-\\[ R_s = \\frac{1}{\\sigma\\delta} = \\frac{1}{(5.8 \\times 10^7) \\times (6.608 \\times 10^{-6})} = \\frac{1}{383.26} = 2.609 \\times 10^{-3}\ \\Omega = 2.61\\text{ m}\\Omega/\square \\]
+\\[ R_s = \\frac{1}{\\sigma\\delta} = \\frac{1}{(5.8 \\times 10^7) \\times (6.608 \\times 10^{-6})} = \\frac{1}{383.26} = 2.609 \\times 10^{-3}\ \\Omega = 2.61\\text{ m}\\Omega/\\square \\]
 <br>5. Distance for \\(10\%\\) amplitude:
 \\[ e^{-\\alpha d} = 0.10 \\implies -\\alpha d = \\ln(0.10) = -2.3026 \\]
 \\[ d = \\frac{2.3026}{\\alpha} = 2.3026 \\delta = 2.3026 \\times (6.61\ \\mu\\text{m}) = 15.22\ \\mu\\text{m} \\]
@@ -25787,7 +25787,7 @@ Alternatively: \\(\\beta = \\omega\\sqrt{L'C'} = \\frac{2\\pi \\times (3 \\times
 <h3>11. Laboratory Measurement of Line Parameters</h3>
 <p>
 The parameters \\(Z_0\\) and \\(\\gamma\\) of an unknown cable are determined experimentally using impedance analyzer or VNA measurements of input impedance with the receiving end open-circuited (\\(Z_{\\text{oc}}\\)) and short-circuited (\\(Z_{\\text{sc}}\\)):
-\\[ Z_{\\text{in, oc}} = Z_0 \coth(\\gamma l), \\quad Z_{\\text{in, sc}} = Z_0 \\tanh(\\gamma l) \\]
+\\[ Z_{\\text{in, oc}} = Z_0 \\coth(\\gamma l), \\quad Z_{\\text{in, sc}} = Z_0 \\tanh(\\gamma l) \\]
 Taking the product and quotient:
 \\[ Z_0 = \\sqrt{Z_{\\text{in, sc}} \\cdot Z_{\\text{in, oc}}}, \\quad \\tanh(\\gamma l) = \\sqrt{\\frac{Z_{\\text{in, sc}}}{Z_{\\text{in, oc}}}} \\]
 </p>
@@ -30226,7 +30226,7 @@ Prerequisites include periodic sequence definitions (\\(\\tilde{x}[n + N] = \\ti
 </p>
 <div class="formula-box">
   \\[
-  \\sum_{n=0}^{N-1} e^{j \\frac{2\\pi}{N} k n} e^{-j \\frac{2\\pi}{N} m n} = \\\\begin{cases} N, &amp; k = m \pmod N \\ 0, &amp; k \\neq m \pmod N \\\\end{cases}
+  \\sum_{n=0}^{N-1} e^{j \\frac{2\\pi}{N} k n} e^{-j \\frac{2\\pi}{N} m n} = \\\\begin{cases} N, &amp; k = m \\pmod N \\ 0, &amp; k \\neq m \\pmod N \\\\end{cases}
   \\]
 </div>
 
@@ -30260,8 +30260,8 @@ For a periodic sequence \\(\\tilde{x}[n]\\) with fundamental period \\(N\\), the
     <tr><td><strong>Linearity</strong></td><td>\\(a \\tilde{x}_1[n] + b \\tilde{x}_2[n]\\)</td><td>\\(a \\tilde{X}_1[k] + b \\tilde{X}_2[k]\\)</td></tr>
     <tr><td><strong>Periodic Time Shift</strong></td><td>\\(\\tilde{x}[n - m]\\)</td><td>\\(W_N^{k m} \\tilde{X}[k] = e^{-j \\frac{2\\pi}{N} k m} \\tilde{X}[k]\\)</td></tr>
     <tr><td><strong>Periodic Frequency Shift</strong></td><td>\\(e^{j \\frac{2\\pi}{N} m n} \\tilde{x}[n] = W_N^{-m n} \\tilde{x}[n]\\)</td><td>\\(\\tilde{X}[k - m]\\)</td></tr>
-    <tr><td><strong>Periodic Convolution</strong></td><td>\\(\\tilde{x}_1[n] \circledast \\tilde{x}_2[n] = \\sum_{m=0}^{N-1} \\tilde{x}_1[m] \\tilde{x}_2[n - m]\\)</td><td>\\(\\tilde{X}_1[k] \\cdot \\tilde{X}_2[k]\\)</td></tr>
-    <tr><td><strong>Periodic Modulation</strong></td><td>\\(\\tilde{x}_1[n] \\cdot \\tilde{x}_2[n]\\)</td><td>\\(\\frac{1}{N} \\tilde{X}_1[k] \circledast \\tilde{X}_2[k]\\)</td></tr>
+    <tr><td><strong>Periodic Convolution</strong></td><td>\\(\\tilde{x}_1[n] \\circledast \\tilde{x}_2[n] = \\sum_{m=0}^{N-1} \\tilde{x}_1[m] \\tilde{x}_2[n - m]\\)</td><td>\\(\\tilde{X}_1[k] \\cdot \\tilde{X}_2[k]\\)</td></tr>
+    <tr><td><strong>Periodic Modulation</strong></td><td>\\(\\tilde{x}_1[n] \\cdot \\tilde{x}_2[n]\\)</td><td>\\(\\frac{1}{N} \\tilde{X}_1[k] \\circledast \\tilde{X}_2[k]\\)</td></tr>
     <tr><td><strong>Duality</strong></td><td>\\(\\tilde{X}[n]\\)</td><td>\\(N \\tilde{x}[-k]\\)</td></tr>
     <tr><td><strong>Parseval's Relation</strong></td><td>\\(\\frac{1}{N} \\sum_{n=0}^{N-1} |\\tilde{x}[n]|^2\\)</td><td>\\(\\frac{1}{N^2} \\sum_{k=0}^{N-1} |\\tilde{X}[k]|^2\\)</td></tr>
   </tbody>
@@ -33351,9 +33351,9 @@ where \\(\\phi = 2 \\tan^{-1}\\left(\\frac{\\sqrt{1-\\zeta^2}}{\\zeta}\\right)\\
 <h3>2. The Pole Position Rule</h3>
 <p>The stability of any linear system is determined purely by the roots of its system behavior formula (Characteristic Equation) $1 + G(s)H(s) = 0$ (called the <strong>Poles</strong>):</p>
 <ul>
-  <li><strong>Stable:</strong> ALL poles lie strictly in the <strong>Left-Half of the s-Plane</strong> (real parts are negative: $\text{Re}(s) < 0$, giving decaying exponentials $e^{-at}$).</li>
+  <li><strong>Stable:</strong> ALL poles lie strictly in the <strong>Left-Half of the s-Plane</strong> (real parts are negative: $\\text{Re}(s) < 0$, giving decaying exponentials $e^{-at}$).</li>
   <li><strong>Unstable:</strong> If even ONE single pole lies in the <strong>Right-Half of the s-Plane</strong> ($	ext{Re}(s) > 0$, giving exploding exponentials $e^{+at}$).</li>
-  <li><strong>Marginally Stable:</strong> Simple non-repeated poles lie directly on the imaginary axis ($j\omega$ axis), causing sustained oscillations (like a pendulum).</li>
+  <li><strong>Marginally Stable:</strong> Simple non-repeated poles lie directly on the imaginary axis ($j\\omega$ axis), causing sustained oscillations (like a pendulum).</li>
 </ul>
 <div class="diagram" style="text-align:center;margin:16px 0;">
 <svg class="s-plane-svg" viewBox="0 0 560 220" width="100%" style="max-width:560px;background:#090d16;border:1px solid #1e293b;border-radius:8px;display:inline-block;" role="img" aria-label="S-Plane Stability Regions: Left-Half Plane (Stable), Imaginary Axis (Marginal), and Right-Half Plane (Unstable) Pole Locations">
@@ -33421,7 +33421,7 @@ where \\(\\phi = 2 \\tan^{-1}\\left(\\frac{\\sqrt{1-\\zeta^2}}{\\zeta}\\right)\\
   <li>Row $s^n$: List alternating coefficients: $a_n, a_{n-2}, a_{n-4}, ...$</li>
   <li>Row $s^{n-1}$: List remaining alternating coefficients: $a_{n-1}, a_{n-3}, a_{n-5}, ...$</li>
   <li>Row $s^{n-2}$: Calculate cross-multiplied determinants:
-  \[ b_1 = \frac{a_{n-1} a_{n-2} - a_n a_{n-3}}{a_{n-1}}, \quad b_2 = \frac{a_{n-1} a_{n-4} - a_n a_{n-5}}{a_{n-1}} \]
+  \\[ b_1 = \\frac{a_{n-1} a_{n-2} - a_n a_{n-3}}{a_{n-1}}, \\quad b_2 = \\frac{a_{n-1} a_{n-4} - a_n a_{n-5}}{a_{n-1}} \\]
   </li>
   <li>Continue row-by-row until you reach row $s^0$.</li>
 </ol>
@@ -33431,8 +33431,8 @@ where \\(\\phi = 2 \\tan^{-1}\\left(\\frac{\\sqrt{1-\\zeta^2}}{\\zeta}\\right)\\
 
 <h3>6. Special Cases in Routh Array</h3>
 <ul>
-  <li><strong>Case 1: First element in a row is zero, but remaining row is non-zero:</strong> Replace the zero with a tiny positive number $\varepsilon > 0$, complete the array, and take $\lim_{\varepsilon \to 0}$ to check sign changes.</li>
-  <li><strong>Case 2: An entire row of zeros appears:</strong> This indicates symmetric poles (e.g. roots on the $j\omega$ axis or real-axis pairs). Form the <strong>Auxiliary Polynomial $A(s)$</strong> using coefficients from the row immediately above, differentiate it ($rac{dA}{ds}$), and replace the zero row with the derivative coefficients! The roots of $A(s) = 0$ give the exact frequency of sustained oscillations.</li>
+  <li><strong>Case 1: First element in a row is zero, but remaining row is non-zero:</strong> Replace the zero with a tiny positive number $\\varepsilon > 0$, complete the array, and take $\\lim_{\\varepsilon \\to 0}$ to check sign changes.</li>
+  <li><strong>Case 2: An entire row of zeros appears:</strong> This indicates symmetric poles (e.g. roots on the $j\\omega$ axis or real-axis pairs). Form the <strong>Auxiliary Polynomial $A(s)$</strong> using coefficients from the row immediately above, differentiate it ($rac{dA}{ds}$), and replace the zero row with the derivative coefficients! The roots of $A(s) = 0$ give the exact frequency of sustained oscillations.</li>
 </ul>`,
     mcqIds:["cse-routh-1", "cse-routh-2", "cse-routh-3", "cse-routh-4", "cse-routh-5", "cse-routh-6", "cse-routh-7", "cse-routh-8", "cse-routh-9", "cse-routh-10", "cse-routh-11"]
   },
@@ -41014,7 +41014,7 @@ endmodule</code></pre>
 <div class="formula-box">
   <h4>NPV, IRR & Capital Recovery Factor (CRF)</h4>
   $$\\text{NPV} = \\sum_{t=0}^{N} \\frac{CF_t}{(1 + d)^t} = -C_0 + \\sum_{t=1}^{N} \\frac{CF_t}{(1 + d)^t}$$
-  $$\\text{NPV}\Big|_{d = \\text{IRR}} = 0 \\implies C_0 = \\sum_{t=1}^{N} \\frac{CF_t}{(1 + \\text{IRR})^t}$$
+  $$\\text{NPV}\\Big|_{d = \\text{IRR}} = 0 \\implies C_0 = \\sum_{t=1}^{N} \\frac{CF_t}{(1 + \\text{IRR})^t}$$
   <p><b>Capital Recovery Factor (CRF):</b> Converts a present capital investment $C_0$ into an equivalent uniform annual annuity $A$ over $N$ years at discount rate $d$:</p>
   $$\\text{CRF}(d, N) = \\frac{d(1 + d)^N}{(1 + d)^N - 1} \\qquad A = C_0 \\times \\text{CRF}(d, N)$$
 </div>
@@ -58608,7 +58608,7 @@ where $K_G$ depends on machine saturation and loading.</li>
 
   <li><strong>Mains Return and Stabilization Delay (typically 3 to 5 minutes):</strong> When utility power is restored, the AMF controller does not switch back immediately. It verifies that the grid voltage and frequency remain rock-solid and stable within tolerances for the entire stabilization duration to prevent chatter caused by utility auto-reclosers.</li>
 
-  <li><strong>Re-Transfer to Mains:</strong> Generator breaker trips open $ \rightarrow $ interlock dead-band delay $ \rightarrow $ Mains breaker closes.</li>
+  <li><strong>Re-Transfer to Mains:</strong> Generator breaker trips open $ \\rightarrow $ interlock dead-band delay $ \\rightarrow $ Mains breaker closes.</li>
 
   <li><strong>Cool-Down Run (3 to 5 minutes):</strong> The engine continues to run completely unloaded to dissipate internal heat evenly from turbocharger bearings and cylinder heads, after which the fuel solenoid de-energizes and stops the engine.</li>
 
@@ -67189,10 +67189,35 @@ function convertInlineDollarMath(root){
   function transformText(text){
     if(!text) return text;
     let s = text;
+
+    // 1. Repair template-string control characters (e.g. \frac -> \x0crac, \varepsilon -> \x0barepsilon, \text -> \x09ext)
+    if(/[\x08\x0b\x0c]|\t(?:ext|imes|au|heta|riangle)\b/.test(s)){
+      s = s.replace(/\x08([a-zA-Z])/g, '\\b$1')
+           .replace(/\x0c([a-zA-Z])/g, '\\f$1')
+           .replace(/\x0b([a-zA-Z])/g, '\\v$1')
+           .replace(/\t(ext|imes|au|heta|riangle)\b/g, '\\t$1');
+    }
+
+    // 2. Restore bare pi inside math if unescaped: e.g. "4 pi \varepsilon" -> "4 \pi \varepsilon"
+    s = s.replace(/(?<=\d\s*|\s)pi(?=[\s_\\}])/g, '\\pi');
+
+    // 3. Restore swallowed display math delimiters: [ ... ] -> \[ ... \]
+    s = s.replace(/(?:^|\n|\s)\[\s*([A-Za-z0-9_\\\^\(\)\{\}\s=+\-*\/<>\.,\|±∓×·÷≈∝≠≡∑∫√°%πμΩΔθφωαβληρΦ]+?(?:\\(?:frac|sqrt|text|times|pi|varepsilon|mu|omega|alpha|beta|gamma|Delta|Omega|quad|int|sum)|[=≈≡∝])[\s\S]*?)\s*\](?:\s|\n|$)/g, function(match, innerMath){
+      return '\n\\[ ' + innerMath + ' \\]\n';
+    });
+
+    // 4. Convert inline dollar math $...$ to \(...\)
     if(s.includes('$')){
-      s = s.replace(/(?<!\\|\$)\$([^\$\r\n]+?)\$(?!\$)/g, function(match, inner){
-        if(isGenuineMath(inner)){
-          return '\\(' + inner + '\\)';
+      s = s.replace(/(?<!\|\$)\$([^\$\r\n]+?)\$(?!\$)/g, function(match, inner){
+        let clean = inner;
+        if(/[\x08\x0b\x0c]|\t(?:ext|imes|au|heta|riangle)\b/.test(clean)){
+          clean = clean.replace(/\x08([a-zA-Z])/g, '\\b$1')
+                       .replace(/\x0c([a-zA-Z])/g, '\\f$1')
+                       .replace(/\x0b([a-zA-Z])/g, '\\v$1')
+                       .replace(/\t(ext|imes|au|heta|riangle)\b/g, '\\t$1');
+        }
+        if(isGenuineMath(clean)){
+          return '\\(' + clean + '\\)';
         }
         return match;
       });
@@ -67212,7 +67237,10 @@ function convertInlineDollarMath(root){
 
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode: function(node){
-      if(!node.nodeValue || (!node.nodeValue.includes('$') && !node.nodeValue.includes('_'))) return NodeFilter.FILTER_REJECT;
+      const val = node.nodeValue;
+      if(!val) return NodeFilter.FILTER_REJECT;
+      const hasTarget = val.includes('$') || val.includes('_') || /[\x08\x0b\x0c]|\t(?:ext|imes|au|heta)\b/.test(val) || (val.includes('[') && val.includes(']'));
+      if(!hasTarget) return NodeFilter.FILTER_REJECT;
       let p = node.parentElement;
       while(p && p !== root){
         if(ignoredTags[p.nodeName] || (p.classList && (p.classList.contains('katex') || p.classList.contains('katex-display')))){
