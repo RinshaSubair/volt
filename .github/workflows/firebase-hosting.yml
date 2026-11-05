@@ -6,6 +6,12 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  contents: read
+  checks: write
+  deployments: write
+  pull-requests: write
+
 jobs:
   deploy_to_firebase:
     runs-on: ubuntu-latest
@@ -13,19 +19,22 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Deploy Firestore Rules
-        continue-on-error: true
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Deploy to Firebase
         run: |
           cat << 'EOF' > /tmp/sa.json
           ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VOLT_RS }}
           EOF
-          GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json npx --yes firebase-tools deploy --only firestore:rules --project volt-rs || true
-          rm -f /tmp/sa.json
+          export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json
 
-      - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_VOLT_RS }}'
-          channelId: live
-          projectId: volt-rs
+          echo "==> Deploying Firestore Rules..."
+          npx --yes firebase-tools deploy --only firestore:rules --project volt-rs --non-interactive || true
+
+          echo "==> Deploying Firebase Hosting..."
+          npx --yes firebase-tools deploy --only hosting --project volt-rs --non-interactive
+
+          rm -f /tmp/sa.json
