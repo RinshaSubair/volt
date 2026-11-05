@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   checks: write
   deployments: write
   pull-requests: write
@@ -32,16 +32,9 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json
 
           echo "==> Deploying Firestore Rules..."
-          npx --yes firebase-tools deploy --only firestore:rules --project volt-rs --non-interactive || true
+          npx --yes firebase-tools@15.34.0 deploy --only firestore:rules --project volt-rs --non-interactive || true
 
           echo "==> Deploying Firebase Hosting..."
-          npx --yes firebase-tools deploy --only hosting --project volt-rs --debug --non-interactive 2>&1 | tail -n 80 > DEPLOY_OUTPUT.md || true
+          npx --yes firebase-tools@15.34.0 deploy --only hosting --project volt-rs --non-interactive
 
           rm -f /tmp/sa.json
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -B deploy-status
-          git add -f DEPLOY_OUTPUT.md
-          git commit -m "ci: capture deploy log [skip ci]" || true
-          git push origin deploy-status --force || true
