@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   checks: write
   deployments: write
   pull-requests: write
@@ -32,9 +32,25 @@ jobs:
           export GOOGLE_APPLICATION_CREDENTIALS=/tmp/sa.json
 
           echo "==> Deploying Firestore Rules..."
-          npx --yes firebase-tools deploy --only firestore:rules --project volt-rs --non-interactive || true
+          npx --yes firebase-tools deploy --only firestore:rules --project volt-rs --non-interactive 2>&1 | tee /tmp/rules.log || true
 
           echo "==> Deploying Firebase Hosting..."
-          npx --yes firebase-tools deploy --only hosting --project volt-rs --non-interactive
+          DEPLOY_EXIT=0
+          npx --yes firebase-tools deploy --only hosting --project volt-rs --debug --non-interactive 2>&1 | tee /tmp/hosting.log || DEPLOY_EXIT=$?
 
           rm -f /tmp/sa.json
+
+          mkdir -p ci-logs
+          cp /tmp/rules.log ci-logs/rules.log
+          tail -n 300 /tmp/hosting.log > ci-logs/hosting.log
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B deploy-status
+          git add ci-logs/
+          git commit -m "ci: capture deploy logs [skip ci]" || true
+          git push origin deploy-status --force || true
+
+          if [ $DEPLOY_EXIT -ne 0 ]; then
+            echo "Hosting deployment failed with exit code $DEPLOY_EXIT"
+            exit $DEPLOY_EXIT
+          fi
