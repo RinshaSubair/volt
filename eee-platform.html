@@ -910,10 +910,81 @@ html, body {
 const STORE_KEY = "volt_progress_v1";
 const SETTINGS_KEY = "volt_settings_v1";
 
-function loadProgress(){
-  try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {completedTopics:{}, mcqStats:{attempted:0,correct:0}, bookmarks:[], streak:0, lastActive:null, dailyTarget:20, todayCount:0, todayDate:null}; }
-  catch(e){ return {completedTopics:{}, mcqStats:{attempted:0,correct:0}, bookmarks:[], streak:0, lastActive:null, dailyTarget:20, todayCount:0, todayDate:null}; }
+/* Study days are LOCAL calendar days. (India UTC+5:30 midnight rollover handled correctly) */
+function localDateStr(d){ d = d || new Date(); const p = n => String(n).padStart(2,"0"); return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
+function todayStr(){ return localDateStr(new Date()); }
+function yesterdayStr(){ const d = new Date(); d.setDate(d.getDate()-1); return localDateStr(d); }
+
+function calculateStreakFromActiveDays(activeDays) {
+  if (!activeDays || !activeDays.length) return 0;
+  const daysSet = new Set(activeDays);
+  const t = todayStr();
+  const y = yesterdayStr();
+  
+  // Is streak active? User studied today OR yesterday
+  let checkDate = null;
+  if (daysSet.has(t)) {
+    checkDate = new Date();
+  } else if (daysSet.has(y)) {
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    checkDate = d;
+  } else {
+    return 0; // Streak broken: did not study today or yesterday
+  }
+  
+  let count = 0;
+  while (checkDate) {
+    const dStr = localDateStr(checkDate);
+    if (daysSet.has(dStr)) {
+      count++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+  return count;
 }
+
+function loadProgress(){
+  let p = {
+    completedTopics: {},
+    mcqStats: { attempted: 0, correct: 0 },
+    bookmarks: [],
+    streak: 0,
+    activeDays: [],
+    lastActive: null,
+    dailyTarget: 5,
+    todayCount: 0,
+    todayDate: todayStr(),
+    studyTime: {
+      totalSeconds: 0,
+      todaySeconds: 0,
+      todayDate: todayStr(),
+      completedSessions: 0,
+      lastCelebratedHour: 0
+    }
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORE_KEY));
+    if (saved) {
+      p = Object.assign(p, saved);
+      if (!p.activeDays || !Array.isArray(p.activeDays)) p.activeDays = [];
+      if (p.streak > 0 && p.activeDays.length === 0) {
+        // Backfill legacy streak into activeDays so existing streaks are preserved forever
+        const tDate = new Date();
+        for (let i = 0; i < p.streak; i++) {
+          const d = new Date(tDate);
+          d.setDate(d.getDate() - i);
+          p.activeDays.push(localDateStr(d));
+        }
+      }
+      p.streak = Math.max(p.streak || 0, calculateStreakFromActiveDays(p.activeDays));
+    }
+  } catch(e){}
+  return p;
+}
+
 let _cloudSyncTimer = null;
 function syncProgressToCloud(p) {
   if (typeof voltAuth === "undefined" || !voltAuth || !voltAuth.currentUser || typeof voltDb === "undefined" || !voltDb) return;
@@ -921,6 +992,15 @@ function syncProgressToCloud(p) {
   _cloudSyncTimer = setTimeout(function() {
     try {
       const uid = voltAuth.currentUser.uid;
+      // Ensure latest studyTime from FOCUS_TRACKER is always bundled
+      if (typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER) {
+        if (!p.studyTime) p.studyTime = {};
+        p.studyTime.totalSeconds = Math.max(p.studyTime.totalSeconds || 0, FOCUS_TRACKER.totalSeconds || 0);
+        p.studyTime.todaySeconds = Math.max(p.studyTime.todaySeconds || 0, FOCUS_TRACKER.todaySeconds || 0);
+        p.studyTime.todayDate = todayStr();
+        p.studyTime.completedSessions = Math.max(p.studyTime.completedSessions || 0, FOCUS_TRACKER.completedSessions || 0);
+        p.studyTime.lastCelebratedHour = Math.max(p.studyTime.lastCelebratedHour || 0, FOCUS_TRACKER.lastCelebratedHour || 0);
+      }
       voltDb.collection("users").doc(uid).collection("progress").doc("tracker").set(p, { merge: true })
         .catch(function(err) {
           console.warn("Firestore sync deferred / offline:", err.message);
@@ -928,32 +1008,154 @@ function syncProgressToCloud(p) {
     } catch(e) {
       console.warn("Firestore sync error:", e);
     }
-  }, 400);
+  }, 300);
 }
 
 function saveProgress(p){
-  try{ localStorage.setItem(STORE_KEY, JSON.stringify(p)); }catch(e){}
+  if (typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER) {
+    if (!p.studyTime) p.studyTime = {};
+    p.studyTime.totalSeconds = Math.max(p.studyTime.totalSeconds || 0, FOCUS_TRACKER.totalSeconds || 0);
+    p.studyTime.todaySeconds = Math.max(p.studyTime.todaySeconds || 0, FOCUS_TRACKER.todaySeconds || 0);
+    p.studyTime.todayDate = todayStr();
+    p.studyTime.completedSessions = Math.max(p.studyTime.completedSessions || 0, FOCUS_TRACKER.completedSessions || 0);
+    p.studyTime.lastCelebratedHour = Math.max(p.studyTime.lastCelebratedHour || 0, FOCUS_TRACKER.lastCelebratedHour || 0);
+  }
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(p)); } catch(e){}
   syncProgressToCloud(p);
 }
 
 function mergeProgress(local, cloud) {
-  if (!cloud) return local;
+  if (!cloud) return local || {};
+  if (!local) return cloud || {};
+
   const merged = Object.assign({}, local, cloud);
+  
+  // 1. Completed topics union
   merged.completedTopics = Object.assign({}, local.completedTopics || {}, cloud.completedTopics || {});
+  
+  // 2. MCQ stats: keep max
   const localMcq = local.mcqStats || { attempted: 0, correct: 0 };
   const cloudMcq = cloud.mcqStats || { attempted: 0, correct: 0 };
   merged.mcqStats = {
     attempted: Math.max(localMcq.attempted || 0, cloudMcq.attempted || 0),
     correct: Math.max(localMcq.correct || 0, cloudMcq.correct || 0)
   };
+  
+  // 3. Bookmarks union
   const bks = new Set([...(local.bookmarks || []), ...(cloud.bookmarks || [])]);
   merged.bookmarks = Array.from(bks);
-  merged.streak = Math.max(local.streak || 0, cloud.streak || 0);
+  
+  // 4. Numericals and interview seen
+  merged.numericalsSolved = Object.assign({}, local.numericalsSolved || {}, cloud.numericalsSolved || {});
+  merged.interviewSeen = Object.assign({}, local.interviewSeen || {}, cloud.interviewSeen || {});
+
+  // 5. Active Days & Streak across devices
+  const rawActiveDays = [...(local.activeDays || []), ...(cloud.activeDays || [])];
+  const maxStreak = Math.max(local.streak || 0, cloud.streak || 0);
+  if (rawActiveDays.length === 0 && maxStreak > 0) {
+    const tDate = new Date();
+    for (let i = 0; i < maxStreak; i++) {
+      const d = new Date(tDate);
+      d.setDate(d.getDate() - i);
+      rawActiveDays.push(localDateStr(d));
+    }
+  }
+  merged.activeDays = Array.from(new Set(rawActiveDays)).sort();
+  merged.streak = Math.max(maxStreak, calculateStreakFromActiveDays(merged.activeDays));
+
+  // 6. Study Time (Cross-Device Synchronized)
+  const localStudy = (local && local.studyTime) ? local.studyTime : {};
+  const cloudStudy = (cloud && cloud.studyTime) ? cloud.studyTime : {};
+  const memTotal = (typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER) ? (FOCUS_TRACKER.totalSeconds || 0) : 0;
+  const memToday = (typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER) ? (FOCUS_TRACKER.todaySeconds || 0) : 0;
+  
+  const mergedTotalSeconds = Math.max(
+    localStudy.totalSeconds || 0,
+    cloudStudy.totalSeconds || 0,
+    memTotal
+  );
+
+  const tStr = todayStr();
+  let mergedTodaySeconds = 0;
+  if (localStudy.todayDate === tStr) mergedTodaySeconds = Math.max(mergedTodaySeconds, localStudy.todaySeconds || 0);
+  if (cloudStudy.todayDate === tStr) mergedTodaySeconds = Math.max(mergedTodaySeconds, cloudStudy.todaySeconds || 0);
+  mergedTodaySeconds = Math.max(mergedTodaySeconds, memToday);
+
+  const mergedSessions = Math.max(
+    localStudy.completedSessions || 0,
+    cloudStudy.completedSessions || 0,
+    (typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER) ? (FOCUS_TRACKER.completedSessions || 0) : 0
+  );
+
+  const mergedCelebratedHour = Math.max(
+    localStudy.lastCelebratedHour || 0,
+    cloudStudy.lastCelebratedHour || 0,
+    (typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER) ? (FOCUS_TRACKER.lastCelebratedHour || 0) : 0
+  );
+
+  merged.studyTime = {
+    totalSeconds: mergedTotalSeconds,
+    todaySeconds: mergedTodaySeconds,
+    todayDate: tStr,
+    completedSessions: mergedSessions,
+    lastCelebratedHour: mergedCelebratedHour
+  };
+
+  // Sync back to FOCUS_TRACKER in memory
+  if (typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER) {
+    if (mergedTotalSeconds > FOCUS_TRACKER.totalSeconds) {
+      FOCUS_TRACKER.totalSeconds = mergedTotalSeconds;
+    }
+    if (mergedTodaySeconds > FOCUS_TRACKER.todaySeconds) {
+      FOCUS_TRACKER.todaySeconds = mergedTodaySeconds;
+    }
+    if (mergedSessions > FOCUS_TRACKER.completedSessions) {
+      FOCUS_TRACKER.completedSessions = mergedSessions;
+    }
+    if (mergedCelebratedHour > (FOCUS_TRACKER.lastCelebratedHour || 0)) {
+      FOCUS_TRACKER.lastCelebratedHour = mergedCelebratedHour;
+    }
+    try {
+      localStorage.setItem("volt_total_study_seconds", String(FOCUS_TRACKER.totalSeconds));
+      localStorage.setItem("volt_today_study_seconds", String(FOCUS_TRACKER.todaySeconds));
+      localStorage.setItem("volt_today_study_date", tStr);
+      localStorage.setItem("volt_completed_sessions", String(FOCUS_TRACKER.completedSessions));
+      localStorage.setItem("volt_last_celebrated_hour", String(FOCUS_TRACKER.lastCelebratedHour || 0));
+    } catch(e){}
+    if (typeof updateFocusDOM === "function") updateFocusDOM();
+  }
+
   return merged;
+}
+
+let _cloudProgressUnsub = null;
+function listenToUserCloudProgress(uid) {
+  if (typeof voltDb === "undefined" || !voltDb || !uid) return;
+  if (_cloudProgressUnsub) {
+    try { _cloudProgressUnsub(); } catch(e){}
+    _cloudProgressUnsub = null;
+  }
+  try {
+    _cloudProgressUnsub = voltDb.collection("users").doc(uid).collection("progress").doc("tracker")
+      .onSnapshot(function(doc) {
+        if (doc.exists && !doc.metadata.hasPendingWrites) {
+          const cloudData = doc.data();
+          PROGRESS = mergeProgress(PROGRESS, cloudData);
+          try { localStorage.setItem(STORE_KEY, JSON.stringify(PROGRESS)); } catch(e){}
+          if (typeof updateFocusDOM === "function") updateFocusDOM();
+          if (typeof renderFocusModalBody === "function" && typeof FOCUS_TRACKER !== "undefined" && FOCUS_TRACKER.modalOpen) renderFocusModalBody();
+        }
+      }, function(err) {
+        console.warn("Cloud progress listener notice:", err.message);
+      });
+  } catch(e) {
+    console.warn("Snapshot setup notice:", e);
+  }
 }
 
 function loadUserCloudProgress(uid) {
   if (typeof voltDb === "undefined" || !voltDb || !uid) return;
+  listenToUserCloudProgress(uid);
   voltDb.collection("users").doc(uid).collection("progress").doc("tracker").get()
     .then(function(doc) {
       if (doc.exists) {
@@ -961,6 +1163,7 @@ function loadUserCloudProgress(uid) {
         PROGRESS = mergeProgress(PROGRESS, cloudData);
         try { localStorage.setItem(STORE_KEY, JSON.stringify(PROGRESS)); } catch(e){}
         if (typeof render === "function") render();
+        if (typeof updateFocusDOM === "function") updateFocusDOM();
       } else {
         syncProgressToCloud(PROGRESS);
       }
@@ -969,6 +1172,7 @@ function loadUserCloudProgress(uid) {
       console.warn("Could not load cloud progress (using local cache):", err.message);
     });
 }
+
 function loadSettings(){ try{ return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {theme:"dark"}; }catch(e){ return {theme:"dark"}; } }
 function saveSettings(s){ try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }catch(e){} }
 
@@ -976,23 +1180,30 @@ let PROGRESS = loadProgress();
 let SETTINGS = loadSettings();
 document.documentElement.setAttribute("data-theme", SETTINGS.theme);
 
-/* Study days are LOCAL calendar days. (Sessions 1-23 used toISOString(), which is UTC: for a user in India, UTC+5:30, the day and the streak
-   rolled over at 05:30 local time instead of midnight. Fixed in session 24.) */
-function localDateStr(d){ d = d || new Date(); const p = n => String(n).padStart(2,"0"); return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate()); }
-function todayStr(){ return localDateStr(new Date()); }
-function yesterdayStr(){ const d = new Date(); d.setDate(d.getDate()-1); return localDateStr(d); }   // calendar arithmetic, so DST changes cannot skip or repeat a day
-function bumpDaily(){
+function recordActiveStudyDay() {
   const t = todayStr();
-  if(PROGRESS.todayDate !== t){
-    // check streak continuity
-    const y = yesterdayStr();
-    if(PROGRESS.todayDate === y && PROGRESS.todayCount >= PROGRESS.dailyTarget){ PROGRESS.streak = (PROGRESS.streak||0)+1; }
-    else if(PROGRESS.todayDate){ PROGRESS.streak = 0; }   // a previous study day exists but yesterday's target was missed, or a day was skipped (session 24: the old code kept the streak when yesterday's target was missed)
-    PROGRESS.todayDate = t; PROGRESS.todayCount = 0;
+  if (!PROGRESS.activeDays || !Array.isArray(PROGRESS.activeDays)) {
+    PROGRESS.activeDays = [];
   }
-  PROGRESS.todayCount++;
+  if (!PROGRESS.activeDays.includes(t)) {
+    PROGRESS.activeDays.push(t);
+  }
+  PROGRESS.todayDate = t;
+  PROGRESS.todayCount = (PROGRESS.todayCount || 0) + 1;
+  PROGRESS.lastActive = new Date().toISOString();
+  PROGRESS.streak = calculateStreakFromActiveDays(PROGRESS.activeDays);
   saveProgress(PROGRESS);
 }
+
+function bumpDaily(){
+  const t = todayStr();
+  if (PROGRESS.todayDate !== t) {
+    PROGRESS.todayDate = t;
+    PROGRESS.todayCount = 0;
+  }
+  recordActiveStudyDay();
+}
+
 function markTopicActivity(topicId, kind){
   // kind: 'concept' | 'mcq' | 'numerical' | 'interview'
   const rec = PROGRESS.completedTopics[topicId] || {};
@@ -1001,6 +1212,7 @@ function markTopicActivity(topicId, kind){
   bumpDaily();
   saveProgress(PROGRESS);
 }
+
 function topicWeight(topicId, requiredKinds){
   const rec = PROGRESS.completedTopics[topicId] || {};
   const have = requiredKinds.filter(k=>rec[k]).length;
@@ -68581,7 +68793,7 @@ function getStudyMilestone(totalSec) {
 
 function loadFocusTrackerData() {
   try {
-    const todayStr = new Date().toISOString().slice(0, 10);
+    const tStr = todayStr();
     const savedDate = localStorage.getItem("volt_today_study_date");
     const savedTotal = parseInt(localStorage.getItem("volt_total_study_seconds") || "0", 10);
     const savedSessions = parseInt(localStorage.getItem("volt_completed_sessions") || "0", 10);
@@ -68596,19 +68808,34 @@ function loadFocusTrackerData() {
       const parsedH = parseInt(savedCelebratedHour, 10);
       FOCUS_TRACKER.lastCelebratedHour = isNaN(parsedH) ? 0 : parsedH;
     } else {
-      // First time loading this feature: initialize lastCelebratedHour to current integer hour
-      // so it will celebrate upon reaching the NEXT hour milestone!
       FOCUS_TRACKER.lastCelebratedHour = Math.floor(FOCUS_TRACKER.totalSeconds / 3600);
       localStorage.setItem("volt_last_celebrated_hour", String(FOCUS_TRACKER.lastCelebratedHour));
     }
     
-    if (savedDate === todayStr) {
+    if (savedDate === tStr) {
       const savedToday = parseInt(localStorage.getItem("volt_today_study_seconds") || "0", 10);
       FOCUS_TRACKER.todaySeconds = isNaN(savedToday) ? 0 : savedToday;
     } else {
-      localStorage.setItem("volt_today_study_date", todayStr);
+      localStorage.setItem("volt_today_study_date", tStr);
       localStorage.setItem("volt_today_study_seconds", "0");
       FOCUS_TRACKER.todaySeconds = 0;
+    }
+
+    // Hydrate from PROGRESS.studyTime if PROGRESS has greater values (e.g. from cloud sync)
+    if (typeof PROGRESS !== "undefined" && PROGRESS && PROGRESS.studyTime) {
+      const st = PROGRESS.studyTime;
+      if ((st.totalSeconds || 0) > FOCUS_TRACKER.totalSeconds) {
+        FOCUS_TRACKER.totalSeconds = st.totalSeconds;
+      }
+      if (st.todayDate === tStr && (st.todaySeconds || 0) > FOCUS_TRACKER.todaySeconds) {
+        FOCUS_TRACKER.todaySeconds = st.todaySeconds;
+      }
+      if ((st.completedSessions || 0) > FOCUS_TRACKER.completedSessions) {
+        FOCUS_TRACKER.completedSessions = st.completedSessions;
+      }
+      if ((st.lastCelebratedHour || 0) > (FOCUS_TRACKER.lastCelebratedHour || 0)) {
+        FOCUS_TRACKER.lastCelebratedHour = st.lastCelebratedHour;
+      }
     }
   } catch (e) {
     console.warn("Storage access restricted for focus tracker", e);
@@ -68616,13 +68843,31 @@ function loadFocusTrackerData() {
 }
 
 function saveFocusTrackerData() {
+  const tStr = todayStr();
   try {
     localStorage.setItem("volt_total_study_seconds", String(FOCUS_TRACKER.totalSeconds));
     localStorage.setItem("volt_today_study_seconds", String(FOCUS_TRACKER.todaySeconds));
+    localStorage.setItem("volt_today_study_date", tStr);
     localStorage.setItem("volt_completed_sessions", String(FOCUS_TRACKER.completedSessions));
     localStorage.setItem("volt_focus_sound", String(FOCUS_TRACKER.soundEnabled));
     localStorage.setItem("volt_last_celebrated_hour", String(FOCUS_TRACKER.lastCelebratedHour || 0));
   } catch (e) {}
+
+  if (typeof PROGRESS !== "undefined" && PROGRESS) {
+    if (!PROGRESS.studyTime) PROGRESS.studyTime = {};
+    PROGRESS.studyTime.totalSeconds = Math.max(PROGRESS.studyTime.totalSeconds || 0, FOCUS_TRACKER.totalSeconds || 0);
+    PROGRESS.studyTime.todaySeconds = Math.max(PROGRESS.studyTime.todaySeconds || 0, FOCUS_TRACKER.todaySeconds || 0);
+    PROGRESS.studyTime.todayDate = tStr;
+    PROGRESS.studyTime.completedSessions = Math.max(PROGRESS.studyTime.completedSessions || 0, FOCUS_TRACKER.completedSessions || 0);
+    PROGRESS.studyTime.lastCelebratedHour = Math.max(PROGRESS.studyTime.lastCelebratedHour || 0, FOCUS_TRACKER.lastCelebratedHour || 0);
+
+    // If student has done at least 30s of active study today, ensure today is recorded as active study day
+    if (FOCUS_TRACKER.todaySeconds >= 30 && (!PROGRESS.activeDays || !PROGRESS.activeDays.includes(tStr))) {
+      recordActiveStudyDay();
+    } else {
+      saveProgress(PROGRESS);
+    }
+  }
 }
 
 function playCelebrationChime() {
@@ -68782,7 +69027,7 @@ function playFocusChime() {
 
 function showFocusCompletionAlert() {
   setTimeout(() => {
-    alert("🎉 Focus Study Session Complete!\n\nOutstanding work! You dedicated " + Math.round(FOCUS_TRACKER.timerDuration / 60) + " minutes of deep concentration.\n\nTake a 5-minute break to rest your eyes before the next session!");
+    alert(`⚡ Focus Study Session Complete!\n\nOutstanding work! You dedicated ${Math.round(FOCUS_TRACKER.timerDuration / 60)} minutes of deep concentration.\n\nTake a 5-minute break to rest your eyes before the next session!`);
   }, 100);
 }
 
@@ -68790,7 +69035,9 @@ function tickFocusEngine() {
   if (document.visibilityState === "visible") {
     FOCUS_TRACKER.totalSeconds++;
     FOCUS_TRACKER.todaySeconds++;
-    if (FOCUS_TRACKER.totalSeconds % 5 === 0) {
+    
+    // Save to localStorage & sync to Firestore periodically (every 10s)
+    if (FOCUS_TRACKER.totalSeconds % 10 === 0) {
       saveFocusTrackerData();
     }
     
@@ -68828,6 +69075,19 @@ function initFocusTracker() {
   FOCUS_TRACKER.initialized = true;
   loadFocusTrackerData();
   setInterval(tickFocusEngine, 1000);
+
+  // Hook tab switch, page hide, and unload events to flush sync immediately
+  window.addEventListener("beforeunload", function() {
+    if (typeof saveFocusTrackerData === "function") saveFocusTrackerData();
+  });
+  window.addEventListener("pagehide", function() {
+    if (typeof saveFocusTrackerData === "function") saveFocusTrackerData();
+  });
+  document.addEventListener("visibilitychange", function() {
+    if (document.visibilityState === "hidden") {
+      if (typeof saveFocusTrackerData === "function") saveFocusTrackerData();
+    }
+  });
 }
 
 function toggleFocusTimer() {
@@ -79242,6 +79502,10 @@ function initGlobalAuthAndChatbot() {
         if (typeof userDocSnapshotUnsub === "function") {
           try { userDocSnapshotUnsub(); } catch(e){}
           userDocSnapshotUnsub = null;
+        }
+        if (typeof _cloudProgressUnsub === "function") {
+          try { _cloudProgressUnsub(); } catch(e){}
+          _cloudProgressUnsub = null;
         }
         currentUser = null;
         try { localStorage.removeItem("volt_user"); localStorage.removeItem("volt_token"); } catch(e){}
