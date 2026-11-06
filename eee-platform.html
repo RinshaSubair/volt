@@ -67885,6 +67885,19 @@ function nav(route){ ROUTE = route; window.scrollTo(0,0); render(); }
 
 function isFoundationLessonDone(id){ return !!(PROGRESS.completedTopics[id]||{}).concept; }
 
+function isTopicStudied(t){
+  if(!t) return false;
+  const check = (id) => {
+    if(!id || !PROGRESS.completedTopics) return false;
+    const rec = PROGRESS.completedTopics[id];
+    if(!rec) return false;
+    if(typeof rec === "boolean") return rec;
+    return !!(rec.concept || rec.mcq || rec.numerical || rec.interview || rec.done || Object.values(rec).some(Boolean));
+  };
+  if(typeof t === "string") return check(t);
+  return check(t.id) || (t.lessonId ? check(t.lessonId) : false);
+}
+
 function computeOverallStats(){
   const allTopicIds = Object.keys(LESSONS);
   let done=0;
@@ -69956,6 +69969,10 @@ function pageEeeZeroTopic(catId, topicId){
 
 function pageEeeZeroExplorer(filterCatId){
   const filteredCats = filterCatId ? EEE_ZERO_CATEGORIES.filter(c => c.id === filterCatId) : EEE_ZERO_CATEGORIES;
+  const totalCompleted = EEE_ZERO_CATEGORIES.reduce((acc, c) => acc + c.topics.filter(t => isTopicStudied(t)).length, 0);
+  const totalTopics = EEE_ZERO_CATEGORIES.reduce((acc, c) => acc + c.topics.length, 0);
+  const pctCompleted = totalTopics ? Math.round(100 * totalCompleted / totalTopics) : 0;
+
   const catFilterPills = `
     <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:14px;">
       <button class="btn ${!filterCatId ? 'btn-primary' : 'btn-secondary'}" style="font-size:12px;padding:4px 8px;white-space:nowrap;" data-nav="eeezero">All 40 Domains</button>
@@ -69963,12 +69980,28 @@ function pageEeeZeroExplorer(filterCatId){
     </div>
   `;
   const catBlocks = filteredCats.map(cat => {
+    let catDoneCount = 0;
     const topicsHtml = cat.topics.map(t => {
+      const isDone = isTopicStudied(t);
+      if(isDone) catDoneCount++;
       const navAttr = t.lessonId ? `data-nav="lesson:${t.lessonId}" style="cursor:pointer;"` : `data-nav="eeezero:${cat.id}:${t.id}" style="cursor:pointer;"`;
+      const statusBadge = isDone
+        ? `<span class="badge badge-studied-ok" style="background:rgba(16,185,129,0.14);color:#10b981;border:1px solid rgba(16,185,129,0.32);font-size:11px;font-weight:700;padding:2.5px 9px;border-radius:12px;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Completed
+          </span>`
+        : `<span class="badge badge-studied-pending" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.28);font-size:11px;font-weight:600;padding:2.5px 9px;border-radius:12px;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;">
+            <span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ef4444;"></span>
+            To Complete
+          </span>`;
+
       return `
         <div class="topic-row" ${navAttr}>
-          <div class="topic-left"><span class="topic-dot"></span>${t.title}</div>
-          <span style="font-size:12px;color:var(--text-faint);">→</span>
+          <div class="topic-left"><span class="topic-dot ${isDone ? 'done' : ''}"></span>${t.title}</div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            ${statusBadge}
+            <span style="font-size:12px;color:var(--text-faint);">→</span>
+          </div>
         </div>
       `;
     }).join("");
@@ -69981,7 +70014,7 @@ function pageEeeZeroExplorer(filterCatId){
             <b>Category ${cat.id}: ${cat.name}</b>
             <div style="font-size:12px;color:var(--text-dim);font-weight:normal;margin-top:2px;">${cat.desc}</div>
           </div>
-          <span class="course-meta" style="font-weight:normal;">(${cat.topics.length} topics)</span>
+          <span class="course-meta" style="font-weight:normal;">(${catDoneCount}/${cat.topics.length} completed)</span>
         </div>
         ${topicsHtml}
       </div>
@@ -69994,9 +70027,21 @@ function pageEeeZeroExplorer(filterCatId){
       <h2 style="font-size:21px;margin:0;">EEE From Zero: 40 Knowledge Domains</h2>
       <button class="btn btn-secondary" data-nav="learn">Back to Learn</button>
     </div>
-    <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:18px;">
+    <p style="color:var(--text-dim);font-size:13.5px;margin-bottom:14px;">
       Comprehensive knowledge taxonomy spanning fundamental physics, core apparatus, industrial control, smart systems, and practical career skills across 40 specialized domains.
     </p>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;background:var(--bg-card);border:1px solid var(--border);padding:10px 16px;border-radius:8px;flex-wrap:wrap;">
+      <div style="font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;">
+        <span>Curriculum Progress:</span>
+        <span style="color:#10b981;display:inline-flex;align-items:center;gap:4px;">● ${totalCompleted} Completed</span>
+        <span style="color:var(--text-faint);">|</span>
+        <span style="color:#ef4444;display:inline-flex;align-items:center;gap:4px;">● ${totalTopics - totalCompleted} To Complete</span>
+      </div>
+      <div style="flex:1;min-width:140px;max-width:220px;height:8px;background:var(--border);border-radius:4px;overflow:hidden;">
+        <div style="width:${pctCompleted}%;height:100%;background:#10b981;border-radius:4px;transition:width 0.3s ease;"></div>
+      </div>
+      <div style="font-size:12.5px;font-weight:700;color:var(--text-dim);">${pctCompleted}% Complete</div>
+    </div>
     ${catFilterPills}
     <div style="width:100%;max-width:100%;box-sizing:border-box;">
       ${catBlocks}
@@ -70798,13 +70843,6 @@ function pageHome(stats){
       <div class="card stat-card"><div class="stat-top"><span class="stat-label">Today's target</span><span class="stat-ic">${iconFor("home")}</span></div><div class="stat-num">${count}/${target}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,100*count/target)}%"></div></div></div>
     </div>
 
-    <div class="section-title"><h2>Continue learning</h2><a class="link" data-nav="learn">See all →</a></div>
-    <div class="grid" style="display:flex;flex-direction:column;gap:12px;">
-      ${learnedResumeCard("charge","Electric Charge","EEE From Zero")}
-      ${learnedResumeCard("kcl","Kirchhoff's Current Law","Sem 3 · Circuit Theory")}
-      ${learnedResumeCard("apt-percentage","Percentage","Aptitude")}
-    </div>
-
     ${mockHomeCardHtml()}
 
     <div class="section-title"><h2>Platform Pillars & Quick Access</h2></div>
@@ -70956,9 +70994,17 @@ function pageCourse(sem, code){
   const modules = c.modules.map((m,mi)=>{
     const topics = m.topics.map(t=>{
       const lessonId = findLessonIdForTopic(t);
+      const isDone = lessonId ? isTopicStudied(lessonId) : false;
+      const statusBadge = lessonId ? (isDone
+        ? `<span class="badge badge-studied-ok" style="background:rgba(16,185,129,0.14);color:#10b981;border:1px solid rgba(16,185,129,0.32);font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;"><polyline points="20 6 9 17 4 12"></polyline></svg> Completed</span>`
+        : `<span class="badge badge-studied-pending" style="background:rgba(239,68,68,0.1);color:#ef4444;border:1px solid rgba(239,68,68,0.28);font-size:11px;font-weight:600;padding:2px 8px;border-radius:12px;letter-spacing:0.02em;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#ef4444;"></span> To Complete</span>`
+      ) : '';
       return `<div class="topic-row" ${lessonId?`data-nav="lesson:${lessonId}"`:''} style="cursor:${lessonId?'pointer':'default'};">
-        <div class="topic-left"><span class="topic-dot"></span>${t}</div>
-        ${lessonId ? `<span style="font-size:12px;color:var(--text-faint);">→</span>` : ''}
+        <div class="topic-left"><span class="topic-dot ${isDone?'done':''}"></span>${t}</div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          ${statusBadge}
+          ${lessonId ? `<span style="font-size:12px;color:var(--text-faint);">→</span>` : ''}
+        </div>
       </div>`;
     }).join("");
     return `<div class="module-block"><div class="module-head"><div style="font-weight:600;">Module ${mi+1}: ${m.name}</div><span class="course-meta">${m.topics.length} topics</span></div>${topics}</div>`;
@@ -75144,7 +75190,7 @@ function pageLesson(id){
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
             <span class="pill pill-ok">Verified Lesson</span>
             <span class="pill pill-neutral">${cl}</span>
-            <span style="font-size:12.5px;color:var(--text-dim);">${studied?"Marked as studied ✓":"Not yet marked as studied"}</span>
+            <span id="lessonStudiedStatus" style="font-size:12.5px;color:var(--text-dim);">${studied?"Marked as studied ✓":"Not yet marked as studied"}</span>
           </div>
         </div>
 
@@ -78728,7 +78774,22 @@ render = function(){
   if(ROUTE.page==="admin") wireAdminHandlers();
   if(ROUTE.page==="lesson"){
     const b=document.getElementById("markStudiedBtn");
-    if(b) b.addEventListener("click",()=>{ markTopicActivity(ROUTE.id,"concept"); b.textContent="Studied ✓"; const sub=document.querySelector(".lesson-sub"); if(sub) sub.firstChild.textContent="Marked as studied ✓ "; });
+    if(b) b.addEventListener("click",()=>{
+      const isDone = isFoundationLessonDone(ROUTE.id);
+      const sub = document.getElementById("lessonStudiedStatus");
+      if(isDone){
+        if(PROGRESS.completedTopics[ROUTE.id]){
+          PROGRESS.completedTopics[ROUTE.id].concept = false;
+        }
+        b.textContent = "Mark as studied";
+        if(sub) sub.textContent = "Not yet marked as studied";
+      } else {
+        markTopicActivity(ROUTE.id, "concept");
+        b.textContent = "Studied ✓";
+        if(sub) sub.textContent = "Marked as studied ✓";
+      }
+      saveProgress(PROGRESS);
+    });
   }
 };
 
