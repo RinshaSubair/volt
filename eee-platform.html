@@ -68237,7 +68237,8 @@ function renderMath(container){
     // skip the innerHTML→innerText flattening pipeline; renderMathInElement (Step 2)
     // will handle the box correctly with its HTML structure intact.
     if(box.querySelector('p, h1, h2, h3, h4, h5, h6, li')) return;
-    if(box.innerHTML.includes('\\(') || box.innerHTML.includes('\\[') || box.innerHTML.includes('$$')) return;
+    if(box.innerHTML.includes('\\(') && box.innerHTML.includes('\\)')) return;
+    if((box.innerHTML.match(/\$\$/g) || []).length >= 2) return;
 
     let inner = box.innerHTML;
     if (inner.includes('<br')) {
