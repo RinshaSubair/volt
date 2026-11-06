@@ -67872,11 +67872,24 @@ function repairLatex(str){
   // 7. Fix unescaped & inside \text{...}
   s = s.replace(/(\\text\{[^{}]*?)&([^{}]*\})/g, '$1\\&$2');
 
-  // 8. Fix Greek commands inside \text{...} (KaTeX rejects \phi etc in text mode) and unescaped _
+  // 8. Fix Greek commands and math operators inside \text{...} (KaTeX rejects \phi, \times etc in text mode)
   s = s.replace(/\\text\{[^{}]*\}/g, function(tm) {
-    const gMap = { phi:'φ', theta:'θ', omega:'ω', alpha:'α', beta:'β', gamma:'γ', delta:'δ', lambda:'λ', mu:'μ', pi:'π', rho:'ρ', sigma:'σ', tau:'τ', psi:'ψ', zeta:'ζ', eta:'η', Phi:'Φ', Delta:'Δ', Omega:'Ω' };
-    let res = tm.replace(/\\(Phi|Delta|Omega|phi|theta|omega|alpha|beta|gamma|delta|lambda|mu|pi|rho|sigma|tau|psi|zeta|eta)\b/g, (m, g) => gMap[g] || m);
+    const sMap = {
+      times: '×', cdot: '·', pm: '±', mp: '∓', le: '≤', ge: '≥', sum: '∑', int: '∫',
+      phi:'φ', theta:'θ', omega:'ω', alpha:'α', beta:'β', gamma:'γ', delta:'δ', lambda:'λ', mu:'μ', pi:'π', rho:'ρ', sigma:'σ', tau:'τ', psi:'ψ', zeta:'ζ', eta:'η', Phi:'Φ', Delta:'Δ', Omega:'Ω'
+    };
+    let res = tm.replace(/\\(times|cdot|pm|mp|le|ge|sum|int|Phi|Delta|Omega|phi|theta|omega|alpha|beta|gamma|delta|lambda|mu|pi|rho|sigma|tau|psi|zeta|eta)\b/g, (m, g) => sMap[g] || m);
     return res.replace(/(?<!\\)_/g, '\\_');
+  });
+  s = s.replace(/\\text\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, function(tm, inner) {
+    let r = inner.replace(/\\(delta|phi|theta|omega|alpha|beta|gamma|lambda|mu|pi|rho|sigma|tau|psi|zeta|eta|Delta|Omega|Phi)\b(?:\s*\\?_\{?([0-9a-zA-Z]+)\}?)?/g, function(m, sym, sub){
+      return '} \\' + sym + (sub ? ('_{' + sub + '}') : '') + ' \\text{';
+    });
+    return '\\text{' + r + '}';
+  });
+  s = s.replace(/\s*\\text\{\s*_\{?([0-9a-zA-Z]+)\}?\s*/g, '_{$1} \\text{');
+  s = s.replace(/\\text\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}/g, function(tm) {
+    return tm.replace(/([A-Za-z0-9])_\{?([A-Za-z0-9]+)\}?/g, '} $1_{$2} \\text{');
   });
 
   // 9. Fix bare le / ge without backslash
@@ -67919,10 +67932,13 @@ function repairLatex(str){
 
 function convertAsciiToLatex(text) {
   if (!text) return '';
-  let s = text.replace(/&nbsp;/g, ' ').replace(/&amp;/g, ' and ');
+  let s = text.replace(/&nbsp;/g, ' ').replace(/\u00a0+/g, ' \\quad ').replace(/&amp;/g, ' and ');
+
+  const subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','₋':'-','ₙ':'n','ᵢ':'i','ⱼ':'j','ₖ':'k','ᵣ':'r'};
+  s = s.replace(/[₀-₉₋ₙᵢⱼₖᵣ]+/g, (m) => '_{' + Array.from(m).map(c => subMap[c] || c).join('') + '}');
+  s = s.replace(/[−–]/g, '-').replace(/×/g, '\\times ').replace(/·/g, '\\cdot ');
 
   // 1. Convert sqrt before any bracket/parenthesis manipulation:
-  // e.g. √(a² + b²) -> \sqrt{a² + b²}, √[a² + b²] -> \sqrt{a² + b²}
   s = s.replace(/(?:&radic;|√|\\sqrt)\s*\[([^\]]+)\]/g, '\\sqrt{$1}');
   s = s.replace(/(?:&radic;|√|\\sqrt)\s*\(([^)]+)\)/g, '\\sqrt{$1}');
   s = s.replace(/&radic;/g, '\\sqrt ');
@@ -67930,51 +67946,49 @@ function convertAsciiToLatex(text) {
   s = s.replace(/√/g, '\\sqrt ');
 
   // 2. Format parenthetical prose notes with proper spacing and text wrapper:
-  // e.g. '(circuit turn-off time must exceed t_q)' -> '\quad \text{(circuit turn-off time must exceed } t_{q} \text{)}'
+  function formatProse(inner, openCh, closeCh) {
+    if (inner.includes('\\text{')) return openCh + inner + closeCh;
+    let normInner = inner.replace(/[−–]/g, '-').replace(/Δ/g, '\\Delta ').replace(/Σ|∑/g, '\\sum ');
+    const parts = normInner.split(/(\\[A-Za-z]+(?:_[A-Za-z0-9]+)?|[A-Za-z]{1,4}_(?:\{[A-Za-z0-9]+\}|[A-Za-z0-9]{1,6})|[φθωαβλμπΦΔΩ]|[A-Za-z0-9_]+\s*[\/*+\-]\s*\\[A-Za-z]+|[A-Za-z0-9_]+\/[A-Za-z0-9_]+)/g);
+    let out = ' \\quad \\text{' + openCh;
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i];
+      if (!p) continue;
+      if (/^\\[A-Za-z]+(?:_[A-Za-z0-9]+)?$/.test(p) || /^[φθωαβλμπΦΔΩ]$/.test(p) || /[\/*+\-]/.test(p)) {
+        out += '} ' + p + ' \\text{';
+      } else if (/^[A-Za-z]{1,4}_(?:\{[A-Za-z0-9]+\}|[A-Za-z0-9]{1,6})$/.test(p)) {
+        const bp = p.split('_');
+        const rawSub = bp[1].replace(/[{}]/g, '');
+        const subTex = (rawSub.length === 1 || /^\d+$/.test(rawSub)) ? rawSub : '\\text{' + rawSub + '}';
+        out += '} ' + bp[0] + '_{' + subTex + '} \\text{';
+      } else {
+        out += p;
+      }
+    }
+    out += closeCh + '}';
+    return out;
+  }
+
   s = s.replace(/\(([^)]+)\)/g, function(match, inner){
     const words = inner.match(/[a-zA-Z]{2,}/g);
-    // Ignore if it looks like pure math expressions or arguments e.g. (s^2 + 1) or (V cos φ + I R_a)
-    const isMathExp = /[\^=+\-*\/_]/.test(inner) && (!words || words.length <= 4 && !/\b(for|lagging|leading|use|since|when|must|with|where|and|or)\b/i.test(inner));
+    const hasMathOp = /[\^=+\-*\/\_~±∓≤≥≈{}\\]/.test(inner);
+    const hasMathFunc = /\b(sin|cos|tan|cot|sec|csc|log|ln|exp|det|sqrt|times|cdot)\b/i.test(inner);
+    const hasGreek = /[φθωαβΔλμπ]/.test(inner);
+    const isMathExp = (hasMathOp || hasMathFunc || hasGreek) && (!words || words.length <= 4 && !/\b(for|lagging|leading|use|since|when|must|with|where|and|or|terminal|voltage|per phase|phase|impedance|load|change|proportion|evaluated)\b/i.test(inner));
     if (words && words.length >= 2 && !isMathExp) {
-      let normInner = inner.replace(/−/g, '-').replace(/–/g, '-');
-      const parts = normInner.split(/([A-Za-z]{1,4}_[A-Za-z0-9]{1,6})/g);
-      let out = ' \\quad \\text{(';
-      for (let i = 0; i < parts.length; i++) {
-        const p = parts[i];
-        if (/^[A-Za-z]{1,4}_[A-Za-z0-9]{1,6}$/.test(p)) {
-          const bp = p.split('_');
-          const subTex = (bp[1].length === 1 || /^\d+$/.test(bp[1])) ? bp[1] : '\\text{' + bp[1] + '}';
-          out += '} ' + bp[0] + '_{' + subTex + '} \\text{';
-        } else {
-          out += p;
-        }
-      }
-      out += ')}';
-      return out;
+      return formatProse(inner, '(', ')');
     }
     return match;
   });
 
-  // Also handle square brackets containing prose notes: e.g. '[circuit turn-off time must exceed t_q]'
   s = s.replace(/\[([^\]]+)\]/g, function(match, inner){
     const words = inner.match(/[a-zA-Z]{2,}/g);
-    const isMathExp = /[\^=+\-*\/_]/.test(inner) && (!words || words.length <= 4 && !/\b(for|lagging|leading|use|since|when|must|with|where|and|or)\b/i.test(inner));
+    const hasMathOp = /[\^=+\-*\/\_~±∓≤≥≈{}\\]/.test(inner);
+    const hasMathFunc = /\b(sin|cos|tan|cot|sec|csc|log|ln|exp|det|sqrt|times|cdot)\b/i.test(inner);
+    const hasGreek = /[φθωαβΔλμπ]/.test(inner);
+    const isMathExp = (hasMathOp || hasMathFunc || hasGreek) && (!words || words.length <= 4 && !/\b(for|lagging|leading|use|since|when|must|with|where|and|or|terminal|voltage|per phase|phase|impedance|load|change|proportion|evaluated)\b/i.test(inner));
     if (words && words.length >= 2 && !isMathExp) {
-      let normInner = inner.replace(/−/g, '-').replace(/–/g, '-');
-      const parts = normInner.split(/([A-Za-z]{1,4}_[A-Za-z0-9]{1,6})/g);
-      let out = ' \\quad \\text{[';
-      for (let i = 0; i < parts.length; i++) {
-        const p = parts[i];
-        if (/^[A-Za-z]{1,4}_[A-Za-z0-9]{1,6}$/.test(p)) {
-          const bp = p.split('_');
-          const subTex = (bp[1].length === 1 || /^\d+$/.test(bp[1])) ? bp[1] : '\\text{' + bp[1] + '}';
-          out += '} ' + bp[0] + '_{' + subTex + '} \\text{';
-        } else {
-          out += p;
-        }
-      }
-      out += ']}';
-      return out;
+      return formatProse(inner, '[', ']');
     }
     return match;
   });
@@ -67986,10 +68000,6 @@ function convertAsciiToLatex(text) {
 
   // Convert abbreviations that shouldn't be italic product of letters:
   s = s.replace(/\b(HCF|LCM|ADC|DAC|LSB|MSB|RMS|THD|SIL|NGR)\b/g, '\\text{$1}');
-
-  // Convert consecutive unicode subscripts to _{digits}
-  const subMap = {'₀':'0','₁':'1','₂':'2','₃':'3','₄':'4','₅':'5','₆':'6','₇':'7','₈':'8','₉':'9','₋':'-','ₙ':'n','ᵢ':'i','ⱼ':'j','ₖ':'k','ᵣ':'r'};
-  s = s.replace(/[₀-₉₋ₙᵢⱼₖᵣ]+/g, (m) => '_{' + Array.from(m).map(c => subMap[c] || c).join('') + '}');
 
   // Convert consecutive unicode superscripts to ^{chars} (including ¹²³ U+00B9 U+00B2 U+00B3)
   const supMap = {'¹':'1','²':'2','³':'3','⁰':'0','⁴':'4','⁵':'5','⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁺':'+','⁻':'-','ᵐ':'m','ⁿ':'n'};
@@ -68028,11 +68038,8 @@ function convertAsciiToLatex(text) {
   s = s.replace(/η/g, '\\eta ');
   s = s.replace(/ρ/g, '\\rho ');
   s = s.replace(/Φ/g, '\\Phi ');
-  s = s.replace(/·/g, '\\cdot ');
-  s = s.replace(/×/g, '\\times ');
   s = s.replace(/±/g, '\\pm ');
   s = s.replace(/∓/g, '\\mp ');
-  s = s.replace(/−/g, '-');
   s = s.replace(/⇔/g, '\\iff ');
   s = s.replace(/→/g, '\\to ');
   s = s.replace(/⇒/g, '\\implies ');
@@ -68046,8 +68053,10 @@ function convertAsciiToLatex(text) {
   s = s.replace(/\^\{([^}]+)\}\^([0-9a-zA-Z]+)/g, '^{$1 $2}');
 
   s = s.replace(/([0-9a-zA-Z\)\}])\s*\^\s*([0-9a-zA-Z]+|\([^\)]+\))/g, '$1^{$2}');
+  // Fix bare ^ before \quad or \text
+  s = s.replace(/\^\s*(?:\\quad\s*)*(\\text\{[^{}]*\})/g, '^{$1}');
 
-  // Convert variable subscripts outside \\text{...}: e.g. t_q -> t_{q}, t_rr -> t_{\text{rr}}
+  // Convert variable subscripts outside \text{...}: e.g. t_q -> t_{q}, t_rr -> t_{\text{rr}}
   const segs = s.split(/(\\text\{[^{}]*\})/g);
   for (let i = 0; i < segs.length; i++) {
     if (!segs[i].startsWith('\\text{')) {
@@ -68079,7 +68088,7 @@ function convertInlineDollarMath(root){
     if(/<[a-z\/][\s\S]*>/i.test(s)) return false;
     if(/\\/.test(s) || /\{/.test(s) || /\}/.test(s)) return true;
     if(proseWords.test(s)) return false;
-    if(/[\^_=<>≤≥±∓×·÷≈∝≠≡∑∫√°%πμΩΔθφωαβληρΦ:/\|\'\[\]\(\)]/.test(s)) return true;
+    if(/[\^_=<>≤≥±∓×·÷≈∝≠≡∑∫√°%πμΩΔθφωαβληρΦ:\/\|\'[\]\(\)]/.test(s)) return true;
     if(/^[\+\-]?[a-zA-Z0-9_\.:,\s\+\-\*\/]+$/.test(s)) return true;
     return false;
   }
@@ -68090,27 +68099,19 @@ function convertInlineDollarMath(root){
   const commonAbbrRe = new RegExp('^(?:' + commonAbbrVars + ')$');
   const lowerMathVars = 't|f|v|i|x|y|z|w|r|p|s|k|e|n|m|q|d|c|a|b';
   const basePattern = '([jJ]?)(' + greekNames + '|' + commonAbbrVars + '|[A-Z]|[' + lowerMathVars + '])';
-  const subVarRegex = new RegExp('(?<![A-Za-z0-9_\\\\$])' + basePattern + '_([A-Za-z0-9]{1,5})(?![A-Za-z0-9_])', 'g');
+  const subVarRegex = new RegExp('(?<![A-Za-z0-9_\\$])' + basePattern + '_([A-Za-z0-9]{1,5})(?![A-Za-z0-9_])', 'g');
 
   function convertSubscripts(text){
     if(!text || !text.includes('_')) return text;
-    // Don't modify parts already wrapped in math delimiters \(...\) or $$...$$
-    const parts = text.split(/(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|\$\$[\s\S]*?\$\$)/g);
+    // Don't modify text that already contains LaTeX macros
+    if(/\\[a-zA-Z]+/.test(text)) return text;
+    const parts = text.split(/(\\([\s\S]*?\\)|\\\[[\s\S]*?\\\]|\$\$[\s\S]*?\$\$)/g);
     for(let i = 0; i < parts.length; i++){
       const seg = parts[i];
       if(!seg || seg.startsWith('\\(') || seg.startsWith('\\[') || seg.startsWith('$$')) continue;
       parts[i] = seg.replace(subVarRegex, function(match, prefixJ, base, sub){
-        let baseTex;
-        if(greekRe.test(base)){
-          baseTex = '\\' + base;
-        } else if(commonAbbrRe.test(base)){
-          baseTex = '\\text{' + base + '}';
-        } else {
-          baseTex = base;
-        }
-        if(prefixJ){
-          baseTex = prefixJ + baseTex;
-        }
+        let baseTex = greekRe.test(base) ? ('\\' + base) : (commonAbbrRe.test(base) ? ('\\text{' + base + '}') : base);
+        if(prefixJ) baseTex = prefixJ + baseTex;
         const subTex = (sub.length === 1 || /^\d+$/.test(sub)) ? sub : ('\\text{' + sub + '}');
         return '\\(' + baseTex + '_{' + subTex + '}\\)';
       });
@@ -68118,7 +68119,7 @@ function convertInlineDollarMath(root){
     return parts.join('');
   }
 
-  function transformText(text){
+  function transformText(text, isInsidePureFormulaBox){
     if(!text) return text;
     let s = text;
 
@@ -68131,7 +68132,12 @@ function convertInlineDollarMath(root){
     }
 
     // 2. Restore bare pi inside math if unescaped: e.g. "4 pi \varepsilon" -> "4 \pi \varepsilon"
-    s = s.replace(/(?<=\d\s*|\s)pi(?=[\s_\\}])/g, '\\pi');
+    s = s.replace(/(?<=\d\s*|\s)pi(?=[\s_\}])/g, '\\pi');
+
+    // If text is inside a dedicated math formula box, do NOT mutate brackets or subscripts
+    if (isInsidePureFormulaBox) {
+      return s;
+    }
 
     // 3. Restore swallowed display math delimiters: [ ... ] -> \[ ... \]
     s = s.replace(/(?:^|\n|\s)\[\s*([A-Za-z0-9_\\\^\(\)\{\}\s=+\-*\/<>\.,\|±∓×·÷≈∝≠≡∑∫√°%πμΩΔθφωαβληρΦ]+?(?:\\(?:frac|sqrt|text|times|pi|varepsilon|mu|omega|alpha|beta|gamma|Delta|Omega|quad|int|sum)|[=≈≡∝])[\s\S]*?)\s*\](?:\s|\n|$)/g, function(match, innerMath){
@@ -68161,7 +68167,7 @@ function convertInlineDollarMath(root){
   }
 
   if(root.nodeType === 3){
-    const transformed = transformText(root.nodeValue);
+    const transformed = transformText(root.nodeValue, false);
     if(transformed !== root.nodeValue) root.nodeValue = transformed;
     return;
   }
@@ -68171,8 +68177,6 @@ function convertInlineDollarMath(root){
     acceptNode: function(node){
       const val = node.nodeValue;
       if(!val) return NodeFilter.FILTER_REJECT;
-      const hasTarget = val.includes('$') || val.includes('_') || /[\x08\x0b\x0c]|\t(?:ext|imes|au|heta)\b/.test(val) || (val.includes('[') && val.includes(']'));
-      if(!hasTarget) return NodeFilter.FILTER_REJECT;
       let p = node.parentElement;
       while(p && p !== root){
         if(ignoredTags[p.nodeName] || (p.classList && (p.classList.contains('katex') || p.classList.contains('katex-display')))){
@@ -68188,8 +68192,19 @@ function convertInlineDollarMath(root){
   while(walker.nextNode()) nodes.push(walker.currentNode);
 
   nodes.forEach(node => {
+    let p = node.parentElement;
+    let isInsidePureFormulaBox = false;
+    while(p && p !== root){
+      if(p.classList && p.classList.contains('formula-box')){
+        if(!p.querySelector('p, h1, h2, h3, h4, h5, h6, ul, ol, table, li')) {
+          isInsidePureFormulaBox = true;
+        }
+        break;
+      }
+      p = p.parentElement;
+    }
     const orig = node.nodeValue;
-    const transformed = transformText(orig);
+    const transformed = transformText(orig, isInsidePureFormulaBox);
     if(transformed !== orig){
       node.nodeValue = transformed;
     }
@@ -68210,27 +68225,26 @@ function renderMath(container){
     if(box.querySelector('.katex, ul, ol, table, code, pre')) return;
     // FIX Phase27: If box contains block-level HTML children (p, h4, div, li, etc.)
     // skip the innerHTML→innerText flattening pipeline; renderMathInElement (Step 2)
-    // will handle the box correctly with its HTML structure intact, preventing
-    // "$...$" prose fragments from being passed as bare math to katex.render().
-    if(box.querySelector('p, h1, h2, h3, h4, h5, h6, div, li')) return;
+    // will handle the box correctly with its HTML structure intact.
+    if(box.querySelector('p, h1, h2, h3, h4, h5, h6, li')) return;
 
     let inner = box.innerHTML;
     if (inner.includes('<br')) {
       inner = inner.replace(/<br\s*\/?>/gi, '\n');
     }
+    inner = inner.replace(/<sub>(.*?)<\/sub>/gi, '_$1')
+                 .replace(/<sup>(.*?)<\/sup>/gi, '^$1');
+
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = inner;
     let raw = tempDiv.innerText || tempDiv.textContent || '';
     raw = raw.trim();
     if(!raw) return;
 
-    // If box has multiple $$ or \[ blocks, let KaTeX renderMathInElement handle each
-    if ((raw.match(/\$\$/g) || []).length > 2 || (raw.match(/\\\[/g) || []).length > 1) {
-      return;
-    }
-
-    // If already delimited with multiple \(...\), let KaTeX renderMathInElement handle it
-    if (raw.includes('\\(') && !raw.includes('$$') && !raw.includes('\\[') && !raw.includes('\\]')) {
+    // Check display math delimiters
+    const hasDoubleDollar = (raw.match(/\$\$/g) || []).length >= 2;
+    const genuineDisplayMath = (raw.match(/(?:^|\s)\\\[\s*(?!\d+pt)/g) || []).length;
+    if (hasDoubleDollar || genuineDisplayMath > 1) {
       return;
     }
 
@@ -68241,37 +68255,19 @@ function renderMath(container){
     }
 
     // Pure prose check
-    const isPureProse = /^(Proximity Rule|Intervening Parenthetical|Past Perfect Sequence|Redundancy Errors|Conditional Tense Error|Correlative Inversion|Anchor \d|Primary Puzzle Archetypes|Standard 5-Option|Key Root Words|Prefix Dynamics|Suffix Categories|Structural Rules|Memory Storage of Multi-Byte|Execution Model:|Syntax:)/i.test(raw);
+    const isPureProse = /^(Face Value|Proximity Rule|Intervening Parenthetical|Past Perfect Sequence|Redundancy Errors|Conditional Tense Error|Correlative Inversion|Anchor \d|Primary Puzzle Archetypes|Standard 5-Option|Key Root Words|Prefix Dynamics|Suffix Categories|Structural Rules|Memory Storage of Multi-Byte|Execution Model:|Syntax:)/i.test(raw);
     if(isPureProse) return;
 
-    const hasPtLineBreak = /\\+\[(?:6|12)pt\]/.test(raw);
-    const hasDelims = raw.includes('$$') || raw.includes('\\[') || raw.includes('\\(') || raw.includes('\\begin');
-    const hasLatexCmd = /\\[a-zA-Z]+/.test(raw);
-    const hasMathSym = /[=∑Σ√∫∮∝≠≤≥φθωαβΔ·×−⇔→⇒²³⁴±∓≈≡]/.test(raw);
-    const hasMathOp = /[\+\-\*\/]/.test(raw) && /[0-9a-zA-Z]/.test(raw);
-    const hasSubscript = /_[0-9a-zA-Z]+|[₀-₉]/.test(raw);
-    const hasEquation = /[=≈≡∝⇔⇒]/.test(raw);
+    let clean = raw.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
 
-    const isMath = hasDelims || hasLatexCmd || hasMathSym || hasEquation || (hasMathOp && hasSubscript);
-    if(!isMath) return;
-
-    const splitRegex = /\\+\[(?:6|12)pt\]|\n\n+|\n|•/;
-    const hasMultiLine = hasPtLineBreak || raw.includes('\n') || raw.includes('•');
-
-    // FIX Phase27: \begin{aligned} / \begin{cases} must NOT be split line-by-line.
-    // Each row contains bare "&" alignment separators that katex.render() rejects.
-    // Render the entire block as one displayMode call instead.
-    if (raw.includes('\\begin{aligned}') || raw.includes('\\begin{cases}') ||
-        raw.includes('\\begin{align}')   || raw.includes('\\begin{matrix}') ||
-        raw.includes('\\begin{bmatrix}') || raw.includes('\\begin{pmatrix}')) {
-      // Strip outer \[...\] or $$...$$ wrapper if present, then render whole block
-      let alignBlock = raw;
-      alignBlock = alignBlock.replace(/^\\\[|\\\]$/g, '').trim();
-      alignBlock = alignBlock.replace(/^\$\$|\$\$$/g, '').trim();
+    // LaTeX environments: \begin{aligned}, \begin{cases}, etc.
+    if (/\\begin\{(?:aligned|cases|align|matrix|bmatrix|pmatrix|gathered)\}/.test(clean)) {
       box.innerHTML = '';
       const alignDiv = document.createElement('div');
       try {
-        katex.render(repairLatex(alignBlock), alignDiv, { displayMode: true, throwOnError: false, output: 'html' });
+        katex.render(repairLatex(clean), alignDiv, { displayMode: true, throwOnError: false, output: 'html' });
+        box.appendChild(alignDiv);
+        return;
       } catch(e) {
         alignDiv.textContent = raw;
       }
@@ -68279,19 +68275,20 @@ function renderMath(container){
       return;
     }
 
+    const splitRegex = /\\+\[\s*\d*\s*pt\s*\]|\n\s*\n+|\n|(?<![a-zA-Z])\\\\(?![a-zA-Z])/g;
+    const hasPtLineBreak = /\\+\[\s*\d*\s*pt\s*\]/.test(clean);
+    const hasNewlines = clean.includes('\n');
 
-    if (hasMultiLine) {
-      const rawLines = raw.split(splitRegex).map(l => l.trim()).filter(Boolean);
+    if (hasPtLineBreak || hasNewlines) {
+      const rawLines = clean.split(splitRegex).map(l => l.trim()).filter(Boolean);
       if (rawLines.length > 1) {
-        box.innerHTML = '';
-        rawLines.forEach(line => {
-          if (!line) return;
-          let processedLine = line.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
-          processedLine = processedLine.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
-          if (!processedLine) return;
+        const divs = [];
+        for (let line of rawLines) {
+          let pLine = line.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
+          if (!pLine) continue;
 
           // Check if line is a descriptive definition: e.g. "F_O = field current that produces rated V on the OCC"
-          const defMatch = processedLine.match(/^([A-Za-z0-9_]{1,10}|[A-Za-z]_[A-Za-z0-9]{1,4})\s*=\s*([a-zA-Z\s]{4,}.*)$/);
+          const defMatch = pLine.match(/^([A-Za-z0-9_]{1,10}|[A-Za-z]_[A-Za-z0-9]{1,4})\s*=\s*([a-zA-Z\s]{4,}.*)$/);
           if (defMatch) {
             const sym = defMatch[1];
             const desc = defMatch[2].trim();
@@ -68308,47 +68305,49 @@ function renderMath(container){
               }
               defDiv.appendChild(symSpan);
               defDiv.appendChild(document.createTextNode(' = ' + desc));
-              box.appendChild(defDiv);
-              return;
+              divs.push(defDiv);
+              continue;
             }
           }
 
-          if (!/\\[a-zA-Z]+/.test(processedLine)) {
-            processedLine = convertAsciiToLatex(processedLine);
+          if (!/\\[a-zA-Z]+/.test(pLine)) {
+            pLine = convertAsciiToLatex(pLine);
           }
           const lineDiv = document.createElement('div');
-          lineDiv.style.margin = '4px 0';
+          lineDiv.style.margin = '6px 0';
           try {
-            katex.render(repairLatex(processedLine), lineDiv, { displayMode: true, throwOnError: false, output: 'html' });
+            katex.render(repairLatex(pLine), lineDiv, { displayMode: true, throwOnError: false, output: 'html' });
+            divs.push(lineDiv);
           } catch(e) {
             lineDiv.textContent = line;
+            divs.push(lineDiv);
           }
-          box.appendChild(lineDiv);
-        });
-        return;
+        }
+
+        if (divs.length > 0) {
+          box.innerHTML = '';
+          divs.forEach(d => box.appendChild(d));
+          return;
+        }
       }
     }
 
-    let cleanRaw = raw;
-    cleanRaw = cleanRaw.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
-    cleanRaw = cleanRaw.replace(/^\$\$|^\\\[|^\\\(|\$\$$|\\\]$|\\\)$/g, '').trim();
-    if(!hasLatexCmd) {
-      cleanRaw = convertAsciiToLatex(cleanRaw);
+    let single = clean;
+    if (!/\\[a-zA-Z]+/.test(single)) {
+      single = convertAsciiToLatex(single);
     }
-
+    box.innerHTML = '';
     try {
-      katex.render(repairLatex(cleanRaw), box, { displayMode: true, throwOnError: false, output: 'html' });
-    } catch(e) {}
+      katex.render(repairLatex(single), box, { displayMode: true, throwOnError: false, output: 'html' });
+    } catch(e) {
+      box.textContent = raw;
+    }
   });
 
   // 2. KaTeX renderMathInElement across container
   if(typeof renderMathInElement !== 'undefined'){
     try {
       renderMathInElement(container, {
-        // Phase27 Fix3: single-$ delimiter REMOVED. 94 lessons had .katex-error
-        // because prose containing bare $ signs (costs $$, $PV$, $T_{cycle}$)
-        // was mis-tokenized as inline math. Genuine inline math uses \(...\).
-        // Formula-box math uses the formula-box Stage-1 pipeline.
         delimiters: [
           {left: "$$", right: "$$", display: true},
           {left: "\\[", right: "\\]", display: true},
