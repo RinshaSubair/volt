@@ -67900,11 +67900,21 @@ function isTopicStudied(t){
 
 function computeOverallStats(){
   const allTopicIds = Object.keys(LESSONS);
-  let done=0;
-  allTopicIds.forEach(id=>{ if(topicWeight(id, AUDIT_KINDS) >= 0.999) done++; });
-  const mcqStats = PROGRESS.mcqStats;
-  const acc = mcqStats.attempted ? Math.round(100*mcqStats.correct/mcqStats.attempted) : 0;
-  return {totalTopics:allTopicIds.length, doneTopics:done, mcqAttempted:mcqStats.attempted, mcqCorrect:mcqStats.correct, acc};
+  let done = 0;
+  allTopicIds.forEach(id => {
+    if (isTopicStudied(id)) done++;
+  });
+  const mcqStats = PROGRESS.mcqStats || {};
+  const attempted = mcqStats.attempted || 0;
+  const correct = mcqStats.correct || 0;
+  const acc = attempted ? Math.round(100 * correct / attempted) : 0;
+  return {
+    totalTopics: allTopicIds.length,
+    doneTopics: done,
+    mcqAttempted: attempted,
+    mcqCorrect: correct,
+    acc: acc
+  };
 }
 
 function iconFor(name){
@@ -76707,24 +76717,146 @@ function wireCalculators(){
   };
 }
 
-/* ---------- PROGRESS ---------- */
-function pageProgress(stats){
-  const areas = {};
-  Object.entries(LESSONS).forEach(([id,l])=>{
-    areas[l.area] = areas[l.area]||{total:0,done:0};
-    areas[l.area].total++;
-    if(topicWeight(id,AUDIT_KINDS)>=0.999) areas[l.area].done++;
+/* ---------- PROGRESS & PERFORMANCE ANALYTICS ---------- */
+let PROGRESS_SHOW_ALL_CATS = false;
+
+function getDetailedProgressStats(){
+  const allTopicIds = Object.keys(LESSONS);
+  let totalLessonsStudied = 0;
+  allTopicIds.forEach(id => {
+    if (isTopicStudied(id)) totalLessonsStudied++;
   });
-  const areaRows = Object.entries(areas).map(([name,a])=>`
-    <div style="margin-bottom:14px;">
-      <div style="display:flex;justify-content:space-between;font-size:13.5px;margin-bottom:6px;"><span>${name}</span><span style="color:var(--text-dim);">${a.done}/${a.total}</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:${100*a.done/a.total}%"></div></div>
-    </div>`).join("");
-const milestone = getStudyMilestone(FOCUS_TRACKER.totalSeconds);
-    const studyHoursDisplay = formatHoursMinutes(FOCUS_TRACKER.totalSeconds);
-    const todayStudyDisplay = formatHoursMinutes(FOCUS_TRACKER.todaySeconds);
+
+  // EEE From Zero
+  let eeeTotal = 0, eeeDone = 0;
+  const catProgress = [];
+  const clusters = [
+    { name: "Electrical & Circuit Physics", cats: ["A","B","C","D"], icon: "⚡", total: 0, done: 0, desc: "Charge, potential, Ohm's law, circuit analysis & AC systems" },
+    { name: "Power Apparatus & Systems", cats: ["E","F","G","H","I","J","K"], icon: "⚙️", total: 0, done: 0, desc: "Transformers, DC/AC machines, transmission & grid protection" },
+    { name: "Electronics, Signals & Control", cats: ["L","M","N","O","P","Q","R"], icon: "📡", total: 0, done: 0, desc: "Analog/digital electronics, op-amps, control systems & sensors" },
+    { name: "Microcontrollers & Modern Tech", cats: ["S","T","U","V","W","X","Y","Z"], icon: "💻", total: 0, done: 0, desc: "Embedded processors, power electronics, EV tech & smart grid" },
+    { name: "Practical Engineering & Career", cats: ["AA","AB","AC","AD","AE","AF","AG","AH","AI","AJ","AK","AL","AM","AN"], icon: "🎯", total: 0, done: 0, desc: "Wiring, CAD, troubleshooting, safety codes & placement core" }
+  ];
+
+  if (typeof EEE_ZERO_CATEGORIES !== "undefined") {
+    EEE_ZERO_CATEGORIES.forEach(cat => {
+      const cTotal = cat.topics.length;
+      const cDone = cat.topics.filter(t => isTopicStudied(t)).length;
+      eeeTotal += cTotal;
+      eeeDone += cDone;
+      catProgress.push({ id: cat.id, name: cat.name, icon: cat.icon || "⚡", total: cTotal, done: cDone });
+      clusters.forEach(cl => {
+        if (cl.cats.includes(cat.id)) {
+          cl.total += cTotal;
+          cl.done += cDone;
+        }
+      });
+    });
+  }
+
+  // University Syllabus
+  let uniTotal = 0, uniDone = 0;
+  const semProgress = [];
+  if (typeof SYLLABUS !== "undefined") {
+    Object.keys(SYLLABUS).forEach(n => {
+      const s = SYLLABUS[n];
+      let sTotal = 0, sDone = 0;
+      s.courses.forEach(c => {
+        c.modules.forEach(m => {
+          m.topics.forEach(t => {
+            sTotal++;
+            const lId = findLessonIdForTopic(t);
+            if (lId && isTopicStudied(lId)) sDone++;
+          });
+        });
+      });
+      uniTotal += sTotal;
+      uniDone += sDone;
+      semProgress.push({ sem: n, label: s.label || `Semester ${n}`, total: sTotal, done: sDone, coursesCount: s.courses.length });
+    });
+  }
+
+  // Numericals & MCQs
+  const numTotal = typeof NUMERICALS !== "undefined" ? Object.keys(NUMERICALS).length : 0;
+  const numDone = Object.keys(PROGRESS.numericalsSolved || {}).length;
+  const mcqAttempted = (PROGRESS.mcqStats || {}).attempted || 0;
+  const mcqCorrect = (PROGRESS.mcqStats || {}).correct || 0;
+  const mcqAcc = mcqAttempted ? Math.round(100 * mcqCorrect / mcqAttempted) : 0;
+
+  return {
+    totalLessons: allTopicIds.length,
+    totalLessonsStudied,
+    eeeTotal: eeeTotal || 201,
+    eeeDone,
+    clusters,
+    catProgress,
+    uniTotal,
+    uniDone,
+    semProgress,
+    numTotal,
+    numDone,
+    mcqAttempted,
+    mcqCorrect,
+    mcqAcc
+  };
+}
+
+function pageProgress(stats){
+  const det = getDetailedProgressStats();
+  const milestone = getStudyMilestone(FOCUS_TRACKER.totalSeconds);
+  const studyHoursDisplay = formatHoursMinutes(FOCUS_TRACKER.totalSeconds);
+  const todayStudyDisplay = formatHoursMinutes(FOCUS_TRACKER.todaySeconds);
+  const target = PROGRESS.dailyTarget || 5;
+  const count = PROGRESS.todayDate === todayStr() ? (PROGRESS.todayCount || 0) : 0;
+  const totalCoveredPct = det.totalLessons ? Math.round(100 * det.totalLessonsStudied / det.totalLessons) : 0;
+
+  const clusterRows = det.clusters.map(cl => {
+    const pct = cl.total ? Math.round(100 * cl.done / cl.total) : 0;
+    return `
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:5px;">
+          <span style="font-weight:600;display:flex;align-items:center;gap:6px;">
+            <span>${cl.icon}</span> ${cl.name}
+          </span>
+          <span style="color:var(--text-dim);font-weight:600;font-size:12px;">${cl.done} / ${cl.total} <span style="font-weight:normal;opacity:0.8;">(${pct}%)</span></span>
+        </div>
+        <div class="bar-track" style="height:6px;"><div class="bar-fill" style="width:${pct}%;background:${pct > 0 ? '#10b981' : 'var(--border)'};"></div></div>
+        <div style="font-size:11px;color:var(--text-faint);margin-top:2px;">${cl.desc}</div>
+      </div>
+    `;
+  }).join("");
+
+  const semRows = det.semProgress.map(sp => {
+    const pct = sp.total ? Math.round(100 * sp.done / sp.total) : 0;
+    return `
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:5px;">
+          <span style="font-weight:600;">${sp.label} <span style="font-size:11px;color:var(--text-faint);font-weight:normal;">(${sp.coursesCount} courses)</span></span>
+          <span style="color:var(--text-dim);font-weight:600;font-size:12px;">${sp.done} / ${sp.total} <span style="font-weight:normal;opacity:0.8;">(${pct}%)</span></span>
+        </div>
+        <div class="bar-track" style="height:6px;"><div class="bar-fill" style="width:${pct}%;background:${pct > 0 ? 'var(--accent)' : 'var(--border)'};"></div></div>
+      </div>
+    `;
+  }).join("");
+
+  const allCatsRows = det.catProgress.map(c => {
+    const pct = c.total ? Math.round(100 * c.done / c.total) : 0;
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;">
+        <span style="display:flex;align-items:center;gap:6px;">
+          <span style="font-weight:700;color:var(--accent);font-size:11px;width:24px;">${c.id}</span>
+          <span>${c.name}</span>
+        </span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-weight:600;font-size:11.5px;color:${c.done > 0 ? '#10b981' : 'var(--text-dim)'};">${c.done}/${c.total}</span>
+          <span class="badge" style="background:${c.done === c.total && c.total > 0 ? 'rgba(16,185,129,0.15)' : c.done > 0 ? 'rgba(59,130,246,0.12)' : 'rgba(100,116,139,0.1)'};color:${c.done === c.total && c.total > 0 ? '#10b981' : c.done > 0 ? 'var(--accent)' : 'var(--text-faint)'};font-size:10px;padding:1px 6px;border-radius:10px;">${pct}%</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+
   return `
-    <h2 style="font-size:20px;margin-bottom:14px;">Progress & Study Analytics</h2>
+    <h2 style="font-size:21px;margin-bottom:14px;">Progress &amp; Performance Analytics</h2>
     
     <!-- Focused Study Confidence Banner -->
     <div class="card" style="margin-bottom:20px;background:linear-gradient(135deg, rgba(245, 158, 11, 0.12), rgba(16, 185, 129, 0.08));border:1px solid rgba(245, 158, 11, 0.25);padding:18px;">
@@ -76747,32 +76879,170 @@ const milestone = getStudyMilestone(FOCUS_TRACKER.totalSeconds);
       </div>
     </div>
 
-    <div class="grid grid-3" style="margin-bottom:24px;">
-      <div class="card stat-card" style="border-left:4px solid #f59e0b;"><div class="stat-label">Total Time Invested</div><div class="stat-num" style="color:#f59e0b;">${studyHoursDisplay}</div></div>
-      <div class="card stat-card" style="border-left:4px solid #10b981;"><div class="stat-label">Today's Focus Time</div><div class="stat-num" style="color:#10b981;">${todayStudyDisplay}</div></div>
-      <div class="card stat-card" style="border-left:4px solid #38bdf8;"><div class="stat-label">Focus Sessions Done</div><div class="stat-num" style="color:#38bdf8;">${FOCUS_TRACKER.completedSessions}</div></div>
-      <div class="card stat-card"><div class="stat-label">Topics fully studied</div><div class="stat-num">${stats.doneTopics}/${stats.totalTopics}</div></div>
-      <div class="card stat-card"><div class="stat-label">MCQ accuracy</div><div class="stat-num">${stats.acc}%</div></div>
-      <div class="card stat-card"><div class="stat-label">Current streak</div><div class="stat-num">${PROGRESS.streak||0}d</div></div>
-      <div class="card stat-card"><div class="stat-label">Numericals worked</div><div class="stat-num">${Object.keys(PROGRESS.numericalsSolved||{}).length}/${Object.keys(NUMERICALS).length}</div></div>
-      <div class="card stat-card"><div class="stat-label">Interview Qs reviewed</div><div class="stat-num">${Object.keys(PROGRESS.interviewSeen||{}).length}/${Object.keys(INTERVIEW).length}</div></div>
-      <div class="card stat-card"><div class="stat-label">Topics at PLACEMENT READY</div><div class="stat-num">${contentTotals()["PLACEMENT READY"]}</div></div>
+    <!-- 4 Key Performance Vitals Grid -->
+    <div class="grid grid-4" style="grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:14px;margin-bottom:24px;">
+      <div class="card stat-card" style="border-left:4px solid var(--accent);padding:16px;">
+        <div class="stat-top"><span class="stat-label">Curriculum Studied</span><span class="stat-ic">📖</span></div>
+        <div class="stat-num" style="color:var(--text);">${det.totalLessonsStudied} <span style="font-size:14px;color:var(--text-dim);font-weight:normal;">/ ${det.totalLessons}</span></div>
+        <div class="bar-track" style="margin:8px 0 6px 0;"><div class="bar-fill" style="width:${Math.min(100, 100*det.totalLessonsStudied/det.totalLessons)}%;background:var(--accent);"></div></div>
+        <div style="font-size:12px;color:var(--text-dim);display:flex;justify-content:space-between;">
+          <span>${totalCoveredPct}% covered</span>
+          <span style="color:#10b981;font-weight:600;">Active</span>
+        </div>
+      </div>
+
+      <div class="card stat-card" style="border-left:4px solid #10b981;padding:16px;">
+        <div class="stat-top"><span class="stat-label">MCQ Accuracy</span><span class="stat-ic">🎯</span></div>
+        <div class="stat-num" style="color:#10b981;">${det.mcqAcc}%</div>
+        <div class="bar-track" style="margin:8px 0 6px 0;"><div class="bar-fill" style="width:${det.mcqAcc}%;background:#10b981;"></div></div>
+        <div style="font-size:12px;color:var(--text-dim);display:flex;justify-content:space-between;">
+          <span>${det.mcqAttempted} attempted</span>
+          <span>${det.mcqCorrect} correct</span>
+        </div>
+      </div>
+
+      <div class="card stat-card" style="border-left:4px solid #38bdf8;padding:16px;">
+        <div class="stat-top"><span class="stat-label">Numericals Solved</span><span class="stat-ic">∫</span></div>
+        <div class="stat-num" style="color:#38bdf8;">${det.numDone} <span style="font-size:14px;color:var(--text-dim);font-weight:normal;">/ ${det.numTotal}</span></div>
+        <div class="bar-track" style="margin:8px 0 6px 0;"><div class="bar-fill" style="width:${det.numTotal ? Math.min(100, 100*det.numDone/det.numTotal) : 0}%;background:#38bdf8;"></div></div>
+        <div style="font-size:12px;color:var(--text-dim);display:flex;justify-content:space-between;">
+          <span>${det.numTotal ? Math.round(100*det.numDone/det.numTotal) : 0}% completed</span>
+          <span>Step-by-step</span>
+        </div>
+      </div>
+
+      <div class="card stat-card" style="border-left:4px solid #f59e0b;padding:16px;">
+        <div class="stat-top"><span class="stat-label">Daily Focus &amp; Streak</span><span class="stat-ic">🔥</span></div>
+        <div class="stat-num" style="color:#f59e0b;">${PROGRESS.streak||0} <span style="font-size:14px;color:var(--text-dim);font-weight:normal;">days streak</span></div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:10px;line-height:1.4;">
+          <div><b>${todayStudyDisplay}</b> focus today</div>
+          <div>${FOCUS_TRACKER.completedSessions||0} focus sessions done</div>
+        </div>
+      </div>
     </div>
-    <div class="card">${areaRows}</div>
+
+    <!-- Curriculum Mastery Breakdown (Structured) -->
+    <div class="grid grid-2" style="grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:16px;margin-bottom:24px;">
+      <!-- Track A: EEE From Zero -->
+      <div class="card" style="padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:20px;">⚡</span>
+            <div>
+              <div style="font-weight:700;font-size:15px;">EEE From Zero: Foundation</div>
+              <div style="font-size:12px;color:var(--text-dim);">40 Knowledge Domains · 201 Topics</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-size:15px;font-weight:700;color:#10b981;">${det.eeeDone} / ${det.eeeTotal}</span>
+            <div style="font-size:11.5px;color:var(--text-dim);">${Math.round(100*det.eeeDone/det.eeeTotal)}%</div>
+          </div>
+        </div>
+        <div class="bar-track" style="margin-bottom:18px;height:8px;"><div class="bar-fill" style="width:${100*det.eeeDone/det.eeeTotal}%;background:#10b981;"></div></div>
+
+        <div style="font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;">Domain Pillars</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+          ${clusterRows}
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">
+          <button class="btn btn-ghost" id="toggleAllCatsBtn" style="font-size:12px;padding:4px 8px;">View all 40 categories (${PROGRESS_SHOW_ALL_CATS ? '▲ Hide' : '▼ Show'})</button>
+          <a class="link" data-nav="eeezero" style="font-size:12.5px;cursor:pointer;">Go to EEE Zero →</a>
+        </div>
+
+        <div id="allCatsContainer" style="display:${PROGRESS_SHOW_ALL_CATS ? 'block' : 'none'};margin-top:14px;max-height:280px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px 12px;background:var(--bg);">
+          ${allCatsRows}
+        </div>
+      </div>
+
+      <!-- Track B: KTU University Curriculum -->
+      <div class="card" style="padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:20px;">🎓</span>
+            <div>
+              <div style="font-weight:700;font-size:15px;">University Curriculum</div>
+              <div style="font-size:12px;color:var(--text-dim);">KTU B.Tech Semesters 3–7</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-size:15px;font-weight:700;color:var(--accent);">${det.uniDone} / ${det.uniTotal}</span>
+            <div style="font-size:11.5px;color:var(--text-dim);">${det.uniTotal ? Math.round(100*det.uniDone/det.uniTotal) : 0}%</div>
+          </div>
+        </div>
+        <div class="bar-track" style="margin-bottom:18px;height:8px;"><div class="bar-fill" style="width:${det.uniTotal ? 100*det.uniDone/det.uniTotal : 0}%;background:var(--accent);"></div></div>
+
+        <div style="font-size:12px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:10px;">Semester Progress</div>
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:16px;">
+          ${semRows}
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;border-top:1px solid var(--border);padding-top:12px;margin-top:4px;">
+          <a class="link" data-nav="learn" style="font-size:12.5px;cursor:pointer;">View Full Syllabus Courses →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Study Target -->
+    <div class="section-title"><h2>Daily Learning Target</h2></div>
+    <div class="card" style="padding:18px 20px;margin-bottom:24px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;margin-bottom:12px;">
+        <div>
+          <div style="font-weight:600;font-size:14px;color:var(--text);">Today's Target: <span style="color:var(--accent);">${count}/${target} completed</span></div>
+          <div style="font-size:12.5px;color:var(--text-dim);margin-top:2px;">Consistently completing your daily target builds your streak and long-term retention.</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <span style="font-size:12.5px;color:var(--text-dim);margin-right:4px;">Set Goal:</span>
+          ${[5, 10, 15, 20, 30].map(n => `
+            <button class="btn ${target === n ? 'btn-primary' : 'btn-secondary'} quick-target-btn" data-target="${n}" style="padding:4px 10px;font-size:12px;">${n}</button>
+          `).join("")}
+          <div style="display:inline-flex;align-items:center;gap:4px;margin-left:4px;">
+            <input type="number" id="targetInput" value="${target}" style="width:54px;padding:3px 6px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text);text-align:center;">
+            <button class="btn btn-secondary" id="saveTargetCustom" style="padding:4px 8px;font-size:12px;">Save</button>
+          </div>
+        </div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100, 100*count/target)}%;background:var(--accent);"></div></div>
+    </div>
+
     ${mockProgressHtml()}
-    <div class="section-title"><h2>Daily target</h2></div>
-    <div class="card">
-      <div class="calc-field"><label>Questions/lessons per day</label><input type="number" id="targetInput" value="${PROGRESS.dailyTarget}"></div>
-      <button class="btn btn-primary" id="saveTarget">Save target</button>
-    </div>
   `;
 }
+
 function wireProgressHandlers(){
-  const btn = document.getElementById("saveTarget");
-  if(btn) btn.onclick = ()=>{
-    const v = parseInt(document.getElementById("targetInput").value);
-    if(v>0){ PROGRESS.dailyTarget = v; saveProgress(PROGRESS); render(); }
-  };
+  const toggleBtn = document.getElementById("toggleAllCatsBtn");
+  if(toggleBtn){
+    toggleBtn.onclick = () => {
+      PROGRESS_SHOW_ALL_CATS = !PROGRESS_SHOW_ALL_CATS;
+      const c = document.getElementById("allCatsContainer");
+      if(c) c.style.display = PROGRESS_SHOW_ALL_CATS ? "block" : "none";
+      toggleBtn.textContent = `View all 40 categories (${PROGRESS_SHOW_ALL_CATS ? '▲ Hide' : '▼ Show'})`;
+    };
+  }
+
+  document.querySelectorAll(".quick-target-btn").forEach(b => {
+    b.onclick = () => {
+      const val = parseInt(b.getAttribute("data-target"));
+      if(val > 0){
+        PROGRESS.dailyTarget = val;
+        saveProgress(PROGRESS);
+        render();
+      }
+    };
+  });
+
+  const saveCustom = document.getElementById("saveTargetCustom");
+  if(saveCustom){
+    saveCustom.onclick = () => {
+      const inp = document.getElementById("targetInput");
+      const v = inp ? parseInt(inp.value) : 0;
+      if(v > 0){
+        PROGRESS.dailyTarget = v;
+        saveProgress(PROGRESS);
+        render();
+      }
+    };
+  }
 }
 
 /* ---------- AUDIT ---------- */
