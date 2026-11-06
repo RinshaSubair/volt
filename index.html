@@ -574,7 +574,7 @@ pre{max-width:100%;overflow-x:auto;white-space:pre-wrap;word-break:break-word;}
     white-space: pre-wrap !important;
     word-break: break-word !important;
   }
-  .lesson-content-area svg, .markdown-body svg, .card svg {
+  .lesson-content-area svg:not(.katex svg), .markdown-body svg:not(.katex svg), .card svg:not(.katex svg) {
     max-width: 100% !important;
     height: auto !important;
   }
@@ -607,7 +607,7 @@ html, body {
     white-space: pre-wrap !important;
     word-break: break-word !important;
   }
-  svg {
+  svg:not(.katex svg) {
     max-width: 100% !important;
     height: auto !important;
     overflow: hidden !important;
@@ -872,11 +872,25 @@ html, body {
 }
 </style>
 <style id="global-containment-safeguards">
-svg {
+svg:not(.katex svg):not([class*="katex"] svg) {
   contain: layout paint !important;
   max-width: 100% !important;
   height: auto !important;
   overflow: hidden !important;
+}
+.katex svg {
+  display: block !important;
+  position: absolute !important;
+  height: inherit !important;
+  width: 100% !important;
+  max-width: none !important;
+  contain: none !important;
+  overflow: visible !important;
+}
+.katex .hide-tail {
+  overflow: hidden !important;
+  position: relative !important;
+  width: 100% !important;
 }
 table, .tbl {
   max-width: 100% !important;
@@ -17366,9 +17380,9 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
       <p>$$v(t) = V_m \\sin(\\omega t + \\phi)$$</p>
       <p>where $V_m$ is the peak amplitude, $\\omega = 2\\pi f$ is the angular frequency (rad/s), $f$ is cyclical frequency ($50\\text{ Hz}$ in India, $60\\text{ Hz}$ in North America), and $\\phi$ is the initial phase angle.</p>
       <p><b>Root-Mean-Square (RMS) Value:</b> The effective value of an AC current or voltage is defined by its equivalent heating capability: the DC value that produces the exact identical Joule heat ($I^2R$) in an identical resistor over a full period $T$:</p>
-      <p>$$V_{\\text{rms}} = \\sqrt{\\frac{1}{T} \\int_{0}^{T} v^2(t)\,dt} = \\frac{V_m}{\\sqrt{2}} \\approx 0.7071 V_m$$</p>
+      <p>$$V_{\\text{rms}} = \\sqrt{\\frac{1}{T} \\int_{0}^{T} v^2(t)\\,dt} = \\frac{V_m}{\\sqrt{2}} \\approx 0.7071 V_m$$</p>
       <p><b>Average Value over Half Cycle:</b> Over a full cycle, the mathematical mean of a pure symmetric sine wave is zero ($V_{\\text{avg, full}} = 0$). Over a positive half-cycle ($0$ to $\\pi$):</p>
-      <p>$$V_{\\text{avg, half}} = \\frac{1}{\\pi} \\int_{0}^{\\pi} V_m \\sin(\\theta)\,d\\theta = \\frac{2 V_m}{\\pi} \\approx 0.6366 V_m$$</p>
+      <p>$$V_{\\text{avg, half}} = \\frac{1}{\\pi} \\int_{0}^{\\pi} V_m \\sin(\\theta)\\,d\\theta = \\frac{2 V_m}{\\pi} \\approx 0.6366 V_m$$</p>
       <p><b>Form Factor & Crest Factor:</b></p>
       <p>$$\\text{Form Factor } (k_f) = \\frac{V_{\\text{rms}}}{V_{\\text{avg}}} = \\frac{V_m / \\sqrt{2}}{2 V_m / \\pi} = \\frac{\\pi}{2\\sqrt{2}} \\approx 1.11$$</p>
       <p>$$\\text{Crest (Peak) Factor } (k_a) = \\frac{V_m}{V_{\\text{rms}}} = \\frac{V_m}{V_m / \\sqrt{2}} = \\sqrt{2} \\approx 1.414$$</p>
@@ -67932,6 +67946,8 @@ function repairLatex(str){
   s = s.replace(/\^\{([^}]+)\}\^\{([^}]+)\}/g, '^{$1 $2}');
   s = s.replace(/\^\{([^}]+)\}\^([0-9a-zA-Z]+)/g, '^{$1 $2}');
   s = s.replace(/_([0-9a-zA-Z]+)_([0-9a-zA-Z]+)/g, '_{$1 $2}');
+  s = s.replace(/v\^2\(t\),dt/g, 'v^2(t)\\,dt');
+  s = s.replace(/,(\s*d[a-zA-Z\theta])/g, '\\,$1');
   return s;
 }
 
