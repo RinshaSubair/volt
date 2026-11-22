@@ -15272,7 +15272,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
       <h3>15. Next Topic Connection</h3>
       <p>Having explored star and delta connections, we now quantify energy delivery: <a data-nav="lesson:three-phase-power" style="cursor:pointer;font-weight:600;">Topic D7: Three-Phase Power</a>, deriving Active, Reactive, and Apparent power equations ($P = \\sqrt{3} V_L I_L \\cos\\phi$, $Q$, and $S$).</p>
 `,
-    mcqIds: ["d-pwr-21", "d-pwr-22", "d-pwr-23", "d-pwr-24", "q-jbg-7"]
+    mcqIds: ["d-pwr-21", "d-pwr-22", "d-pwr-23", "d-pwr-24", "q-jbg-7", "q-jbg-106", "q-jbg-107"]
   },
 "three-phase-power": {
     title: "Three-Phase Power",
@@ -16091,7 +16091,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
       <h3>15. Next Topic Connection</h3>
       <p>Having traced power through the distribution transformer down to 415 V/240 V, we now step onto residential premises: <a data-nav="lesson:domestic-supply-path" style="cursor:pointer;font-weight:600;">Topic D12: Electrical Supply to a Home</a>, following the physical path of electricity from the utility service drop into your consumer consumer unit, circuit breakers, and wall outlets.</p>
 `,
-    mcqIds: ["d-pwr-41", "d-pwr-42", "d-pwr-43", "d-pwr-44", "q-tkm-28"]
+    mcqIds: ["d-pwr-41", "d-pwr-42", "d-pwr-43", "d-pwr-44", "q-tkm-28", "q-jbg-200"]
   },
 "domestic-supply-path": {
     title: "Electrical Supply to a Home",
@@ -17398,7 +17398,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
       <h3>15. Next Topic Connection</h3>
       <p>Having analyzed potential difference, current, resistance, and power dissipation, we now examine the linear mathematical relationship that couples voltage and current in conductive media: <b>Ohm's Law & Its Physical Limitations</b>.</p>
     `,
-    mcqIds: ["f-power-1", "q-tkm-1"]
+    mcqIds: ["f-power-1", "q-tkm-1", "q-jbg-160"]
   },
 "ohms-law": {
     title: "Ohm's Law & Limitations", area: "EEE From Zero",
@@ -19306,7 +19306,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
       </ul>
     
 `,
-    mcqIds: ["c-res-1", "c-res-2", "c-res-3", "c-res-4", "q-circ-ext-4", "q-jbg-11", "q-jbg-12", "q-jbg-13"]
+    mcqIds: ["c-res-1", "c-res-2", "c-res-3", "c-res-4", "q-circ-ext-4", "q-jbg-11", "q-jbg-12", "q-jbg-13", "q-jbg-104"]
   },
 "kcl": {
     title:"Kirchhoff's Current Law (KCL)", area:"Sem 3 · Circuit Theory · Module I",
@@ -19324,7 +19324,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
       <div class="callout callout-trap"><b>Placement trap:</b> KCL applies at a node regardless of what's connected to it (resistors, sources, even open branches) — some students wrongly think it only works for pure resistive networks.</div>
       <h3>◆ Interview question</h3><p><i>"Does KCL hold in AC circuits with phasors?"</i> — Yes, it holds for instantaneous currents and for phasor (complex) currents at any instant, as long as it's applied consistently in the same domain.</p>
     `,
-    mcqIds: ["ct-kcl-1", "ct-kcl-2", "q-jbg-5"]
+    mcqIds: ["ct-kcl-1", "ct-kcl-2", "q-jbg-5", "q-jbg-157"]
   },
 "kvl": {
     title:"Kirchhoff's Voltage Law (KVL)", area:"Sem 3 · Circuit Theory · Module I",
@@ -19341,7 +19341,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
       <div class="callout callout-mistake"><b>Common mistake:</b> forgetting sign convention when passing through a source vs a resistor in the loop-traversal direction — always decide "rise = +, drop = −" (or vice versa) and stick to it consistently for the whole loop.</div>
       <h3>◆ Application</h3><p>KVL + KCL together form the basis of mesh analysis and nodal analysis — the two standard systematic methods for solving any linear circuit, which you'll formalize fully in the Steady-State Analysis module.</p>
     `,
-    mcqIds: ["ct-kvl-1", "q-jbg-6"]
+    mcqIds: ["ct-kvl-1", "q-jbg-6", "q-jbg-158"]
   },
 "thevenin": {
     title:"Thevenin's Theorem", area:"Sem 3 · Circuit Theory · Module I",
@@ -19377,7 +19377,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 <h3>5. Practical Viva Questions & Traps</h3>
 <p><strong>Q: What do you do if the circuit contains DEPENDENT (controlled) sources?</strong><br>
 <strong>A:</strong> You CANNOT turn off dependent sources! To find $R_{\\text{th}}$, either: (Method 1) Find open-circuit voltage $V_{oc}$ and short-circuit current $I_{sc}$, then calculate $R_{\\text{th}} = \\frac{V_{oc}}{I_{sc}}$; or (Method 2) Connect an imaginary 1V test voltage source across terminals A-B and find the resulting current $I_{\\text{test}}$ ($R_{\\text{th}} = \\frac{1\\text{ V}}{I_{\\text{test}}}$).</p>`,
-    mcqIds: ["ct-thev-1", "ct-thev-2", "q-diag-circ-1", "q-circ-ext-5", "q-circ-ext-6", "q-jbg-2"]
+    mcqIds: ["ct-thev-1", "ct-thev-2", "q-diag-circ-1", "q-circ-ext-5", "q-circ-ext-6", "q-jbg-2", "q-jbg-102"]
   },
 "norton": {
     title:"Norton's Theorem", area:"Sem 3 · Circuit Theory · Module I",
@@ -19456,7 +19456,7 @@ R_{\\text{rod}} = \\frac{\\rho}{2\\pi L} \\cdot \\left[ \\ln\\left(\\frac{4L}{r}
 <h3>5. The #1 Viva Trap: Can Superposition Calculate Electrical Power?</h3>
 <p><strong>DANGER! Superposition DOES NOT apply directly to power calculations!</strong><br>
 Why? Because power is non-linear—it depends on the <em>square</em> of current: $P = I^2 R$. In math, $(I' + I'')^2 \\neq (I')^2 + (I'')^2$! There is a cross-product term $2 I' I''$. To find power using superposition, you must FIRST find total current $I_{\\text{total}} = I' + I''$, and only THEN calculate $P = (I_{\\text{total}})^2 R$.</p>`,
-    mcqIds: ["ct-sup-1", "ct-sup-2", "q-circ-ext-3", "q-jbg-4"]
+    mcqIds: ["ct-sup-1", "ct-sup-2", "q-circ-ext-3", "q-jbg-4", "q-jbg-159"]
   },
 "reciprocity": {
     title:"Reciprocity Theorem", area:"Sem 3 · Circuit Theory · Module I",
@@ -19475,7 +19475,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
       <h3>◆ Interview question</h3>
       <p><i>"Give a real-world example where reciprocity is directly used."</i> — Antenna reciprocity: an antenna's radiation pattern when transmitting is identical to its sensitivity pattern when receiving, which is why the same antenna design can be used for both without separate characterization.</p>
     `,
-    mcqIds:["ct-rec-1"]
+    mcqIds: ["ct-rec-1", "q-jbg-101"]
   },
 "max-power-transfer": {
     title:"Maximum Power Transfer Theorem", area:"Sem 3 · Circuit Theory · Module I",
@@ -19499,7 +19499,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 <h3>4. The Classic Placement Interview Question</h3>
 <p><strong>Q: Why do power generation utilities (like NTPC or state electricity boards) NEVER operate transmission lines at Maximum Power Transfer?</strong><br>
 <strong>A:</strong> Because at maximum power transfer, the efficiency is only <strong>50%</strong>! If a power plant generates 1,000 MW, 500 MW would be wasted as heat inside the transmission lines, causing wires to melt and wasting crores of rupees. Power grids want maximum efficiency ($\\eta > 95\%$), which requires keeping internal line resistance $R_{\\text{th}}$ as close to ZERO as possible relative to load resistance ($R_{\\text{th}} \\ll R_L$). Maximum power transfer is used in <strong>communications, radio antennas, and audio electronics</strong> where signal strength is tiny (milliwatts) and maximizing transferred signal power is all that matters!</p>`,
-    mcqIds: ["ct-mpt-1", "ct-mpt-2", "q-jbg-1"]
+    mcqIds: ["ct-mpt-1", "ct-mpt-2", "q-jbg-1", "q-jbg-103"]
   },
 "de-number-systems": {
     title:"Number Systems and Codes", area:"Sem 3 · Digital Electronics · Module I",
@@ -19567,7 +19567,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
       <p>Fixed-point representation places the binary point at a fixed position (e.g. always after bit 8), trading range for simplicity and speed. Floating-point (IEEE-754 style: sign, exponent, mantissa) trades some speed/complexity for a much larger dynamic range — needed for scientific and most general-purpose computing.</p>
       <div class="callout callout-trap"><b>Placement trap:</b> "What happens if you try to represent −128 in 8-bit 2's complement and then negate it again?" — negating −128 (invert + add 1) overflows back to −128 itself, since +128 can't be represented in 8-bit 2's complement. This overflow-at-the-boundary case is a favorite interview gotcha.</div>
     `,
-    mcqIds:["de-sn-1","de-sn-2"]
+    mcqIds: ["de-sn-1", "de-sn-2", "q-jbg-196"]
   },
 "de-fixed-floating": {
     title:"Fixed Point and Floating Point Representation", area:"Sem 3 · Digital Electronics · Module I",
@@ -19634,7 +19634,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
       <div class="callout callout-mistake"><b>Common mistake:</b> assuming CMOS consumes zero power at all times — it consumes very little <i>static</i> power, but dynamic (switching) power, which grows with switching frequency and supply voltage squared, can still be significant at high clock speeds — this is exactly why modern chips are so sensitive to clock frequency and voltage scaling.</div>
       <div class="callout callout-trap"><b>Placement trap:</b> "Why can't you leave a CMOS input floating (unconnected)?" — because with no defined voltage, both the PMOS and NMOS transistors in that input's network can partially conduct simultaneously, creating an unwanted direct current path from supply to ground and unpredictable logic behavior. Always tie unused CMOS inputs to a defined level.</div>
     `,
-    mcqIds:["de-tc-1","de-tc-2"]
+    mcqIds: ["de-tc-1", "de-tc-2", "q-jbg-197", "q-jbg-198"]
   },
 "mi-errors-standards": {
     title:"Measurement Fundamentals: Errors, Accuracy and Standards", area:"Sem 3 · Measurements & Instrumentation · Module I",
@@ -19701,7 +19701,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
       <p><b>Range extension:</b> a PMMC movement alone can only handle a tiny current/voltage — see the dedicated <a href="#" data-nav="lesson:mi-shunts-multipliers">Shunts and Multipliers</a> lesson for how ammeter/voltmeter ranges are extended in practice.</p>
       <div class="callout callout-trap"><b>Placement trap:</b> "Why does an ideal ammeter have near-zero resistance while an ideal voltmeter has near-infinite resistance?" — an ammeter is connected in series, so it must not add significant resistance to the circuit it's measuring; a voltmeter is connected in parallel, so it must draw negligible current to avoid loading down the circuit under test. Confusing which one goes in series vs parallel is a very common early mistake.</div>
     `,
-    mcqIds: ["mi-pmmc-1", "mi-pmmc-2", "q-jbg-47", "q-jbg-48", "q-jbg-88"]
+    mcqIds: ["mi-pmmc-1", "mi-pmmc-2", "q-jbg-47", "q-jbg-48", "q-jbg-88", "q-jbg-139", "q-jbg-183"]
   },
 "mi-classification": {
     title:"Classification of Instruments", area:"Sem 3 · Measurements & Instrumentation · Module I",
@@ -19740,7 +19740,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
       <h3>◆ Quick revision</h3>
       <ul><li>Indicating / integrating / recording — by function</li><li>Deflection / null — by comparison method</li><li>Analog / digital — by signal type</li><li>Null-type instruments are generally more accurate at balance</li></ul>
     `,
-    mcqIds: ["mi-cls-1", "mi-cls-2", "q-jbg-86", "q-jbg-87"]
+    mcqIds: ["mi-cls-1", "mi-cls-2", "q-jbg-86", "q-jbg-87", "q-jbg-181", "q-jbg-182"]
   },
 "mi-shunts-multipliers": {
     title:"Shunts and Multipliers", area:"Sem 3 · Measurements & Instrumentation · Module I",
@@ -19804,7 +19804,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
       <h3>◆ Interview question</h3>
       <p><i>"Why do power systems still rely heavily on thermal and hydro despite renewables?"</i> — Because thermal and hydro are <b>dispatchable</b> (output can be commanded on demand), which is essential for grid stability; most renewables are <b>variable</b> generation that depends on weather/time of day, requiring storage or backup capacity to fully replace dispatchable sources.</p>
     `,
-    mcqIds:["ps-gen-1","ps-gen-2"]
+    mcqIds: ["ps-gen-1", "ps-gen-2", "q-jbg-129"]
   },
 "ps-load-characteristics": {
     title:"Load Characteristics: Load Factor, Demand Factor, Diversity Factor, Plant Capacity Factor", area:"Sem 3 · Power Systems · Module I",
@@ -19876,7 +19876,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
       <h3>◆ Quick revision</h3>
       <ul><li>Two-part tariff: fixed (demand-based) + running (energy-based) charges</li><li>S = P/cos φ — low pf inflates apparent power for the same real power</li><li>Capacitor banks supply leading reactive power to cancel lagging reactive power</li><li>Q_c = P(tan φ₁ − tan φ₂)</li></ul>
     `,
-    mcqIds: ["ps-tpf-1", "ps-tpf-2", "ps-tpf-3", "q-tkm-5"]
+    mcqIds: ["ps-tpf-1", "ps-tpf-2", "ps-tpf-3", "q-tkm-5", "q-jbg-130", "q-jbg-199"]
   },
 "dc-construction-windings": {
     title: "DC Machine Construction and Armature Windings",
@@ -20085,7 +20085,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 </ol>
 </section>
 `,
-    mcqIds: ["dc-cw-1", "dc-cw-2", "dc-cw-3", "dc-cw-4", "q-jbg-19", "q-jbg-24", "q-jbg-56"]
+    mcqIds: ["dc-cw-1", "dc-cw-2", "dc-cw-3", "dc-cw-4", "q-jbg-19", "q-jbg-24", "q-jbg-56", "q-jbg-164"]
   },
 "dc-emf-torque": {
     title: "EMF Equation and Electromagnetic Torque",
@@ -20124,7 +20124,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 
 <h3>5. Viva Trap: Why do DC Motors Need a Starter at Turn-On?</h3>
 <p>At the exact instant of startup, the motor is stationary ($N = 0$). Therefore, opposing counter-voltage (Back EMF $E_b$) is ZERO ($E_b = 0$)! If you connect full 230 V directly to the armature, current spikes to $I_a = \\frac{230 - 0}{0.5\ \\Omega} = 460\\text{ Amperes}$! This massive starting current would melt the copper windings, burn the commutator, and trip all circuit breakers. A <strong>3-point or 4-point starter</strong> inserts temporary external resistance in series with the armature at startup, gradually cutting it out as the motor speeds up and builds its protective opposing counter-voltage (Back EMF $E_b$).</p>`,
-    mcqIds: ["dc-et-1", "dc-et-2", "dc-et-3", "dc-et-4"]
+    mcqIds: ["dc-et-1", "dc-et-2", "dc-et-3", "dc-et-4", "q-jbg-108", "q-jbg-109"]
   },
 "dc-gen-armature-reaction": {
     title: "DC Generator Principle and armature magnetic field reacting against the main field (Armature Reaction)",
@@ -20711,7 +20711,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 </ol>
 </section>
 `,
-    mcqIds: ["dc-exc-1", "dc-exc-2", "dc-exc-3", "dc-exc-4"]
+    mcqIds: ["dc-exc-1", "dc-exc-2", "dc-exc-3", "dc-exc-4", "q-jbg-110"]
   },
 "dc-gen-parallel-operation": {
     title: "Parallel Operation of DC Generators and Load Sharing",
@@ -21256,7 +21256,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
   </table>
 </div>
 `,
-    mcqIds: ["dc-mst-1", "dc-mst-2", "dc-mst-3", "dc-mst-4", "q-tkm-11", "q-jbg-21", "q-jbg-22"]
+    mcqIds: ["dc-mst-1", "dc-mst-2", "dc-mst-3", "dc-mst-4", "q-tkm-11", "q-jbg-21", "q-jbg-22", "q-jbg-162", "q-jbg-163"]
   },
 "dc-motor-starters-braking": {
     title: "Starting and Electric Braking of DC Motors",
@@ -21458,7 +21458,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 </ol>
 </section>
 `,
-    mcqIds: ["dc-sb-1", "dc-sb-2", "dc-sb-3", "dc-sb-4", "q-jbg-17"]
+    mcqIds: ["dc-sb-1", "dc-sb-2", "dc-sb-3", "dc-sb-4", "q-jbg-17", "q-jbg-111", "q-jbg-112"]
   },
 "dc-motor-losses-efficiency": {
     title: "Losses, Efficiency and Power Flow in DC Machines",
@@ -21694,7 +21694,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
   </div>
 </div>
 `,
-    mcqIds: ["dc-le-1", "dc-le-2", "dc-le-3", "dc-le-4", "q-jbg-23"]
+    mcqIds: ["dc-le-1", "dc-le-2", "dc-le-3", "dc-le-4", "q-jbg-23", "q-jbg-113"]
   },
 "xfmr-principle-emf": {
     title: "Transformer Principle and EMF Equation",
@@ -21884,7 +21884,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 </ol>
 </section>
 `,
-    mcqIds: ["xfmr-pe-1", "xfmr-pe-2", "xfmr-pe-3", "xfmr-pe-4", "q-tkm-10", "q-jbg-16", "q-jbg-53"]
+    mcqIds: ["xfmr-pe-1", "xfmr-pe-2", "xfmr-pe-3", "xfmr-pe-4", "q-tkm-10", "q-jbg-16", "q-jbg-53", "q-jbg-165"]
   },
 "xfmr-phasor-diagrams": {
     title: "Transformer Phasor Diagrams on No-Load and Load",
@@ -22282,7 +22282,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
   </div>
 </div>
 `,
-    mcqIds: ["xfmr-vr-1", "xfmr-vr-2", "xfmr-vr-3", "xfmr-vr-4"]
+    mcqIds: ["xfmr-vr-1", "xfmr-vr-2", "xfmr-vr-3", "xfmr-vr-4", "q-jbg-114", "q-jbg-115"]
   },
 "xfmr-oc-sc-efficiency": {
     title: "OC and SC Tests, and Transformer Efficiency",
@@ -22876,7 +22876,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 </ol>
 </section>
 `,
-    mcqIds: ["xfmr-sl-1", "xfmr-sl-2", "xfmr-sl-3", "xfmr-sl-4", "q-jbg-25"]
+    mcqIds: ["xfmr-sl-1", "xfmr-sl-2", "xfmr-sl-3", "xfmr-sl-4", "q-jbg-25", "q-jbg-116"]
   },
 "xfmr-design-case-study": {
     title: "Design Principles of Single-Phase Transformers",
@@ -23309,7 +23309,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
   </div>
 </div>
 `,
-    mcqIds: ["xfmr-auto-1", "xfmr-auto-2", "xfmr-auto-3", "xfmr-auto-4", "q-jbg-26"]
+    mcqIds: ["xfmr-auto-1", "xfmr-auto-2", "xfmr-auto-3", "xfmr-auto-4", "q-jbg-26", "q-jbg-166"]
   },
 "xfmr-3ph-groupings-parallel": {
     title: "Three-Phase Transformer Connections and Vector Groups",
@@ -23702,7 +23702,7 @@ Why? Because power is non-linear—it depends on the <em>square</em> of current:
 </ol>
 </section>
 `,
-    mcqIds: ["xfmr-pdc-1", "xfmr-pdc-2", "xfmr-pdc-3", "xfmr-pdc-4", "q-jbg-28"]
+    mcqIds: ["xfmr-pdc-1", "xfmr-pdc-2", "xfmr-pdc-3", "xfmr-pdc-4", "q-jbg-28", "q-jbg-117"]
   },
 "xfmr-3ph-tertiary-windings": {
     title: "Three-Winding Transformers and Tertiary Windings",
@@ -27358,7 +27358,7 @@ This concludes the five modules of Electromagnetic Theory (23EET402), uniting co
 </ol>
 </section>
 `,
-    mcqIds: ["sse-bias-1", "sse-bias-2", "sse-bias-3", "sse-bias-4", "q-analog-ext-7", "q-tkm-46", "q-jbg-50", "q-jbg-97"]
+    mcqIds: ["sse-bias-1", "sse-bias-2", "sse-bias-3", "sse-bias-4", "q-analog-ext-7", "q-tkm-46", "q-jbg-50", "q-jbg-97", "q-jbg-191"]
   },
 "sse-hparam-fet-amplifiers": {
     title: "Small-Signal h-Parameter Models, JFET and MOSFET Amplifiers",
@@ -29043,7 +29043,7 @@ print(f"Ideal Gain: {res['ideal_gain']:.2f}, Actual: {res['actual_gain']:.4f}, E
   </div>
 </div>
 `,
-    mcqIds: ["sse-ola-1", "sse-ola-2", "sse-ola-3", "sse-ola-4", "q-analog-ext-4", "q-analog-ext-8", "q-tkm-42", "q-jbg-98"]
+    mcqIds: ["sse-ola-1", "sse-ola-2", "sse-ola-3", "sse-ola-4", "q-analog-ext-4", "q-analog-ext-8", "q-tkm-42", "q-jbg-98", "q-jbg-193"]
   },
 "sse-instrumentation-comparators": {
   title: "Instrumentation Amplifiers, Zero-Crossing Detectors & LM311 Comparators",
@@ -29302,7 +29302,7 @@ print(f"Schmitt Trigger: V_UT = {st['V_UT']:.2f}V, V_LT = {st['V_LT']:.2f}V, Hys
 </ol>
 </section>
 `,
-    mcqIds: ["sse-inc-1", "sse-inc-2", "sse-inc-3", "sse-inc-4", "q-analog-ext-5"]
+    mcqIds: ["sse-inc-1", "sse-inc-2", "sse-inc-3", "sse-inc-4", "q-analog-ext-5", "q-jbg-147"]
   },
 "sse-waveform-generators-555": {
   title: "Waveform Generators and the 555 Timer IC",
@@ -29573,7 +29573,7 @@ print(f"555 Astable: f = {res['frequency_hz']:.1f} Hz, Period = {res['period_ms'
   </div>
 </div>
 `,
-    mcqIds: ["sse-wg-1", "sse-wg-2", "sse-wg-3", "sse-wg-4", "q-analog-ext-3"]
+    mcqIds: ["sse-wg-1", "sse-wg-2", "sse-wg-3", "sse-wg-4", "q-analog-ext-3", "q-jbg-148"]
   },
 "sse-cmos-circuits-opamp": {
     title: "CMOS Circuits, Logic Gates and CMOS Operational Amplifiers",
@@ -29885,7 +29885,7 @@ print(f"CMOS Inverter: Switching Threshold V_M = {inv['V_M']:.3f} V (Target: 0.9
 </ol>
 </section>
 `,
-    mcqIds: ["sse-cmos-1", "sse-cmos-2", "sse-cmos-3", "sse-cmos-4"]
+    mcqIds: ["sse-cmos-1", "sse-cmos-2", "sse-cmos-3", "sse-cmos-4", "q-jbg-192"]
   },
 "sig-convolution-lti": {
     title:"Convolution Integral and LTI System Representation", area:"Sem 4 · Signals & Systems · Module II",
@@ -33739,7 +33739,7 @@ These fundamental equations reveal why negative feedback is the cornerstone of c
 </div>
 
     `,
-    mcqIds: ["cse-olcl-1", "cse-olcl-2", "cse-olcl-3", "cse-olcl-4", "q-tkm-47"]
+    mcqIds: ["cse-olcl-1", "cse-olcl-2", "cse-olcl-3", "cse-olcl-4", "q-tkm-47", "q-jbg-194"]
   },
 "cse-transfer-function": {
     title: "input-to-output formula (Transfer Function $G(s)$) of Physical Systems: Electrical, Mechanical, and Electromechanical",
@@ -33873,7 +33873,7 @@ Because mathematical models of electrical networks and mechanical systems share 
 </div>
 
     `,
-    mcqIds: ["cse-tf-1", "cse-tf-2", "cse-tf-3", "cse-tf-4", "cse-tf-5", "cse-m1-p2"]
+    mcqIds: ["cse-tf-1", "cse-tf-2", "cse-tf-3", "cse-tf-4", "cse-tf-5", "cse-m1-p2", "q-jbg-149"]
   },
 "cse-block-diagram-mason": {
     title: "Block Diagram Reduction and Mason's Gain Formula",
@@ -34103,7 +34103,7 @@ Consider the signal flow graph illustrated in the diagram above:
 </div>
 
     `,
-    mcqIds: ["cse-bd-1", "cse-bd-2", "cse-bd-3", "cse-bd-4", "cse-bd-5", "cse-m1-p1"]
+    mcqIds: ["cse-bd-1", "cse-bd-2", "cse-bd-3", "cse-bd-4", "cse-bd-5", "cse-m1-p1", "q-jbg-150"]
   },
 "cse-time-domain-specs": {
     title: "Time-Domain Specifications of Transient and Steady-State Response",
@@ -34358,7 +34358,7 @@ where \\(\\phi = 2 \\tan^{-1}\\left(\\frac{\\sqrt{1-\\zeta^2}}{\\zeta}\\right)\\
 </div>
 
     `,
-    mcqIds: ["cse-tds-1", "cse-tds-2", "cse-tds-3", "cse-tds-4", "cse-tds-5", "cse-tds-6", "cse-tds-7", "q-tkm-50"]
+    mcqIds: ["cse-tds-1", "cse-tds-2", "cse-tds-3", "cse-tds-4", "cse-tds-5", "cse-tds-6", "cse-tds-7", "q-tkm-50", "q-jbg-151", "q-jbg-152", "q-jbg-195"]
   },
 "cse-stability-routh": {
     title:"Stability Analysis: system behavior formula (Characteristic Equation), Pole Locations, and Routh's Criterion", area:"Sem 5 · Control Systems Engineering · Module II",
@@ -34451,7 +34451,7 @@ where \\(\\phi = 2 \\tan^{-1}\\left(\\frac{\\sqrt{1-\\zeta^2}}{\\zeta}\\right)\\
   <li><strong>Case 1: First element in a row is zero, but remaining row is non-zero:</strong> Replace the zero with a tiny positive number $\\varepsilon > 0$, complete the array, and take $\\lim_{\\varepsilon \\to 0}$ to check sign changes.</li>
   <li><strong>Case 2: An entire row of zeros appears:</strong> This indicates symmetric poles (e.g. roots on the $j\\omega$ axis or real-axis pairs). Form the <strong>Auxiliary Polynomial $A(s)$</strong> using coefficients from the row immediately above, differentiate it ($\\frac{dA}{ds}$), and replace the zero row with the derivative coefficients! The roots of $A(s) = 0$ give the exact frequency of sustained oscillations.</li>
 </ul>`,
-    mcqIds: ["cse-routh-1", "cse-routh-2", "cse-routh-3", "cse-routh-4", "cse-routh-5", "cse-routh-6", "cse-routh-7", "cse-routh-8", "cse-routh-9", "cse-routh-10", "cse-routh-11", "q-jbg-100"]
+    mcqIds: ["cse-routh-1", "cse-routh-2", "cse-routh-3", "cse-routh-4", "cse-routh-5", "cse-routh-6", "cse-routh-7", "cse-routh-8", "cse-routh-9", "cse-routh-10", "cse-routh-11", "q-jbg-100", "q-jbg-153"]
   },
 "ct-laplace-s-domain": {
     title:"Laplace Review and Circuit Transformation into the s-Domain", area:"Sem 3 · Circuit Theory · Module II",
@@ -34942,7 +34942,7 @@ where \\(\\phi = 2 \\tan^{-1}\\left(\\frac{\\sqrt{1-\\zeta^2}}{\\zeta}\\right)\\
       <h3>◆ Interview question</h3>
       <p><i>"Why does power factor correction reduce feeder losses even though the real power consumed is unchanged?"</i> — The feeder carries apparent current. At lower power factor the same real power requires a larger current (I = P/(√3·V·pf)). Copper loss I²R therefore falls as the square of the current improvement. Correction from 0.6 to 0.95 reduces current by ~37 %, cutting I²R losses by ~57 %.</p>
     `,
-    mcqIds: ["ct-cpwr-1", "ct-cpwr-2", "ct-cpwr-3", "ct-cpwr-4", "ct-cpwr-5", "q-tkm-30"]
+    mcqIds: ["ct-cpwr-1", "ct-cpwr-2", "ct-cpwr-3", "ct-cpwr-4", "ct-cpwr-5", "q-tkm-30", "q-jbg-105"]
   },
 "ct-two-port-intro": {
     title:"Driving-Point Functions & Z and Y Parameters",
@@ -35276,7 +35276,7 @@ where \\(\\phi = 2 \\tan^{-1}\\left(\\frac{\\sqrt{1-\\zeta^2}}{\\zeta}\\right)\\
       <h3>◆ Interview Questions</h3>
       <p><i>"What is the physical meaning of characteristic impedance in filter networks?"</i> &mdash; $Z_0$ is the impedance looking into the input port of a filter section when its output port is terminated in the same impedance $Z_0$. Terminating in $Z_0$ eliminates reflections at the junction, ensuring maximum power transfer across the passband.</p>
     `,
-    mcqIds: ["ct-flt-1", "ct-flt-2", "ct-flt-3", "ct-flt-4", "q-tkm-43"]
+    mcqIds: ["ct-flt-1", "ct-flt-2", "ct-flt-3", "ct-flt-4", "q-tkm-43", "q-jbg-161"]
   },
 "ct-filter-analysis": {
     title:"Filter Analysis & Design: Constant-k and m-Derived Filters",
@@ -36595,7 +36595,7 @@ endmodule</code></pre>
       <h3>◆ Interview Questions</h3>
       <p><i>"What is phantom loading and why is it universally used in meter testing laboratories?"</i> &mdash; Phantom loading is a testing technique where the pressure coil is supplied from rated voltage while the current coil is supplied from an isolated low-voltage source (e.g. 3V). Because the two circuits are electrically decoupled, the full rated test current flows with negligible power consumption ($P = V_{test} I = 3\\text{V} \\times 50\\text{A} = 150\\text{W}$ instead of $230\\text{V} \\times 50\\text{A} = 11.5\\text{kW}$), saving over $98\%$ of testing energy and eliminating the need for massive load banks.</p>
 `,
-    mcqIds: ["mi-m2-en-1", "mi-m2-en-2", "mi-m2-en-3", "mi-m2-en-4"]
+    mcqIds: ["mi-m2-en-1", "mi-m2-en-2", "mi-m2-en-3", "mi-m2-en-4", "q-jbg-138"]
   },
 "mi-hv-dc-hall-smart-metering": {
     title: "High-Voltage DC Measurement, Hall Effect Sensors & Smart / TOD Metering",
@@ -37383,7 +37383,7 @@ endmodule</code></pre>
       <h3>◆ Interview Questions</h3>
       <p><i>"Why are stranded and hollow conductors preferred over solid cylindrical rods for high-voltage transmission lines and substation busbars?"</i> &mdash; (1) Stranded conductors (like ACSR) are flexible, easy to transport and string on towers, and have higher tensile strength. (2) For the same cross-sectional area of metal, hollow conductors and stranded bundles have a significantly larger outer diameter. Increasing the outer diameter decreases the surface electrostatic field gradient ($E = V / [r \\ln(D/r)]$), suppressing corona power loss, acoustic hissing, and radio interference.</p>
 `,
-    mcqIds: ["eps-m2-par-1", "eps-m2-par-2", "eps-m2-par-3", "eps-m2-par-4", "q-jbg-40", "q-jbg-42", "q-jbg-72", "q-jbg-75"]
+    mcqIds: ["eps-m2-par-1", "eps-m2-par-2", "eps-m2-par-3", "eps-m2-par-4", "q-jbg-40", "q-jbg-42", "q-jbg-72", "q-jbg-75", "q-jbg-175", "q-jbg-176"]
   },
 "eps-line-inductance-capacitance": {
     title: "Transmission Line Inductance & Capacitance: GMD, GMR, Bundled Conductors & Transposition",
@@ -37461,7 +37461,7 @@ endmodule</code></pre>
       <h3>◆ Interview Questions</h3>
       <p><i>"Why is transposition essential in unsymmetrically spaced transmission lines?"</i> &mdash; In an untransposed line with flat horizontal or vertical conductor spacing, mutual inductances and capacitances between phases are unequal. This creates unequal voltage drops in the three phases, causing severe receiving-end voltage unbalance, non-zero neutral currents that induce interference in neighboring telephone circuits, and unequal active/reactive power sharing between phases. Transposing the line equalizes the average inductance and capacitance across all three phases over the length of the line.</p>
 `,
-    mcqIds: ["eps-m2-ind-1", "eps-m2-ind-2", "eps-m2-ind-3", "eps-m2-ind-4", "q-jbg-73"]
+    mcqIds: ["eps-m2-ind-1", "eps-m2-ind-2", "eps-m2-ind-3", "eps-m2-ind-4", "q-jbg-73", "q-jbg-131"]
   },
 "eps-line-modelling-abcd-ferranti": {
     title: "Transmission Line Modelling: ABCD Parameters, Voltage Regulation & Ferranti Effect",
@@ -37675,7 +37675,7 @@ endmodule</code></pre>
       <h3>◆ Interview Questions</h3>
       <p><i>"How does a static guard ring equalize the voltage distribution across an insulator string?"</i> &mdash; A conductive guard ring is bonded to the high-voltage conductor and encircles the bottom units. It forms direct capacitive paths ($C_2$) between the high-voltage ring and the link pins. Because the ring is at line potential, these auxiliary currents flow <i>into</i> the pins, precisely counteracting the currents flowing <i>out</i> to the grounded tower through shunt capacitances. By properly sizing the ring diameter and contour, the net current through all discs is made nearly equal, pushing string efficiency above $90\%$.</p>
 `,
-    mcqIds: ["eps-m3-ins-1", "eps-m3-ins-2", "eps-m3-ins-3", "eps-m3-ins-4", "q-jbg-41", "q-jbg-46"]
+    mcqIds: ["eps-m3-ins-1", "eps-m3-ins-2", "eps-m3-ins-3", "eps-m3-ins-4", "q-jbg-41", "q-jbg-46", "q-jbg-132", "q-jbg-177"]
   },
 "eps-underground-cables-insulation": {
     title: "Underground Power Cables: Electric Stress, Grading & Capacitance Calculations",
@@ -37829,7 +37829,7 @@ endmodule</code></pre>
         <li><b>Standard Operating Duty:</b> $O - 0.3\,\\text{s} - CO - 3\,\\text{min} - CO$ (Open, auto-reclose after 0.3 s, trip-close-open, final lockout).</li>
       </ol>
 `,
-    mcqIds: ["eps-cb-1", "eps-cb-2", "eps-cb-3", "eps-cb-4", "q-tkm-26", "q-jbg-43", "q-jbg-79", "q-jbg-80", "q-jbg-81"]
+    mcqIds: ["eps-cb-1", "eps-cb-2", "eps-cb-3", "eps-cb-4", "q-tkm-26", "q-jbg-43", "q-jbg-79", "q-jbg-80", "q-jbg-81", "q-jbg-178"]
   },
 "eps-protective-relays-fundamentals": {
     title: "Protective Relaying Principles, Classification, IDMT Characteristics & Numerical Relays",
@@ -37904,7 +37904,7 @@ endmodule</code></pre>
         <li><b>Output Contacts & Optical Bus:</b> Drives trip coils to circuit breakers and transmits GOOSE messages over fiber-optic Ethernet (IEC 61850).</li>
       </ol>
 `,
-    mcqIds: ["eps-rel-1", "eps-rel-2", "eps-rel-3", "eps-rel-4", "q-tkm-27", "q-jbg-31", "q-jbg-44", "q-jbg-45", "q-jbg-82", "q-jbg-83"]
+    mcqIds: ["eps-rel-1", "eps-rel-2", "eps-rel-3", "eps-rel-4", "q-tkm-27", "q-jbg-31", "q-jbg-44", "q-jbg-45", "q-jbg-82", "q-jbg-83", "q-jbg-137", "q-jbg-179", "q-jbg-180"]
   },
 "eps-distribution-systems-schemes": {
     title: "Power Distribution Systems: Radial, Ring Main, Interconnected Networks & AC/DC Protection",
@@ -37988,7 +37988,7 @@ endmodule</code></pre>
         <li><b>Drop-Out Expulsion Fuses:</b> Protect pole-mounted distribution transformers. Coordinated with upstream reclosers using Time-Current Characteristics (TCC).</li>
       </ol>
 `,
-    mcqIds: ["eps-dist-1", "eps-dist-2", "eps-dist-3", "eps-dist-4"]
+    mcqIds: ["eps-dist-1", "eps-dist-2", "eps-dist-3", "eps-dist-4", "q-jbg-133"]
   },
 "psa-per-unit": {
     title:"Per-Unit Quantities: Single-Phase and Three-Phase", area:"Sem 7 · Power System Analysis · Module I",
@@ -38028,7 +38028,7 @@ endmodule</code></pre>
       <h3>◆ Interview question</h3>
       <p><i>"A transformer nameplate says 8 % impedance. What does that mean physically?"</i> — 8 % of rated voltage applied to one winding, with the other short-circuited, drives rated current. It also means the steady-state short-circuit current at its terminals is about 1/0.08 ≈ 12.5 times rated, which is what the downstream switchgear must interrupt.</p>
 `,
-    mcqIds:["psa-pu-1", "psa-pu-2", "psa-pu-3", "psa-pu-4"]
+    mcqIds: ["psa-pu-1", "psa-pu-2", "psa-pu-3", "psa-pu-4", "q-jbg-134"]
   },
 "psa-symmetrical-components": {
     title:"Symmetrical Components and Sequence Networks", area:"Sem 7 · Power System Analysis · Module I",
@@ -38122,7 +38122,7 @@ endmodule</code></pre>
       <h3>◆ Interview question</h3>
       <p><i>"A switchboard is rated 25 kA but the calculated fault level has risen to 31 kA after a new transformer was added. What are your options?"</i> — Raise the source impedance or reduce the contribution: operate the bus section open so the two transformers do not parallel, fit a series current-limiting reactor, use a current-limiting fuse or Is-limiter, specify a higher-impedance replacement transformer, or ultimately replace the switchgear. The choice trades capital cost against the voltage regulation and losses that added impedance brings.</p>
 `,
-    mcqIds: ["psa-flt-1", "psa-flt-2", "psa-flt-3", "psa-flt-4", "psa-flt-5", "q-jbg-78"]
+    mcqIds: ["psa-flt-1", "psa-flt-2", "psa-flt-3", "psa-flt-4", "psa-flt-5", "q-jbg-78", "q-jbg-135", "q-jbg-136"]
   },
 "esd-illumination-basics": {
   title:"Illumination Quantities: Flux, Intensity, Illuminance and LED Efficacy", area:"Sem 7 · Electrical System Design · Module II",
@@ -38159,7 +38159,7 @@ endmodule</code></pre>
       <h3>◆ Interview question</h3>
       <p><i>"Two LED luminaires have the same lumen output but different beam angles. Does the illuminance on the work plane differ?"</i> — Yes. The narrower beam concentrates the same flux into a smaller solid angle, giving higher intensity and higher illuminance directly below, but poorer uniformity and more shadowing. The lumen figure alone does not determine a design; the distribution and the resulting spacing-to-mounting-height ratio matter just as much.</p>
 `,
-    mcqIds: ["esd-il-1", "esd-il-2", "esd-il-3", "esd-il-4", "q-lum-ext-1", "q-lum-ext-2", "q-lum-ext-4", "q-lum-ext-6", "q-lum-ext-8"]
+    mcqIds: ["esd-il-1", "esd-il-2", "esd-il-3", "esd-il-4", "q-lum-ext-1", "q-lum-ext-2", "q-lum-ext-4", "q-lum-ext-6", "q-lum-ext-8", "q-jbg-154", "q-jbg-155"]
   },
 "esd-lumen-method": {
   title:"Interior Lighting Design: The Average Lumen Method", area:"Sem 7 · Electrical System Design · Module II",
@@ -38200,7 +38200,7 @@ endmodule</code></pre>
       <h3>◆ Interview question</h3>
       <p><i>"Your calculation gives the correct average illuminance but the client complains about dark patches. What went wrong?"</i> — The average is right but the uniformity is not. Check the spacing-to-mounting-height ratio against the luminaire’s published maximum, check that perimeter spacing is about half the interior spacing, and check whether a narrow-beam luminaire was used where a wider distribution was needed. The lumen method sizes the installation; it says nothing about how evenly the light is spread.</p>
 `,
-    mcqIds: ["esd-lm-1", "esd-lm-2", "esd-lm-3", "esd-lm-4", "esd-lm-5", "q-lum-ext-3", "q-lum-ext-5", "q-lum-ext-7"]
+    mcqIds: ["esd-lm-1", "esd-lm-2", "esd-lm-3", "esd-lm-4", "esd-lm-5", "q-lum-ext-3", "q-lum-ext-5", "q-lum-ext-7", "q-jbg-156"]
   },
 "psd-drives-intro": {
     title:"Electric Drives: Block Diagram, Advantages and Load Torque Classification", area:"Sem 6 · Power Semiconductor Drives · Module I",
@@ -43839,7 +43839,7 @@ endmodule</code></pre>
       <h3>15. Summary & Self-Assessment Rubric</h3>
       <p>Distinguish between separate control (prone to hunting and pull-out) and self-control (brushless DC behavior, immune to pull-out). Master LCI load commutation physics, low-speed pulsing mode, and cycloconverter limitations.</p>
     `,
-    mcqIds: ["psd-syn-1", "psd-syn-2", "psd-syn-3", "psd-syn-4"]
+    mcqIds: ["psd-syn-1", "psd-syn-2", "psd-syn-3", "psd-syn-4", "q-jbg-190"]
   },
 "pe-intro-scope": {
     title:"What Power Electronics Is — Scope, Applications, and Why It Is Not Signal Electronics", area:"Sem 5 · Power Electronics · Module I",
@@ -44080,7 +44080,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>Four layers, three junctions; J2 blocks in the forward blocking state</li><li>Three regions: reverse blocking, forward blocking (up to V_BO), forward conduction</li><li>I_L &gt; I_H; latching to get on, holding to stay on</li><li>t_on = t_d + t_r; conduction then spreads across the die</li><li>Gate cannot turn it off; t_q = t_rr + t_gr must be respected by the circuit</li></ul>
     `,
-    mcqIds: ["pe-scr-1", "pe-scr-2", "pe-scr-3", "pe-scr-4", "pe-scr-5", "q-tkm-18", "q-jbg-89", "q-jbg-90"]
+    mcqIds: ["pe-scr-1", "pe-scr-2", "pe-scr-3", "pe-scr-4", "pe-scr-5", "q-tkm-18", "q-jbg-89", "q-jbg-90", "q-jbg-184"]
   },
 "pe-scr-protection-triggering": {
     title:"SCR Protection (di/dt, dv/dt), Turn-On Methods, Two-Transistor Analogy and Gate Circuits", area:"Sem 5 · Power Electronics · Module I",
@@ -44153,7 +44153,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>Two-transistor model: I_A = (α2·I_G + I_CBO)/(1 − (α1+α2)); latching when α1+α2 → 1</li><li>Turn-on methods: gate (use), forward voltage, dv/dt, thermal, light (LASCR in HVDC)</li><li>dv/dt ⇒ false triggering ⇒ RC snubber; C_s ≥ V_s/(R_s·dv/dt)</li><li>di/dt ⇒ local hot spot during spread ⇒ series inductor; L_s ≥ V_s/(di/dt)</li><li>Gate pulse must persist until I_A &gt; I_L; pulse trains keep average gate power low</li></ul>
     `,
-    mcqIds:["pe-pr-1", "pe-pr-2", "pe-pr-3", "pe-pr-4", "pe-pr-5", "pe-pr-6"]
+    mcqIds: ["pe-pr-1", "pe-pr-2", "pe-pr-3", "pe-pr-4", "pe-pr-5", "pe-pr-6", "q-jbg-140", "q-jbg-141"]
   },
 "pe-gate-drive-isolation": {
     title:"Gate Drive Circuits: Isolation and Synchronisation", area:"Sem 5 · Power Electronics · Module I",
@@ -44207,7 +44207,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>Isolation is needed for reference mismatch, safety standards, and noise immunity</li><li>Synchronisation ties firing angle α to the supply zero crossing; loss of sync ⇒ DC offset and even harmonics</li><li>Opto: passes DC, needs a separate secondary supply, watch CMTI and LED ageing</li><li>Pulse transformer: carries drive energy, multiple secondaries, but has a volt-second (saturation) limit ⇒ use a HF carrier for long pulses</li><li>Bootstrap is cheap and non-isolated, and cannot sustain an indefinite high-side ON state</li></ul>
     `,
-    mcqIds:["pe-gd-1", "pe-gd-2", "pe-gd-3", "pe-gd-4", "pe-gd-5"]
+    mcqIds: ["pe-gd-1", "pe-gd-2", "pe-gd-3", "pe-gd-4", "pe-gd-5", "q-jbg-146"]
   },
 "psa-ybus-loadflow-intro": {
     title:"The Load Flow Problem: Bus Types and the Admittance Matrix", area:"Sem 7 · Power System Analysis · Module II",
@@ -44534,7 +44534,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>V_dc = (V_m/2π)(1 + cos α); range 0 to 180°, output always positive</li><li>Conduction angle = π − α; AC zero-crossing automatic turn-off (Natural Commutation) at the supply zero</li><li>V_rms = (V_m/2)√[(π − α + sin2α/2)/π]</li><li>One pulse per cycle ⇒ huge ripple, DC in the supply, cannot invert</li><li>RL load ⇒ conduction past π ⇒ add a freewheeling diode</li></ul>
     `,
-    mcqIds: ["pe-hw-1", "pe-hw-2", "pe-hw-3", "pe-hw-4", "pe-hw-5", "q-tkm-21"]
+    mcqIds: ["pe-hw-1", "pe-hw-2", "pe-hw-3", "pe-hw-4", "pe-hw-5", "q-tkm-21", "q-jbg-185"]
   },
 "pe-1ph-bridge": {
     title:"Single-Phase Fully Controlled and Half Controlled Bridge Rectifiers", area:"Sem 5 · Power Electronics · Module II",
@@ -44627,7 +44627,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>Full converter: 4 SCRs, V_dc = (2V_m/π)cos α, two pulses per cycle, inverts for α &gt; 90°</li><li>Semiconverter: 2 SCRs + 2 diodes, V_dc = (V_m/π)(1 + cos α), never negative, inherent freewheeling, better power factor</li><li>Both give 2V_m/π at α = 0</li><li>Inversion reverses voltage, not current, and needs an active DC-side EMF</li><li>Continuous-conduction formulas fail at light load; α is limited to about 165–170° by t_q</li></ul>
     `,
-    mcqIds: ["pe-fb-1", "pe-fb-2", "pe-fb-3", "pe-fb-4", "pe-fb-5", "pe-fb-6", "q-tkm-17"]
+    mcqIds: ["pe-fb-1", "pe-fb-2", "pe-fb-3", "pe-fb-4", "pe-fb-5", "pe-fb-6", "q-tkm-17", "q-jbg-142", "q-jbg-186"]
   },
 "pe-3ph-halfwave": {
     title:"Three-Phase Half-Wave Controlled Rectifier with R Load", area:"Sem 5 · Power Electronics · Module II",
@@ -44669,7 +44669,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>Most positive triggered phase conducts; 120° conduction per device; 3 pulses per cycle</li><li>α measured from the AC zero-crossing automatic turn-off (Natural Commutation) point, 30° after the phase voltage zero</li><li>V_dc = 0.827·V_mp·cos α for α ≤ 30° (R load, continuous)</li><li>α &gt; 30° with R load ⇒ discontinuous ⇒ V_dc = (3V_mp/2π)[1 + cos(α + 30°)]</li><li>Needs a neutral and injects a DC component into the transformer ⇒ rarely used industrially</li></ul>
     `,
-    mcqIds:["pe-3h-1", "pe-3h-2", "pe-3h-3", "pe-3h-4"]
+    mcqIds: ["pe-3h-1", "pe-3h-2", "pe-3h-3", "pe-3h-4", "q-jbg-187"]
   },
 "pe-3ph-bridge": {
     title:"Three-Phase Fully Controlled and Half Controlled Bridge Converters", area:"Sem 5 · Power Electronics · Module II",
@@ -44730,7 +44730,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>6 SCRs, two groups of three; 120° conduction; firing every 60°; six pulses per cycle (300 Hz)</li><li>V_dc = (3V_ml/π)cos α = 1.35·V_L·cos α; 400 V supply ⇒ 540 V at α = 0</li><li>Inverts for α &gt; 90°; no neutral needed; no DC component in the supply</li><li>Semiconverter: V_dc = (3V_ml/2π)(1 + cos α), never negative, better power factor</li><li>Ripple magnitude grows as α increases even though V_dc falls</li><li>α limited to about 165° by t_q and the overlap angle µ</li></ul>
     `,
-    mcqIds:["pe-3f-1", "pe-3f-2", "pe-3f-3", "pe-3f-4", "pe-3f-5", "pe-3f-6"]
+    mcqIds: ["pe-3f-1", "pe-3f-2", "pe-3f-3", "pe-3f-4", "pe-3f-5", "pe-3f-6", "q-jbg-143"]
   },
 "psa-stability-types": {
   title:"Power System Stability: Types, the Power-Angle Curve and the Steady-State Limit", area:"Sem 7 · Power System Analysis · Module III",
@@ -44996,7 +44996,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>N_s = 120f/P; 50 Hz: 2-pole 3000, 4-pole 1500, 24-pole 250 rpm</li><li>Stationary armature, rotating field — output without slip rings</li><li>Salient: slow, many poles, hydro. Cylindrical: fast, 2/4 poles, turbo</li><li>m = S/(3P), γ = 180P/S</li></ul>
 `,
-    mcqIds: ["acm-con-1", "acm-con-2", "acm-con-3", "acm-con-4", "q-tkm-16"]
+    mcqIds: ["acm-con-1", "acm-con-2", "acm-con-3", "acm-con-4", "q-tkm-16", "q-jbg-170"]
   },
 "ac-alt-emf": {
     title:"EMF Equation of an Alternator: Pitch and Distribution Factors", area:"Sem 5 · AC Machines · Module I",
@@ -45033,7 +45033,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>E_ph = 4.44 K_p K_d f Φ T_ph, with T_ph = Z_ph/2</li><li>K_p = cos(α/2); K_d = sin(mγ/2)/(m sin(γ/2))</li><li>Star: E_L = √3 E_ph; delta: E_L = E_ph</li></ul>
 `,
-    mcqIds: ["acm-emf-1", "acm-emf-2", "acm-emf-3", "acm-emf-4", "q-jbg-35"]
+    mcqIds: ["acm-emf-1", "acm-emf-2", "acm-emf-3", "acm-emf-4", "q-jbg-35", "q-jbg-171"]
   },
 "ac-alt-harmonics": {
     title:"Harmonics in Alternator EMF: Causes and Suppression", area:"Sem 5 · AC Machines · Module I",
@@ -45073,7 +45073,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>Only odd harmonics; nth has frequency nf</li><li>K_pn = cos(nα/2); eliminate nth by α = 180°/n</li><li>Star removes triplens from line voltage; delta circulates them</li><li>Distribution, skewing, fractional slots, pole shaping also help</li></ul>
 `,
-    mcqIds:["acm-har-1", "acm-har-2", "acm-har-3", "acm-har-4"]
+    mcqIds: ["acm-har-1", "acm-har-2", "acm-har-3", "acm-har-4", "q-jbg-124"]
   },
 "ac-alt-armature-reaction": {
     title:"armature magnetic field reacting against the main field (Armature Reaction) and the Equivalent Circuit of an Alternator", area:"Sem 5 · AC Machines · Module I",
@@ -45201,7 +45201,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>EMF method: one Z_s from E_o/I_sc at matched I_f, then E_f = V+I(R_a+jX_s) — simple but pessimistic (overestimates regulation)</li><li>MMF method: combine F_O and F_AR as phasors to get F_R, then read E_f off the real OCC at F_R — more realistic, uses actual saturation</li><li>sinφ term adds for lagging pf, subtracts for leading pf, in both the phasor-voltage and phasor-mmf combinations</li><li>Large EMF-vs-MMF disagreement signals heavy saturation at the full-load excitation point</li></ul>
 `,
-    mcqIds: ["acm-reg-1", "acm-reg-2", "acm-reg-3", "acm-reg-4", "q-jbg-36", "q-jbg-67"]
+    mcqIds: ["acm-reg-1", "acm-reg-2", "acm-reg-3", "acm-reg-4", "q-jbg-36", "q-jbg-67", "q-jbg-172", "q-jbg-173"]
   },
 "ac-alt-potier-asa": {
     title:"Voltage Regulation of Alternators: The Potier (ZPF) Method and the ASA Method", area:"Sem 5 · AC Machines · Module II",
@@ -45267,7 +45267,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>ZPF curve = OCC shifted right by F_AR and down by I·X_L; two points (A from the SCC, B from the ZPF test) fix it</li><li>Potier triangle: BH = OA, HD parallel to the air-gap line, DE vertical; DE = I·X_L, BE = F_AR (BE &lt; OA)</li><li>Potier: E_r = V + I(R_a + jX_L), F_fr from OCC, F_f = √(F_fr² + F_AR² + 2F_frF_AR sinψ), E_0 from OCC</li><li>ASA: F_1 from the air-gap line, F_SC from the SCC, mmf sum at φ, plus the saturation increment ΔF taken at E_1</li><li>Typical ranking: EMF (pessimistic) &gt; Potier ≈ ASA &gt; MMF (optimistic)</li></ul>
 `,
-    mcqIds:["acm-pot-1", "acm-pot-2", "acm-pot-3", "acm-pot-4"]
+    mcqIds: ["acm-pot-1", "acm-pot-2", "acm-pot-3", "acm-pot-4", "q-jbg-123"]
   },
 "ac-alt-blondel-two-reaction": {
     title:"Blondel's Two-Reaction Theory: Salient-Pole Alternators and Their Phasor Diagram", area:"Sem 5 · AC Machines · Module II",
@@ -45595,7 +45595,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>P_syn = dP/dδ, in W (or pu) per <i>electrical</i> radian; stable steady-state operation needs P_syn &gt; 0</li><li>Cylindrical: P_syn = (E_fV/X_s) cos δ = P cot δ. Salient: P_syn = (E_fV/X_d) cos δ + V²(1/X_q − 1/X_d) cos 2δ</li><li>Greatest at no load, zero at the maximum-power angle (90° cylindrical, below 90° salient), negative beyond</li><li>At the same real power, higher excitation gives a smaller δ and a larger P_syn</li><li>T_syn = 3P_syn/ω<sub>sm</sub> (per electrical radian), with ω<sub>sm</sub> = 2πN<sub>s</sub>/60 and N<sub>s</sub> = 120f/p</li><li>Electrical angle = (p/2) × mechanical angle: multiply by p/2 for mechanical radians and by π/180 for degrees</li></ul>
 `,
-    mcqIds:["acm-syn-1", "acm-syn-2", "acm-syn-3", "acm-syn-4"]
+    mcqIds: ["acm-syn-1", "acm-syn-2", "acm-syn-3", "acm-syn-4", "q-jbg-125"]
   },
 "ac-alt-load-test-parallel": {
     title:"Load Test and Parallel Operation of Alternators: Conditions, Circulating Current and Load Sharing", area:"Sem 5 · AC Machines · Module II",
@@ -45857,7 +45857,7 @@ endmodule</code></pre>
       <h3>◆ Quick revision</h3>
       <ul><li>Beat: Δf = pN/120 − f<sub>b</sub>; the angle slides at 360Δf degrees per second; one beat (1/|Δf|) is one lamp flicker or one turn of the synchroscope pointer</li><li>Straight lamps: |V| = 2E|sin(θ/2)|, all equal; dark at coincidence, close in the middle of the dark period; flicker together = sequence right, rotating = sequence wrong; direction not shown</li><li>One straight and two crossed lamps: L1 dark with L2 = L3 = √3E at coincidence; the dark lamp rotates L1 → L2 → L3 if fast and L1 → L3 → L2 if slow; all three flickering together = sequence wrong</li><li>Synchroscope: pointer angle = θ, clockwise = fast, 12 o'clock = in phase; it does not check the sequence or the voltage magnitude</li><li>Close slightly fast (a slow machine is motored and can trip the reverse-power relay) and give the command 360 Δf t<sub>c</sub> degrees before coincidence; a smaller slip gives more tolerance</li><li>After closing, the governor sets the real power and the field sets the reactive power</li></ul>
 `,
-    mcqIds:["acm-meth-1", "acm-meth-2", "acm-meth-3", "acm-meth-4"]
+    mcqIds: ["acm-meth-1", "acm-meth-2", "acm-meth-3", "acm-meth-4", "q-jbg-126"]
   },
 "ac-sync-motor-principle-phasor": {
     title: "Synchronous Motor: Principle of Operation and Phasor Diagrams",
@@ -46007,7 +46007,7 @@ endmodule</code></pre>
         <li><b>Excitation control:</b> Under-excited = lagging pf (absorbs VARs); Normal = unity pf (minimum <i>I<sub>a</sub></i>); Over-excited = leading pf (generates VARs).</li>
       </ul>
     `,
-    mcqIds: ["acm-sm-pp-1", "acm-sm-pp-2", "acm-sm-pp-3", "acm-sm-pp-4", "q-jbg-37"]
+    mcqIds: ["acm-sm-pp-1", "acm-sm-pp-2", "acm-sm-pp-3", "acm-sm-pp-4", "q-jbg-37", "q-jbg-174"]
   },
 "ac-sync-motor-power-torque-losses": {
     title: "Synchronous Motor: Power and Torque Equations, Losses, and Efficiency",
@@ -46248,7 +46248,7 @@ endmodule</code></pre>
         <li><b>Dynamic advantage:</b> Provides physical inertia and voltage support during grid faults, unlike static shunt capacitor banks.</li>
       </ul>
     `,
-    mcqIds: ["acm-sm-vc-1", "acm-sm-vc-2", "acm-sm-vc-3", "acm-sm-vc-4", "q-tkm-15"]
+    mcqIds: ["acm-sm-vc-1", "acm-sm-vc-2", "acm-sm-vc-3", "acm-sm-vc-4", "q-tkm-15", "q-jbg-127", "q-jbg-128"]
   },
 "ac-ind-motor-construction-principle": {
     title: "Three-Phase Induction Motor: Constructional Features and Principle of Operation",
@@ -46450,7 +46450,7 @@ endmodule</code></pre>
         <li><b>Slip at breakdown:</b> <i>s<sub>mT</sub> &approx; R<sub>2</sub>' / (X<sub>1</sub> + X<sub>2</sub>')</i>; directly proportional to rotor resistance.</li>
       </ul>
     `,
-    mcqIds: ["acm-im-ts-1", "acm-im-ts-2", "acm-im-ts-3", "acm-im-ts-4", "q-mach-ext-6", "q-tkm-8", "q-tkm-12", "q-jbg-32", "q-jbg-33"]
+    mcqIds: ["acm-im-ts-1", "acm-im-ts-2", "acm-im-ts-3", "acm-im-ts-4", "q-mach-ext-6", "q-tkm-8", "q-tkm-12", "q-jbg-32", "q-jbg-33", "q-jbg-167", "q-jbg-168"]
   },
 "ac-ind-motor-phasor-equivalent-circuit": {
     title: "Three-Phase Induction Motor: Phasor Diagram and Equivalent Circuit",
@@ -46573,7 +46573,7 @@ endmodule</code></pre>
         <li><b>Stator equation:</b> <i><b>V<sub>1</sub></b> = &minus;<b>E<sub>1</sub></b> + <b>I<sub>1</sub></b>(R<sub>1</sub> + j X<sub>1</sub>)</i>.</li>
       </ul>
     `,
-    mcqIds: ["acm-im-eq-1", "acm-im-eq-2", "acm-im-eq-3", "acm-im-eq-4"]
+    mcqIds: ["acm-im-eq-1", "acm-im-eq-2", "acm-im-eq-3", "acm-im-eq-4", "q-jbg-118"]
   },
 "ac-ind-motor-tests-numerical": {
     title: "Three-Phase Induction Motor: No-Load and Blocked-Rotor Tests (Parameter Determination)",
@@ -46680,7 +46680,7 @@ endmodule</code></pre>
         <li><b>Parameter splitting:</b> <i>R<sub>1</sub></i> is obtained from DC bridge test (+20% skin effect); <i>R<sub>2</sub>' = R<sub>01</sub> &minus; R<sub>1</sub></i>; <i>X<sub>1</sub> &approx; X<sub>2</sub>' &approx; 0.5 X<sub>01</sub></i> for standard machines.</li>
       </ul>
     `,
-    mcqIds: ["acm-im-nt-1", "acm-im-nt-2", "acm-im-nt-3", "acm-im-nt-4"]
+    mcqIds: ["acm-im-nt-1", "acm-im-nt-2", "acm-im-nt-3", "acm-im-nt-4", "q-jbg-119"]
   },
 "ac-ind-motor-circle-diagram": {
     title: "Circle Diagram of Induction Motors: Graphical Construction, Power Lines, and Performance Determination",
@@ -46838,7 +46838,7 @@ endmodule</code></pre>
         <li>Maximum power output occurs at the tangent parallel to \\(AF'\\); maximum torque occurs at the tangent parallel to \\(AE\\).</li>
       </ul>
     `,
-    mcqIds: ["acm-cd-1", "acm-cd-2", "acm-cd-3", "acm-cd-4"]
+    mcqIds: ["acm-cd-1", "acm-cd-2", "acm-cd-3", "acm-cd-4", "q-jbg-120"]
   },
 "ac-ind-motor-cogging-crawling": {
     title: "Cogging and Crawling in Cage Motors: Space Harmonics, Parasitic Torques, and prevention",
@@ -47165,7 +47165,7 @@ endmodule</code></pre>
         <li>Rotor resistance starting (wound rotor only) reduces starting current while increasing starting torque up to \\(T_{max}\\) at \\(s = 1\\).</li>
       </ul>
     `,
-    mcqIds: ["acm-st-1", "acm-st-2", "acm-st-3", "acm-st-4", "q-tkm-14"]
+    mcqIds: ["acm-st-1", "acm-st-2", "acm-st-3", "acm-st-4", "q-tkm-14", "q-jbg-169"]
   },
 "ac-ind-motor-braking": {
     title: "Braking of Induction Motors: Plugging, DC Dynamic Braking, and Regenerative Braking",
@@ -47357,7 +47357,7 @@ endmodule</code></pre>
         <li>Regenerative braking occurs when \\(N > N_s\\) (\\(s < 0\\)); active power is returned to the grid, but external lagging VARs are required for excitation.</li>
       </ul>
     `,
-    mcqIds: ["acm-br-1", "acm-br-2", "acm-br-3", "acm-br-4"]
+    mcqIds: ["acm-br-1", "acm-br-2", "acm-br-3", "acm-br-4", "q-jbg-121"]
   },
 "ac-spim-double-revolving": {
     title: "Single-Phase Induction Motors: Principle of Operation and Double-Field Revolving Theory",
@@ -47454,7 +47454,7 @@ endmodule</code></pre>
         <li>Single-phase motors require an auxiliary starting mechanism (split-phase, capacitor, or shading ring) to initiate rotation.</li>
       </ul>
     `,
-    mcqIds: ["acm-sp-dfr-1", "acm-sp-dfr-2", "acm-sp-dfr-3", "acm-sp-dfr-4"]
+    mcqIds: ["acm-sp-dfr-1", "acm-sp-dfr-2", "acm-sp-dfr-3", "acm-sp-dfr-4", "q-jbg-122"]
   },
 "ac-spim-equiv-circuit": {
     title: "Single-Phase Induction Motor Equivalent Circuit and Parameter Determination",
@@ -51545,7 +51545,7 @@ Consider a commercial solar PV string combiner box deployed in a 50 MW photovolt
 "pe-1ph-half-bridge-inverter": {
     title: "Single-Phase Half-Bridge Voltage Source Inverter with R and RL Loads",
     area: "Sem 5 \u00b7 Power Electronics \u00b7 Module III",
-    mcqIds: ["pe-hb-1", "pe-hb-2", "pe-hb-3", "pe-hb-4"],
+    mcqIds: ["pe-hb-1", "pe-hb-2", "pe-hb-3", "pe-hb-4", "q-jbg-188"],
     body: `
       <p><b>Prerequisite:</b> <a href="#" data-nav="lesson:pe-power-diode-mosfet">Power MOSFETs</a> and <a href="#" data-nav="lesson:pe-igbt-wbg">IGBTs &amp; Wide-Bandgap Devices</a>.</p>
 
@@ -51660,7 +51660,7 @@ Consider a commercial solar PV string combiner box deployed in a 50 MW photovolt
 "pe-1ph-full-bridge-inverter": {
     title: "Single-Phase Full-Bridge Voltage Source Inverter and THD in Output Voltage",
     area: "Sem 5 \u00b7 Power Electronics \u00b7 Module III",
-    mcqIds: ["pe-fb-7", "pe-fb-8", "pe-fb-9", "pe-fb-10"],
+    mcqIds: ["pe-fb-7", "pe-fb-8", "pe-fb-9", "pe-fb-10", "q-jbg-144"],
     body: `
       <p><b>Prerequisite:</b> <a href="#" data-nav="lesson:pe-1ph-half-bridge-inverter">Single-Phase Half-Bridge Inverter</a>.</p>
 
@@ -51744,7 +51744,7 @@ Consider a commercial solar PV string combiner box deployed in a 50 MW photovolt
 "pe-3ph-inverter-180": {
     title: "Three-Phase Bridge Inverter: 180\u00b0 Conduction Mode",
     area: "Sem 5 \u00b7 Power Electronics \u00b7 Module III",
-    mcqIds: ["pe-3ph180-1", "pe-3ph180-2", "pe-3ph180-3", "pe-3ph180-4", "q-tkm-22"],
+    mcqIds: ["pe-3ph180-1", "pe-3ph180-2", "pe-3ph180-3", "pe-3ph180-4", "q-tkm-22", "q-jbg-145"],
     body: `
       <p><b>Prerequisite:</b> <a href="#" data-nav="lesson:pe-1ph-full-bridge-inverter">Single-Phase Full-Bridge Inverter</a>.</p>
 
@@ -52019,7 +52019,7 @@ Consider a commercial solar PV string combiner box deployed in a 50 MW photovolt
 "pe-pwm-sinusoidal": {
     title: "Sinusoidal Pulse Width Modulation (SPWM): Unipolar & Bipolar Modulation",
     area: "Sem 5 \u00b7 Power Electronics \u00b7 Module III",
-    mcqIds: ["pe-pwm2-1", "pe-pwm2-2", "pe-pwm2-3", "pe-pwm2-4", "q-tkm-23"],
+    mcqIds: ["pe-pwm2-1", "pe-pwm2-2", "pe-pwm2-3", "pe-pwm2-4", "q-tkm-23", "q-jbg-189"],
     body: `
       <p><b>Prerequisite:</b> <a href="#" data-nav="lesson:pe-pwm-spw-mpw">Single-Pulse and Multiple-Pulse Width Modulation</a>.</p>
 
@@ -68026,6 +68026,107 @@ const MCQS = {
   "q-jbg-98": {"q": "For an ideal op-amp inverting amplifier with input resistor R_1 and feedback resistor R_f, the closed-loop voltage gain A_v is:", "opts": ["A_v = 1 + R_f / R_1", "A_v = -R_f / R_1", "A_v = -R_1 / R_f", "A_v = R_f / (R_1 + R_f)"], "a": 1, "d": "E", "topic": "Operational Amplifiers", "area": "Sem 4 · Solid State Electronic Devices & Circuits · Module IV", "exp": "Due to virtual ground at the inverting terminal (V_- = 0), input current is I_in = V_in / R_1. Since ideal op-amp inputs draw zero current, I_f = -V_o / R_f = I_in, giving closed-loop gain A_v = V_o / V_in = -R_f / R_1."},
   "q-jbg-99": {"q": "The Slew Rate (SR) of an operational amplifier is defined as:", "opts": ["The minimum open-loop DC voltage gain", "The maximum rate of change of output voltage per unit time (V/μs)", "The common-mode input voltage range", "The unity-gain cutoff bandwidth in MHz"], "a": 1, "d": "E", "topic": "Operational Amplifiers", "area": "Sem 4 · Solid State Electronic Devices & Circuits · Module III", "exp": "Slew rate (SR = dV_o/dt_max, expressed in V/μs) is the maximum rate at which the op-amp output voltage can change in response to a step input, limited by internal compensation capacitor charging."},
   "q-jbg-100": {"q": "In control system analysis, the Nyquist Stability Criterion determines closed-loop stability from the polar plot of open-loop transfer function G(s)H(s) based on encirclements of the critical point:", "opts": ["Origin (0, 0)", "-1 + j0 (point -1 on the real axis)", "0 - j1", "+1 + j0"], "a": 1, "d": "E", "topic": "Control Systems Stability", "area": "Sem 5 · Control Systems Engineering · Module II", "exp": "The closed-loop characteristic equation is 1 + G(s)H(s) = 0, which corresponds to G(s)H(s) = -1 + j0. The Nyquist plot maps contour encirclements of this critical point (-1 + j0) to determine right-half s-plane closed-loop poles."}
+,
+  "q-jbg-101": {"q": "Reciprocity Theorem states that in any linear bilateral network containing a single independent source, the ratio of excitation to response is constant when positions of excitation and response are interchanged. The theorem is valid when initial conditions are:", "opts": ["Non-zero", "Strictly zero (quiescent network)", "Arbitrary positive values", "Infinite"], "a": 1, "d": "E", "topic": "Network Theorems", "area": "Sem 3 · Circuit Theory · Module I", "exp": "Reciprocity Theorem requires that all independent sources except the excitation source are zeroed and all initial energy storage (inductor currents, capacitor voltages) is zero (quiescent state). It applies only to linear bilateral networks."},
+  "q-jbg-102": {"q": "When calculating Thevenin resistance R_th of an active network containing both independent and dependent (controlled) sources, one must:", "opts": ["Deactivate both independent and dependent sources", "Deactivate independent sources only, and determine R_th by applying a test voltage V_test and calculating I_test (R_th = V_test / I_test)", "Leave all sources active and measure open-circuit impedance", "Short-circuit all resistors"], "a": 1, "d": "M", "topic": "Network Theorems", "area": "Sem 3 · Circuit Theory · Module I", "exp": "Dependent sources cannot be simply deactivated (turned off) because their values depend on circuit variables elsewhere in the network. Independent sources are zeroed, and an external 1 V or 1 A test source is applied at the terminals to find R_th = V_test / I_test."},
+  "q-jbg-103": {"q": "For an AC source network with internal impedance Z_th = R_th + j X_th feeding a variable impedance load Z_L = R_L + j X_L, the condition for maximum power transfer to the load is:", "opts": ["Z_L = Z_th", "Z_L = Z_th* (R_L = R_th and X_L = -X_th, complex conjugate match)", "R_L = 0 and X_L = X_th", "Z_L = |Z_th|"], "a": 1, "d": "E", "topic": "Network Theorems", "area": "Sem 3 · Circuit Theory · Module I", "exp": "To transfer maximum active power in AC networks, load reactance must cancel source reactance (X_L = -X_th, resonance condition) and load resistance must equal source Thevenin resistance (R_L = R_th). Thus, Z_L must be the complex conjugate of Z_th (Z_L = Z_th*)."},
+  "q-jbg-104": {"q": "The bandwidth (BW) of a series RLC resonant circuit with resonant frequency f_0 and quality factor Q is given by:", "opts": ["BW = f_0 × Q", "BW = f_0 / Q = R / (2π L)", "BW = Q / f_0", "BW = 2π f_0 R"], "a": 1, "d": "E", "topic": "Resonance", "area": "EEE From Zero", "exp": "Bandwidth is the frequency span between half-power frequencies (f_2 - f_1) and is related to Q-factor by BW = f_0 / Q. Since Q = 2π f_0 L / R, substituting gives BW = R / (2π L)."},
+  "q-jbg-105": {"q": "In AC circuits, the Power Factor is defined mathematically as the ratio of:", "opts": ["Reactive power to Active power (VAR / W)", "Active (Real) power to Apparent power (P / S = W / VA)", "Apparent power to Active power", "Impedance to Reactance"], "a": 1, "d": "E", "topic": "AC Power", "area": "Sem 3 · Circuit Theory · Module IV", "exp": "Power factor cos φ = Active Power (P in Watts) / Apparent Power (S in Volt-Amperes). In sinusoidal steady state, it also equals R / |Z|."},
+  "q-jbg-106": {"q": "In a balanced star-connected (Y) 3-phase system, the relationship between line voltage V_L and phase voltage V_ph, and line current I_L and phase current I_ph is:", "opts": ["V_L = V_ph, I_L = √3 I_ph", "V_L = √3 V_ph (leading by 30°), I_L = I_ph", "V_L = V_ph / √3, I_L = I_ph", "V_L = √3 V_ph, I_L = √3 I_ph"], "a": 1, "d": "E", "topic": "Three-Phase Circuits", "area": "EEE From Zero", "exp": "In a star connection, line current equals phase current (I_L = I_ph) because each line is in series with a phase. Line voltage is the phasor difference between two phase voltages: V_L = √3 V_ph, with line voltage leading corresponding phase voltage by 30°."},
+  "q-jbg-107": {"q": "In a balanced delta-connected (Δ) 3-phase load, the relationship between line current I_L and phase current I_ph is:", "opts": ["I_L = I_ph", "I_L = √3 I_ph (lagging by 30°)", "I_L = I_ph / √3", "I_L = 3 I_ph"], "a": 1, "d": "E", "topic": "Three-Phase Circuits", "area": "EEE From Zero", "exp": "In a delta connection, line voltage equals phase voltage (V_L = V_ph). Line current is the phasor difference of two adjacent phase currents: I_L = √3 I_ph, with line current lagging phase current by 30° in positive sequence."},
+  "q-jbg-108": {"q": "The electromagnetic torque T_e developed by a DC machine armature carrying armature current I_a in magnetic flux per pole Φ is proportional to:", "opts": ["Φ / I_a", "Φ × I_a", "Φ^2 × I_a", "I_a / Φ"], "a": 1, "d": "E", "topic": "DC Machines", "area": "Sem 4 · DC Machines & Transformers · Module I", "exp": "Torque developed is T_e = (P Z / 2π A) Φ I_a = K_a Φ I_a, where K_a is the machine design constant. Torque is directly proportional to the product of magnetic flux per pole and armature current."},
+  "q-jbg-109": {"q": "The electromotive force (EMF) induced in a DC generator armature rotating at speed N (rpm) is given by:", "opts": ["E = (Φ Z N P) / (60 A)", "E = (60 Φ Z) / (N P A)", "E = (Φ Z A) / (60 N P)", "E = (P Z) / (60 Φ N A)"], "a": 0, "d": "E", "topic": "DC Machines", "area": "Sem 4 · DC Machines & Transformers · Module I", "exp": "Faraday's law applied to Z total conductors arranged in A parallel paths with P poles gives average induced EMF E = (Φ P N Z) / (60 A) Volts."},
+  "q-jbg-110": {"q": "A level-compounded (flat-compounded) DC generator is designed such that its terminal voltage at full load is:", "opts": ["Much lower than no-load voltage", "Exactly equal to no-load voltage", "Higher than no-load voltage", "Zero"], "a": 1, "d": "E", "topic": "DC Generators", "area": "Sem 4 · DC Machines & Transformers · Module II", "exp": "In a level-compounded generator, the series field winding provides just enough extra MMF under load to compensate for armature resistance drop (I_a R_a) and armature reaction demagnetization, keeping full-load terminal voltage equal to no-load terminal voltage."},
+  "q-jbg-111": {"q": "In dynamic (rheostatic) braking of a DC shunt motor, the motor armature is disconnected from the supply lines and:", "opts": ["Reconnected in reverse polarity across the DC supply", "Connected across a braking resistor while keeping the field excited from the supply", "Left completely open-circuited", "Short-circuited through the field winding"], "a": 1, "d": "M", "topic": "Electric Braking", "area": "Sem 4 · DC Machines & Transformers · Module III", "exp": "In dynamic braking, the field winding remains energized from the DC supply to maintain flux, while the armature is disconnected from supply and loaded across a braking resistor. The machine acts as a generator, converting rotor kinetic energy into electrical energy dissipated as heat in the resistor."},
+  "q-jbg-112": {"q": "Plugging (reverse current braking) of a DC motor produces rapid deceleration by:", "opts": ["Reducing field current to zero", "Reversing the armature terminal connections while running, causing supply voltage and back EMF to add together", "Disconnecting all power and letting friction stop the rotor", "Increasing field resistance to infinity"], "a": 1, "d": "M", "topic": "Electric Braking", "area": "Sem 4 · DC Machines & Transformers · Module III", "exp": "In plugging, armature connections are reversed while the motor is running. The back EMF E_b acts in the same direction as supply voltage V, driving total voltage V + E_b ≈ 2V across the armature circuit. A large external current-limiting resistor is inserted to prevent commutator flashover."},
+  "q-jbg-113": {"q": "The mechanical power developed by a DC motor armature is maximum when:", "opts": ["Back EMF E_b = 0", "Back EMF E_b = V / 2 (half of supply voltage)", "Back EMF E_b = V", "Armature current I_a = 0"], "a": 1, "d": "E", "topic": "DC Motors", "area": "Sem 4 · DC Machines & Transformers · Module III", "exp": "Mechanical power developed is P_m = E_b I_a = E_b (V - E_b) / R_a. Differentiating P_m with respect to E_b and equating to zero yields dP_m/dE_b = (V - 2E_b) / R_a = 0, so E_b = V / 2. Under this maximum mechanical power condition, theoretical electrical efficiency is 50%."},
+  "q-jbg-114": {"q": "The voltage regulation of a transformer at full load is zero (V_no_load = V_full_load) when the load operates at:", "opts": ["Unity power factor", "Lagging power factor with tan φ = R_02 / X_02", "Leading power factor with tan φ = R_02 / X_02", "Zero power factor lagging"], "a": 2, "d": "M", "topic": "Transformers", "area": "Sem 4 · DC Machines & Transformers · Module IV", "exp": "Approximate voltage drop is ΔV = I_2 (R_02 cos φ ± X_02 sin φ). For zero voltage regulation, ΔV = 0, which requires R_02 cos φ = X_02 sin φ (leading pf, minus sign), giving tan φ = R_02 / X_02 (leading)."},
+  "q-jbg-115": {"q": "Maximum voltage regulation (maximum terminal voltage drop) in a power transformer occurs at:", "opts": ["Leading power factor", "Lagging power factor with tan φ = X_02 / R_02", "Unity power factor", "Zero power factor leading"], "a": 1, "d": "M", "topic": "Transformers", "area": "Sem 4 · DC Machines & Transformers · Module IV", "exp": "For lagging power factor, regulation is proportional to (R_02 cos φ + X_02 sin φ). Differentiating with respect to φ and setting to zero yields -R_02 sin φ + X_02 cos φ = 0, so tan φ = X_02 / R_02 (lagging)."},
+  "q-jbg-116": {"q": "In Sumpner's test (back-to-back test) on two identical single-phase transformers:", "opts": ["Total full-load energy is consumed from the power source", "Full-load temperature rise and total losses are determined while drawing only the power losses of both transformers from the supply", "Only no-load iron losses can be measured", "No meters are required"], "a": 1, "d": "M", "topic": "Transformers", "area": "Sem 4 · DC Machines & Transformers · Module IV", "exp": "In Sumpner's test, primaries are connected in parallel to rated AC voltage (supplying core losses), while secondaries are connected in phase opposition and excited by an auxiliary transformer supplying rated current (supplying copper losses). Full thermal load is simulated with minimal energy consumption."},
+  "q-jbg-117": {"q": "Distribution transformers are typically connected in Delta-Star (Δ-Y) with neutral grounded primarily because:", "opts": ["It eliminates insulation requirements on the primary", "It provides a 3-phase 4-wire supply allowing mixed single-phase lighting and 3-phase power loads", "It prevents transformer humming noise", "It eliminates magnetizing inrush current"], "a": 1, "d": "E", "topic": "Transformers", "area": "Sem 4 · DC Machines & Transformers · Module V", "exp": "The delta primary suppresses 3rd harmonic voltages and handles 3-phase transmission without neutral, while the star secondary provides a neutral point for 3-phase 4-wire distribution (415 V line-to-line for motors and 230 V line-to-neutral for residential loads)."},
+  "q-jbg-118": {"q": "In the per-phase equivalent circuit of a 3-phase induction motor, mechanical power developed is represented by an equivalent variable electrical resistance equal to:", "opts": ["R_2 / s", "R_2 (1 - s) / s", "R_2 × s", "s / R_2"], "a": 1, "d": "M", "topic": "Induction Motors", "area": "Sem 5 · AC Machines · Module III", "exp": "Total rotor power input across air gap is P_g = I_2'^2 (R_2 / s). Splitting R_2 / s into copper loss and mechanical power gives R_2 / s = R_2 + R_2 (1 - s) / s. The term R_L' = R_2 (1 - s) / s represents the mechanical shaft load resistance."},
+  "q-jbg-119": {"q": "The Blocked Rotor Test on a 3-phase induction motor is analogous to which transformer test?", "opts": ["Open-circuit (OC) test", "Short-circuit (SC) test", "Sumpner's back-to-back test", "Polarity test"], "a": 1, "d": "E", "topic": "Induction Motors", "area": "Sem 5 · AC Machines · Module III", "exp": "In the blocked rotor test, the rotor is mechanically clamped (slip s = 1) and reduced voltage is applied to circulate rated stator current. This corresponds directly to the transformer short-circuit test, measuring total equivalent winding impedance and full-load copper loss."},
+  "q-jbg-120": {"q": "In the circle diagram of a 3-phase induction motor, the vertical distance from the circle locus to the torque line represents:", "opts": ["Stator copper loss", "Rotor copper loss", "Electromagnetic torque (rotor input power in synchronous watts)", "Friction and windage loss"], "a": 2, "d": "M", "topic": "Induction Motors", "area": "Sem 5 · AC Machines · Module IV", "exp": "In the circle diagram, the vertical intercept between the operating point on the circle and the torque line represents the rotor input power P_g in synchronous watts, which is directly proportional to electromagnetic torque T_e = P_g / ω_s."},
+  "q-jbg-121": {"q": "Regenerative braking in a 3-phase induction motor occurs automatically when:", "opts": ["Rotor speed exceeds synchronous speed (N_r > N_s, negative slip)", "Rotor speed drops to zero", "Two stator supply leads are swapped", "DC current is injected into stator"], "a": 0, "d": "E", "topic": "Electric Braking", "area": "Sem 5 · AC Machines · Module IV", "exp": "When driven by an overhauling mechanical load (e.g. descending crane or electric train downhill) above synchronous speed (N_r > N_s), slip s = (N_s - N_r)/N_s becomes negative. The machine operates as an induction generator, feeding electrical power back into the AC supply grid and producing retarding braking torque."},
+  "q-jbg-122": {"q": "According to the Double Revolving Field Theory, a pulsating single-phase AC magnetic field of peak amplitude B_m can be resolved into:", "opts": ["A single stationary magnetic field", "Two rotating fields of equal amplitude B_m / 2 rotating in opposite directions at synchronous speed", "Four rotating fields of amplitude B_m / 4", "Two fields rotating in the same direction at double speed"], "a": 1, "d": "E", "topic": "Single-Phase Motors", "area": "Sem 5 · AC Machines · Module V", "exp": "By trigonometric identity, B(t) = B_m cos(ωt) cos(θ) = 0.5 B_m cos(θ - ωt) + 0.5 B_m cos(θ + ωt). This resolves the pulsating field into a forward-rotating field and a backward-rotating field, each of magnitude B_m / 2 rotating at synchronous speed."},
+  "q-jbg-123": {"q": "The Potier Triangle method (Zero Power Factor characteristic method) for determining alternator voltage regulation is superior to the synchronous impedance method because it:", "opts": ["Neglects armature resistance", "Separates armature leakage reactance (X_al) from armature reaction MMF (F_a)", "Requires no physical tests on the machine", "Assumes zero magnetic saturation"], "a": 1, "d": "M", "topic": "Alternators", "area": "Sem 5 · AC Machines · Module II", "exp": "The Potier method utilizes the Open Circuit Characteristic (OCC) and Zero Power Factor Full Load Characteristic (ZPFC) to graphically separate armature leakage reactance voltage drop from the armature reaction demagnetizing MMF, accounting realistically for core saturation."},
+  "q-jbg-124": {"q": "In a 3-phase alternator, triplen harmonics (3rd, 9th, 15th, ...) generated in phase windings:", "opts": ["Are magnified by √3 in line voltages", "Are completely absent from line voltages in both star and delta connections", "Rotate forward at triple speed", "Cause mechanical rotor vibration only"], "a": 1, "d": "M", "topic": "Alternators", "area": "Sem 5 · AC Machines · Module I", "exp": "Triplen harmonic phase voltages are in phase with each other in all three phases (separated by 3 × 120° = 360° = 0°). In star connection, line voltage is the difference of two phase voltages (v_RY = v_R - v_Y), canceling identical triplen harmonics. In delta, triplen currents circulate inside the closed loop and do not appear in external line lines."},
+  "q-jbg-125": {"q": "The 'Synchronizing Power' of an alternator running in parallel with an infinite bus is maximum when the load angle δ is:", "opts": ["0° (no-load)", "45°", "90°", "180°"], "a": 0, "d": "M", "topic": "Alternators", "area": "Sem 5 · AC Machines · Module II", "exp": "Power developed is P = (E V / X_s) sin δ. Synchronizing power coefficient is the derivative P_syn = dP/dδ = (E V / X_s) cos δ. This is maximum when cos δ = 1, which corresponds to δ = 0° (unloaded condition), giving highest restoring torque."},
+  "q-jbg-126": {"q": "In the 'Dark Lamp' method of synchronizing an incoming alternator with the busbars, the correct moment to close the synchronizing switch is when:", "opts": ["All three lamps burn with maximum brightness", "All three lamps are completely dark and flicker rate is extremely slow", "The lamps flicker in clockwise rotation", "One lamp is bright and two are dark"], "a": 1, "d": "E", "topic": "Alternators", "area": "Sem 5 · AC Machines · Module II", "exp": "In the dark lamp method, lamps are connected across corresponding phases (R-R', Y-Y', B-B'). When voltages, frequencies, and phase angles match, voltage across each lamp is zero, making all lamps simultaneously dark. The switch is closed at the center of the dark period."},
+  "q-jbg-127": {"q": "The 'V-curves' of a synchronous motor depict the relationship between:", "opts": ["Terminal voltage and output power", "Armature current I_a and field excitation current I_f at constant mechanical load", "Speed and torque", "Power factor and frequency"], "a": 1, "d": "E", "topic": "Synchronous Motors", "area": "Sem 5 · AC Machines · Module III", "exp": "V-curves plot armature AC current I_a on the y-axis against DC field excitation current I_f on the x-axis for various constant mechanical load levels. Minimum armature current occurs at unity power factor; under-excitation causes lagging current and over-excitation causes leading current."},
+  "q-jbg-128": {"q": "The 'Inverted V-curves' of a synchronous motor plot:", "opts": ["Armature current vs field current", "Power factor cos φ on y-axis against field current I_f on x-axis", "Efficiency vs output load", "Speed vs excitation voltage"], "a": 1, "d": "E", "topic": "Synchronous Motors", "area": "Sem 5 · AC Machines · Module III", "exp": "Inverted V-curves plot power factor (cos φ) against field current I_f. The curve rises to a peak of 1.0 (unity power factor) at normal excitation and drops on either side for under-excitation (lagging) and over-excitation (leading)."},
+  "q-jbg-129": {"q": "In a modern coal-fired thermal power plant, the function of the Economizer is to:", "opts": ["Superheat the steam before entering high-pressure turbine", "Preheat boiler feed water using waste heat from outgoing flue gases, improving thermal efficiency", "Condense turbine exhaust steam", "Preheat primary air entering the furnace"], "a": 1, "d": "E", "topic": "Thermal Power Generation", "area": "Sem 3 · Power Systems · Module I", "exp": "The economizer is a heat exchanger placed in the path of boiler flue gases before the chimney. It captures waste heat to preheat incoming boiler feed water, raising overall plant thermodynamic cycle efficiency and saving fuel."},
+  "q-jbg-130": {"q": "A two-part electrical tariff charged by utility companies consists of:", "opts": ["A charge proportional to maximum demand (kW or kVA) plus a charge proportional to total energy consumed (kWh)", "A flat rate per unit consumed regardless of peak load", "A charge for fuel cost plus water cost", "A fixed monthly fee only"], "a": 0, "d": "E", "topic": "Tariffs", "area": "Sem 3 · Power Systems · Module I", "exp": "Two-part tariff = A × (Maximum Demand in kW or kVA) + B × (Energy consumed in kWh). The maximum demand charge recovers fixed capital and capacity costs, while the kWh energy charge recovers variable operating and fuel costs."},
+  "q-jbg-131": {"q": "The loop inductance L of a single-phase two-wire overhead transmission line with conductor radius r and center-to-center spacing D is:", "opts": ["L = 10^-7 ln(D / r)", "L = 4 × 10^-7 ln(D / r') H/m (where r' = 0.7788 r)", "L = 2 × 10^-7 ln(r / D)", "L = 10^-7 (D / r)"], "a": 1, "d": "M", "topic": "Transmission Lines", "area": "Sem 3 · Power Systems · Module II", "exp": "The inductance per conductor is L_1 = 2 × 10^-7 ln(D / r') H/m. For a two-wire single-phase loop (go and return), total loop inductance is L_loop = 2 × L_1 = 4 × 10^-7 ln(D / r') H/m, where r' = r e^(-1/4) ≈ 0.7788 r accounts for internal conductor flux linkages."},
+  "q-jbg-132": {"q": "In high-voltage transmission tower insulator strings, a 'guard ring' (grading ring) is installed around the bottom insulator disc to:", "opts": ["Protect the insulator from lightning strikes directly", "Introduce capacitive currents that equalize voltage distribution across individual discs, raising string efficiency", "Prevent mechanical bird nesting", "Ground the phase conductor"], "a": 1, "d": "M", "topic": "Overhead Insulators", "area": "Sem 3 · Power Systems · Module III", "exp": "A guard ring is a metallic ring connected to the line conductor surrounding the lowest unit. It introduces shunt capacitance from the guard ring to the metal pins that cancels out tower pin-to-ground shunt leakage capacitance, equalizing voltage stress across all insulator discs and boosting string efficiency toward 100%."},
+  "q-jbg-133": {"q": "Which electrical distribution network configuration provides the highest reliability of continuous power supply to urban consumers?", "opts": ["Radial distribution system", "Ring main distribution system", "Tree distribution system", "Single open feeder"], "a": 1, "d": "E", "topic": "Distribution Systems", "area": "Sem 3 · Power Systems · Module V", "exp": "In a ring main distribution system, the distribution feeder loops out from the substation and returns to it (or to another substation), forming a closed ring. Any fault can be isolated by sectionalizing isolators while maintaining uninterrupted power feed to all other consumers from the alternate direction."},
+  "q-jbg-134": {"q": "The per-unit impedance Z_pu(new) of an electrical power system component on new MVA_new and kV_new base values is calculated from old per-unit value Z_pu(old) by:", "opts": ["Z_pu(new) = Z_pu(old) × (MVA_new / MVA_old) × (kV_old / kV_new)^2", "Z_pu(new) = Z_pu(old) × (MVA_old / MVA_new) × (kV_new / kV_old)^2", "Z_pu(new) = Z_pu(old) × (MVA_new / MVA_old) × (kV_new / kV_old)", "Z_pu(new) = Z_pu(old) × (kV_new / kV_old)^2"], "a": 0, "d": "M", "topic": "Per-Unit System", "area": "Sem 7 · Power System Analysis · Module I", "exp": "Actual ohmic impedance is Z_Ω = Z_pu × Z_base = Z_pu × (kV^2 / MVA). Equating Z_Ω across base changes gives Z_pu(new) = Z_pu(old) × (MVA_new / MVA_old) × (kV_old / kV_new)^2."},
+  "q-jbg-135": {"q": "In an unloaded 3-phase alternator, when a dead line-to-line (L-L) fault occurs between phases b and c, the fault current I_f is:", "opts": ["I_f = 3 E_a / (Z_1 + Z_2 + Z_0)", "I_f = -j √3 E_a / (Z_1 + Z_2)", "I_f = E_a / Z_1", "I_f = 0"], "a": 1, "d": "M", "topic": "Fault Analysis", "area": "Sem 7 · Power System Analysis · Module I", "exp": "For a line-to-line fault without ground contact, zero-sequence current is zero (I_a0 = 0) and sequence networks are connected in parallel: I_a1 = -I_a2 = E_a / (Z_1 + Z_2). The line fault current is I_b = (a^2 - a) I_a1 = -j √3 I_a1 = -j √3 E_a / (Z_1 + Z_2)."},
+  "q-jbg-136": {"q": "For which type of shunt fault on an unloaded alternator are the positive, negative, and zero sequence networks connected in series?", "opts": ["Three-phase symmetrical fault (L-L-L)", "Single line-to-ground fault (L-G)", "Line-to-line fault (L-L)", "Double line-to-ground fault (L-L-G)"], "a": 1, "d": "M", "topic": "Fault Analysis", "area": "Sem 7 · Power System Analysis · Module I", "exp": "In a single line-to-ground (L-G) fault on phase a, boundary conditions dictate I_b = 0, I_c = 0, and V_a = 0. Transforming to sequence components gives I_a0 = I_a1 = I_a2 = I_a / 3. Since the same sequence current flows through all three sequence networks, they must be connected in series."},
+  "q-jbg-137": {"q": "The 'Plug Setting Multiplier' (PSM) of an electromechanical induction-disc overcurrent relay is defined as:", "opts": ["Fault current / Rated secondary CT current", "Secondary fault current in relay / (Relay pickup current = CT secondary rating × Plug setting)", "Operating time / Time multiplier setting", "Pickup current / Dropoff current"], "a": 1, "d": "E", "topic": "Protective Relays", "area": "Sem 3 · Power Systems · Module IV", "exp": "PSM = (Fault current in relay coil) / (Pick-up current) = I_secondary / (CT_sec_rated × Plug_Setting). PSM indicates how many times the actual fault current exceeds the selected threshold, used on standard time-PSM curves to find operating time."},
+  "q-jbg-138": {"q": "'Creeping' in an induction type single-phase energy meter (slow continuous rotation of the disc on no-load) is prevented by:", "opts": ["Increasing braking magnet strength", "Drilling two small diametrically opposite holes in the aluminium disc", "Increasing potential coil turns", "Reducing series magnet flux"], "a": 1, "d": "E", "topic": "Energy Meters", "area": "Sem 3 · Measurements & Instrumentation · Module I", "exp": "Creeping is caused by over-compensation for friction or supply voltage surges. Drilling two diametrically opposite holes in the aluminium disc creates an asymmetry in eddy current paths when a hole arrives under a shunt pole, creating a small detent torque that stops no-load rotation."},
+  "q-jbg-139": {"q": "Damping torque in a Permanent Magnet Moving Coil (PMMC) instrument is provided by:", "opts": ["Air friction damping", "Eddy current damping induced in the aluminium former supporting the moving coil", "Fluid friction damping", "Spring hysteresis damping"], "a": 1, "d": "E", "topic": "Electrical Measurements", "area": "Sem 3 · Measurements & Instrumentation · Module I", "exp": "In PMMC instruments, the coil is wound on a light aluminium frame (former). When the coil deflects in the strong permanent magnet field, eddy currents are induced in the metallic former according to Lenz's law, providing smooth, highly efficient electromagnetic damping without mechanical wear."},
+  "q-jbg-140": {"q": "In a thyristor (SCR) power circuit, an RC snubber circuit connected in parallel with the SCR protects it against:", "opts": ["High di/dt during turn-on", "High dv/dt (transient rate of rise of forward voltage) during turn-off and line transients", "High DC overcurrent", "Excessive gate cathode voltage"], "a": 1, "d": "E", "topic": "Power Electronics Protection", "area": "Sem 5 · Power Electronics · Module I", "exp": "A rapid rate of rise of forward anode voltage (dv/dt) can inject charging current into the central J2 junction capacitance (i = C dv/dt), causing false triggering (dv/dt turn-on). A parallel RC snubber limits the rate of voltage rise below critical device threshold."},
+  "q-jbg-141": {"q": "In a thyristor circuit, a small inductor connected in series with the SCR is used to protect the device against:", "opts": ["High rate of rise of current (di/dt)", "High rate of rise of voltage (dv/dt)", "Reverse breakdown voltage", "Thermal heat loss"], "a": 0, "d": "E", "topic": "Power Electronics Protection", "area": "Sem 5 · Power Electronics · Module I", "exp": "During turn-on, conduction initiates at a localized spot near the gate. If anode current rises too rapidly before the plasma spreads across the entire cathode area, local current density causes localized overheating and permanent burn-out. A series inductor limits di/dt to safe ratings."},
+  "q-jbg-142": {"q": "For a single-phase fully-controlled bridge rectifier supplying a highly inductive load with continuous ripple-free load current at firing angle α, the average DC output voltage is:", "opts": ["V_dc = (2 V_m / π) cos α", "V_dc = (V_m / π) (1 + cos α)", "V_dc = (2 V_m / π) sin α", "V_dc = (V_m / 2π) cos α"], "a": 0, "d": "E", "topic": "Phase-Controlled Rectifiers", "area": "Sem 5 · Power Electronics · Module II", "exp": "The average output voltage is V_dc = (1/π) ∫_α^(π+α) V_m sin(ωt) d(ωt) = (2 V_m / π) cos α. For α < 90°, V_dc > 0 (rectification); for α > 90°, V_dc < 0 (line-commutated inversion)."},
+  "q-jbg-143": {"q": "A three-phase 6-pulse fully controlled bridge converter is fed from a 415 V, 50 Hz AC line. The fundamental ripple frequency of its DC output voltage is:", "opts": ["50 Hz", "150 Hz", "300 Hz", "600 Hz"], "a": 2, "d": "E", "topic": "Phase-Controlled Rectifiers", "area": "Sem 5 · Power Electronics · Module II", "exp": "A 3-phase full bridge has 6 pulses per AC input cycle. Thus, fundamental output ripple frequency is 6 × f_in = 6 × 50 Hz = 300 Hz."},
+  "q-jbg-144": {"q": "In a single-phase full-bridge voltage source inverter (VSI) operating with square-wave switching across DC input voltage V_dc, the RMS value of the fundamental component of output voltage is:", "opts": ["V_1rms = 0.45 V_dc", "V_1rms = (2√2 / π) V_dc ≈ 0.90 V_dc", "V_1rms = V_dc", "V_1rms = 0.707 V_dc"], "a": 1, "d": "M", "topic": "Inverters", "area": "Sem 5 · Power Electronics · Module III", "exp": "Fourier series of square wave ±V_dc gives peak fundamental amplitude V_1m = 4 V_dc / π. The RMS value of the fundamental is V_1rms = V_1m / √2 = (4 V_dc) / (√2 π) = (2√2 / π) V_dc ≈ 0.9003 V_dc."},
+  "q-jbg-145": {"q": "In a 3-phase bridge inverter operating in 180° conduction mode, at any given instant:", "opts": ["Only one switch conducts", "Two switches conduct simultaneously", "Three switches conduct simultaneously (one from each leg or two upper and one lower)", "All six switches conduct"], "a": 2, "d": "E", "topic": "Inverters", "area": "Sem 5 · Power Electronics · Module III", "exp": "In 180° conduction mode, each of the six switches conducts for 180°. At any instant, exactly three switches are ON (either two from the top group and one from the bottom, or one from the top and two from the bottom), ensuring line terminals are always connected to the DC rails."},
+  "q-jbg-146": {"q": "Optocouplers (opto-isolators) and pulse transformers are mandatory in power electronic gate drive circuits to:", "opts": ["Increase gate firing power", "Provide galvanic electrical isolation between sensitive low-voltage control microcontrollers and high-voltage power semiconductor switches", "Invert the gate logic signal only", "Step down DC bus voltage"], "a": 1, "d": "E", "topic": "Gate Drive Circuits", "area": "Sem 5 · Power Electronics · Module I", "exp": "High-side power switches (e.g. upper IGBTs in a bridge) fluctuate at hundreds or thousands of volts with severe dv/dt switching noise. Optocouplers or pulse transformers isolate control electronics from high-voltage transients, preventing destruction of microcontrollers."},
+  "q-jbg-147": {"q": "An operational amplifier Schmitt trigger circuit exhibits 'hysteresis' (different upper and lower trip thresholds, V_UT and V_LT). The primary advantage of hysteresis is:", "opts": ["Higher amplifier bandwidth", "Preventing erratic false output switching caused by input noise or ripple on slowly changing analog signals", "Reducing power consumption to zero", "Increasing output voltage beyond supply rails"], "a": 1, "d": "E", "topic": "Comparators", "area": "Sem 4 · Solid State Electronic Devices & Circuits · Module IV", "exp": "A standard comparator with a single threshold chatters between HIGH and LOW when an analog signal with noise hovers around threshold. Positive feedback in a Schmitt trigger separates threshold into V_UT and V_LT; noise with peak-to-peak amplitude less than the hysteresis band cannot trigger false switching."},
+  "q-jbg-148": {"q": "In a 555 timer IC configured as an astable multivibrator with timing resistors R_A, R_B and capacitor C, the duty cycle D of output HIGH time is:", "opts": ["D = R_B / (R_A + R_B)", "D = (R_A + R_B) / (R_A + 2R_B)", "D = R_A / (R_A + 2R_B)", "D = 50% strictly"], "a": 1, "d": "M", "topic": "555 Timer Circuits", "area": "Sem 4 · Solid State Electronic Devices & Circuits · Module V", "exp": "Charging time (output HIGH) is t_high = 0.693 (R_A + R_B) C. Discharging time (output LOW) is t_low = 0.693 R_B C. Total period is T = 0.693 (R_A + 2R_B) C. Duty cycle D = t_high / T = (R_A + R_B) / (R_A + 2R_B), which is always >50% unless a bypass diode is placed across R_B."},
+  "q-jbg-149": {"q": "The Transfer Function of a linear time-invariant (LTI) system is defined as:", "opts": ["Ratio of output to input in time domain", "Ratio of Laplace transform of output to Laplace transform of input with all initial conditions set to zero", "Differential equation of the system", "Ratio of input power to output power"], "a": 1, "d": "E", "topic": "Transfer Functions", "area": "Sem 5 · Control Systems Engineering · Module I", "exp": "By definition, Transfer Function G(s) = L{output(t)} / L{input(t)} evaluated under zero initial conditions (all stored energy in capacitors and inductors equals zero). It represents the Laplace transform of the system impulse response."},
+  "q-jbg-150": {"q": "According to Mason's Gain Formula for Signal Flow Graphs, the overall system transfer function T is given by:", "opts": ["T = Σ P_k Δ_k / Δ", "T = Δ / Σ P_k", "T = Σ P_k / Δ_k", "T = Σ (P_k + Δ_k) / Δ"], "a": 0, "d": "E", "topic": "Signal Flow Graphs", "area": "Sem 5 · Control Systems Engineering · Module I", "exp": "Mason's Gain Formula is T = (1/Δ) Σ (P_k Δ_k), where P_k is forward path gain of kth path, Δ is graph determinant = 1 - (sum of individual loop gains) + (sum of gain products of two non-touching loops) - ..., and Δ_k is path cofactor (determinant of graph not touching kth path)."},
+  "q-jbg-151": {"q": "For a standard prototype second-order control system with natural frequency ω_n and damping ratio ζ, the system response is critically damped when:", "opts": ["ζ = 0", "0 < ζ < 1", "ζ = 1", "ζ > 1"], "a": 2, "d": "E", "topic": "Time-Domain Specifications", "area": "Sem 5 · Control Systems Engineering · Module II", "exp": "When ζ = 1, characteristic roots are real, equal, and negative (-ω_n, -ω_n), producing the fastest non-oscillatory return to steady state (critically damped). ζ = 0 is undamped, 0 < ζ < 1 is underdamped, and ζ > 1 is overdamped."},
+  "q-jbg-152": {"q": "For an underdamped second-order control system (0 < ζ < 1), the maximum percentage overshoot (% M_p) depends exclusively on:", "opts": ["Natural frequency ω_n alone", "Damping ratio ζ alone (% M_p = e^(-π ζ / √(1 - ζ^2)) × 100%)", "System DC gain K", "Input step magnitude"], "a": 1, "d": "E", "topic": "Time-Domain Specifications", "area": "Sem 5 · Control Systems Engineering · Module II", "exp": "Peak overshoot % M_p = 100 × exp(-π ζ / √(1 - ζ^2)). It is completely independent of natural frequency ω_n and input step amplitude, depending solely on the damping ratio ζ."},
+  "q-jbg-153": {"q": "In the Routh-Hurwitz stability criterion, the number of roots of the characteristic polynomial lying in the right half of the s-plane (unstable poles) is equal to:", "opts": ["Number of zero entries in the Routh table", "Number of sign changes in the first column of the Routh array", "Degree of the polynomial", "Total number of rows in the table"], "a": 1, "d": "E", "topic": "Stability Analysis", "area": "Sem 5 · Control Systems Engineering · Module II", "exp": "Routh's criterion states that a system is stable if and only if all elements in the first column of the Routh array have the same sign. The number of sign changes between successive elements in the first column exactly equals the number of roots in the right-half s-plane (RHP)."},
+  "q-jbg-154": {"q": "According to the Inverse Square Law of illumination, the illuminance E on a surface produced by a point source of luminous intensity I at distance d is:", "opts": ["E = I × d", "E = I / d^2", "E = I / d", "E = I^2 / d"], "a": 1, "d": "E", "topic": "Illumination Engineering", "area": "Sem 7 · Electrical System Design · Module II", "exp": "The Inverse Square Law states that illuminance (in lux or lm/m^2) on a normal surface is directly proportional to luminous intensity (in candela) and inversely proportional to the square of the distance from the source: E = I / d^2."},
+  "q-jbg-155": {"q": "Lambert's Cosine Law of illumination states that the illuminance E on a surface tilted at an angle θ with the normal to the incident light ray is proportional to:", "opts": ["sin θ", "cos θ (E = (I / d^2) cos θ)", "tan θ", "cos^2 θ"], "a": 1, "d": "E", "topic": "Illumination Engineering", "area": "Sem 7 · Electrical System Design · Module II", "exp": "Lambert's Cosine Law states that illuminance received on a surface varies directly as the cosine of the angle between the normal to the surface and the direction of incident light rays: E = (I / d^2) cos θ."},
+  "q-jbg-156": {"q": "In interior lighting design using the Average Lumen Method, total required luminous flux F (lumens) to illuminate area A (m^2) to required illuminance E (lux) is calculated as:", "opts": ["F = (E × A) / (UF × MF)", "F = (E × A × UF) / MF", "F = (E × UF) / (A × MF)", "F = E × A × UF × MF"], "a": 0, "d": "M", "topic": "Illumination Engineering", "area": "Sem 7 · Electrical System Design · Module II", "exp": "Required gross lamp lumens F = (E × A) / (UF × MF), where UF is Utilization Factor (fraction of emitted lumens reaching the workplane) and MF is Maintenance Factor (accounting for lamp aging and dirt accumulation, typically 0.7–0.8)."},
+  "q-jbg-157": {"q": "A node in an electrical circuit connects four branches. Currents entering the node from three branches are 2 A, 5 A, and -3 A. What is the current flowing out through the fourth branch?", "opts": ["10 A", "4 A", "-4 A", "7 A"], "a": 1, "d": "E", "topic": "Basic Electrical Laws", "area": "Sem 3 · Circuit Theory · Module I", "exp": "By KCL, sum of currents entering = sum of currents leaving. Current entering = 2 + 5 + (-3) = 4 A. Therefore, the current leaving through the fourth branch is 4 A."},
+  "q-jbg-158": {"q": "In a closed DC loop containing a 24 V DC battery and three series resistors of 2 Ω, 4 Ω, and 6 Ω, what is the voltage drop across the 6 Ω resistor?", "opts": ["4 V", "8 V", "12 V", "24 V"], "a": 2, "d": "E", "topic": "Basic Electrical Laws", "area": "Sem 3 · Circuit Theory · Module I", "exp": "Total loop resistance is R_total = 2 + 4 + 6 = 12 Ω. Loop current is I = V / R_total = 24 / 12 = 2 A. Voltage drop across 6 Ω resistor is V_6 = I × 6 = 2 × 6 = 12 V."},
+  "q-jbg-159": {"q": "Why can the Superposition Theorem NOT be applied directly to calculate total electrical power dissipation (I^2 R or V^2 / R) in a resistor?", "opts": ["Power is a vector quantity", "Power is a non-linear quadratic function of current/voltage (P ∝ I^2), violating the principle of linearity", "Power cannot be measured with meters", "Resistors are non-linear elements"], "a": 1, "d": "E", "topic": "Network Theorems", "area": "Sem 3 · Circuit Theory · Module I", "exp": "Superposition applies strictly to linear responses (current and voltage). Since power depends on the square of current (P = I^2 R = (I_1 + I_2)^2 R ≠ I_1^2 R + I_2^2 R), individual power contributions cannot be algebraically summed. One must first find total net current by superposition, then calculate P = I_total^2 R."},
+  "q-jbg-160": {"q": "An electric utility meter records energy in kilowatt-hours (kWh). One kilowatt-hour is equivalent to how many Joules of energy?", "opts": ["3.6 × 10^3 J", "3.6 × 10^5 J", "3.6 × 10^6 J (3.6 MJ)", "3.6 × 10^9 J"], "a": 2, "d": "E", "topic": "Energy Fundamentals", "area": "EEE From Zero", "exp": "1 kWh = (1000 W) × (3600 seconds) = 1000 J/s × 3600 s = 3,600,000 Joules = 3.6 × 10^6 J = 3.6 MJ."},
+  "q-jbg-161": {"q": "A simple first-order passive RC low-pass filter has resistance R and capacitance C. The cutoff frequency (half-power frequency f_c) in Hertz is:", "opts": ["f_c = 1 / (2π R C)", "f_c = 2π R C", "f_c = R / (2π C)", "f_c = 1 / (R C)"], "a": 0, "d": "E", "topic": "Filters", "area": "Sem 3 · Circuit Theory · Module IV", "exp": "Cutoff frequency occurs where capacitive reactance equals resistance: X_C = R → 1 / (2π f_c C) = R. Solving for frequency yields f_c = 1 / (2π R C) Hz."},
+  "q-jbg-162": {"q": "In armature voltage speed control of a DC motor (Ward-Leonard system), speeds below base rated speed are obtained with:", "opts": ["Constant torque capability, where torque is maintained at rated value while power increases linearly with speed", "Constant power capability", "Decreasing torque and constant speed", "Zero torque"], "a": 0, "d": "M", "topic": "DC Motor Speed Control", "area": "Sem 4 · DC Machines & Transformers · Module III", "exp": "Below base speed, field flux Φ is held at rated maximum while armature voltage V is varied. Since T ∝ Φ I_a, rated torque is continuously available (constant torque drive). Developed power P = T ω increases linearly with speed up to base speed."},
+  "q-jbg-163": {"q": "In field weakening control of a DC shunt motor, speeds above base rated speed are obtained with:", "opts": ["Constant torque capability", "Constant power capability, where maximum developed power is constant and torque decreases inversely with speed", "Zero field current", "Armature voltage doubled"], "a": 1, "d": "M", "topic": "DC Motor Speed Control", "area": "Sem 4 · DC Machines & Transformers · Module III", "exp": "Above base speed, armature voltage is held at maximum rated value while field flux is reduced. Since rated current I_a cannot exceed thermal limits, power P = V I_a is constant (constant power drive). Torque T = P / ω decreases inversely with speed."},
+  "q-jbg-164": {"q": "In a simplex lap winding for a DC machine with P poles, the number of parallel armature paths A and the required number of brush sets are:", "opts": ["A = 2, Brush sets = 2", "A = P, Brush sets = P", "A = P / 2, Brush sets = 2", "A = 2P, Brush sets = P"], "a": 1, "d": "E", "topic": "DC Machines", "area": "Sem 4 · DC Machines & Transformers · Module I", "exp": "In simplex lap winding, coils overlap and the number of parallel paths equals the number of poles (A = P). To collect current from all parallel paths, exactly P brush sets are required."},
+  "q-jbg-165": {"q": "The RMS induced electromotive force E_1 in the primary winding of a transformer having N_1 turns and core area A_c subjected to sinusoidal AC flux of frequency f and peak flux density B_m is:", "opts": ["E_1 = 4.44 f N_1 B_m A_c", "E_1 = 4.0 f N_1 B_m A_c", "E_1 = 2π f N_1 B_m A_c", "E_1 = 1.11 f N_1 B_m A_c"], "a": 0, "d": "E", "topic": "Transformers", "area": "Sem 4 · DC Machines & Transformers · Module IV", "exp": "Peak flux is Φ_m = B_m A_c. Average induced EMF per turn is 4 f Φ_m. Multiplying by the form factor of a sine wave (1.11) gives RMS EMF per turn = 4.44 f Φ_m. For N_1 turns: E_1 = 4.44 f N_1 Φ_m = 4.44 f N_1 B_m A_c."},
+  "q-jbg-166": {"q": "An autotransformer stepping down 240 V to 200 V saves what percentage of copper weight compared to a two-winding transformer of the same kVA capacity?", "opts": ["16.7%", "50.0%", "83.3%", "95.0%"], "a": 2, "d": "M", "topic": "Transformers", "area": "Sem 4 · DC Machines & Transformers · Module V", "exp": "Copper saving in an autotransformer is given by fraction = k = V_2 / V_1 (for step-down where k < 1). Here k = 200 / 240 = 5/6 ≈ 0.833 = 83.3% copper saved. The closer the transformation ratio is to unity, the greater the copper and cost savings."},
+  "q-jbg-167": {"q": "In a 3-phase induction motor, the starting torque T_st is maximum when rotor circuit resistance R_2 equals:", "opts": ["Rotor leakage reactance at standstill (R_2 = X_2)", "R_2 = 0", "R_2 = X_2 / 2", "R_2 = 2 X_2"], "a": 0, "d": "E", "topic": "Induction Motors", "area": "Sem 5 · AC Machines · Module III", "exp": "Starting occurs at slip s = 1. The condition for maximum torque at any slip s is s_mT = R_2 / X_2. For maximum torque to occur at starting (s = 1), R_2 / X_2 = 1, so R_2 must equal X_2."},
+  "q-jbg-168": {"q": "If the supply voltage to a 3-phase induction motor is reduced by 10%, the maximum developed torque T_max will:", "opts": ["Decrease by 10%", "Decrease by approximately 19% (T ∝ V^2)", "Remain unchanged", "Increase by 10%"], "a": 1, "d": "E", "topic": "Induction Motors", "area": "Sem 5 · AC Machines · Module III", "exp": "Electromagnetic torque is proportional to the square of applied voltage (T ∝ V^2). If voltage drops to 0.90 V_rated, torque becomes (0.90)^2 = 0.81 = 81% of original, which is a reduction of 19%."},
+  "q-jbg-169": {"q": "Why is an external resistance added to the rotor circuit of a slip-ring (wound-rotor) induction motor during starting?", "opts": ["To increase starting current and decrease starting torque", "To decrease starting current and significantly increase starting torque", "To reverse motor direction of rotation", "To increase motor operating speed above synchronous speed"], "a": 1, "d": "E", "topic": "Induction Motors", "area": "Sem 5 · AC Machines · Module IV", "exp": "Inserting external resistance into the rotor circuit increases total rotor resistance toward R_2 = X_2, shifting the maximum torque peak toward standstill (s = 1) while simultaneously limiting high starting inrush currents."},
+  "q-jbg-170": {"q": "Large modern synchronous alternators in thermal power plants are invariably built with stationary armatures (stators) and rotating fields because:", "opts": ["It is easier to insulate high-voltage windings (11 kV–33 kV) on a stationary stator, and low-power DC excitation is easily fed to the rotor via only two slip rings", "Rotating armatures produce higher frequency", "Stationary fields require no DC excitation", "Rotor cooling is eliminated"], "a": 0, "d": "E", "topic": "Alternators", "area": "Sem 4 · AC Machines · Module I", "exp": "Generating high AC voltages (up to 33 kV) and heavy currents on a stationary frame avoids centrifugal stress on delicate insulation and eliminates massive high-voltage slip rings. The rotating field only carries low-voltage DC (typically 200–400 V), requiring only two light slip rings."},
+  "q-jbg-171": {"q": "The distribution factor (breadth factor K_d) of an alternator armature winding with m slots per pole per phase and slot pitch electrical angle γ is:", "opts": ["K_d = sin(m γ / 2) / [m sin(γ / 2)]", "K_d = m sin(γ / 2) / sin(m γ / 2)", "K_d = cos(m γ / 2)", "K_d = 1.0 always"], "a": 0, "d": "M", "topic": "Alternators", "area": "Sem 5 · AC Machines · Module I", "exp": "Distributing coil sides into multiple slots per pole per phase introduces small phase displacements between induced coil voltages. The phasor sum divided by arithmetic sum gives distribution factor K_d = sin(m γ / 2) / [m sin(γ / 2)]. It is always slightly less than 1.0 and eliminates harmonics."},
+  "q-jbg-172": {"q": "The Synchronous Impedance (EMF) method for determining alternator voltage regulation is commonly referred to as the 'pessimistic method' because:", "opts": ["It always yields a voltage regulation value higher than the actual physical test result due to neglecting magnetic saturation", "It yields a regulation lower than actual", "It requires destroying the machine under test", "It cannot be calculated mathematically"], "a": 0, "d": "M", "topic": "Alternators", "area": "Sem 5 · AC Machines · Module II", "exp": "The EMF method determines synchronous reactance X_s from the linear (unsaturated) air-gap line. In normal operation, core saturation reduces effective armature reaction MMF. Using unsaturated X_s overestimates internal voltage drop, giving higher (pessimistic) regulation."},
+  "q-jbg-173": {"q": "The MMF method (Ampere-Turn method) for determining alternator voltage regulation is considered an 'optimistic method' because:", "opts": ["It yields a regulation value lower than actual physical test values", "It assumes zero armature resistance", "It requires no excitation current", "It operates at unity power factor only"], "a": 0, "d": "M", "topic": "Alternators", "area": "Sem 5 · AC Machines · Module II", "exp": "The MMF method adds armature reaction MMF directly to field MMF on the saturated Open Circuit Characteristic. This over-accounts for magnetic saturation, resulting in a predicted voltage regulation lower (optimistic) than actual performance."},
+  "q-jbg-174": {"q": "When mechanical load on a synchronous motor operating at constant excitation is increased, what parameter changes to allow the motor to develop higher torque?", "opts": ["Motor operating speed drops", "Rotor magnetic poles fall back slightly in space, increasing the load torque angle δ", "Stator supply frequency increases", "Field excitation current automatically doubles"], "a": 1, "d": "M", "topic": "Synchronous Motors", "area": "Sem 5 · AC Machines · Module III", "exp": "Synchronous speed remains strictly constant (N = 120 f / P). As load torque increases, the rotor poles fall back by a physical angle δ behind the stator rotating magnetic field. This increases the resultant voltage E_r = V - E_b and draws higher armature current to produce balancing electromagnetic torque P = (E V / X_s) sin δ."},
+  "q-jbg-175": {"q": "For a medium-length overhead transmission line (80 km to 250 km), which circuit representation lumps half of total line capacitance at each end?", "opts": ["Nominal-T model", "Nominal-π model", "Rigorous distributed hyperbolic model", "Short line series model"], "a": 1, "d": "E", "topic": "Transmission Lines", "area": "Sem 3 · Power Systems · Module II", "exp": "In the Nominal-π method, total line series impedance Z = R + jX is placed in the center branch, while total line charging admittance Y = jωC is divided equally into two shunt branches of Y/2 at the sending end and receiving end."},
+  "q-jbg-176": {"q": "In the Nominal-T method for representing a medium transmission line, total line parameters are configured as:", "opts": ["Line series impedance Z is divided into two halves (Z/2) with total shunt admittance Y concentrated at the midpoint", "All capacitance at receiving end", "Zero shunt capacitance", "Shunt resistance in series with line"], "a": 0, "d": "E", "topic": "Transmission Lines", "area": "Sem 3 · Power Systems · Module II", "exp": "In the Nominal-T model, the total series impedance Z is split into two halves (Z/2 each in series), and the entire line shunt capacitance admittance Y is lumped as a single shunt branch connected between the two halves at the midpoint."},
+  "q-jbg-177": {"q": "The disruptive critical voltage V_d in overhead lines is the minimum phase-to-neutral voltage at which:", "opts": ["The line flashes over to ground", "Complete dielectric breakdown of air occurs with visible violet glow and hissing sound (corona discharge initiates)", "Conductors melt", "Lightning arresters conduct"], "a": 1, "d": "E", "topic": "Transmission Lines", "area": "Sem 3 · Power Systems · Module III", "exp": "Disruptive critical voltage V_d is the threshold voltage where the electrostatic field gradient at the conductor surface reaches the dielectric breakdown strength of air (g_0 = 30 kV/cm peak = 21.2 kV/cm RMS at standard temperature and pressure), initiating air ionization and corona."},
+  "q-jbg-178": {"q": "In oil circuit breakers, the electrical arc decomposes insulating transformer oil primarily into:", "opts": ["Carbon dioxide gas", "Hydrogen gas (approximately 70%), which has high thermal conductivity and cools the arc channel rapidly", "Sulfur dioxide", "Pure oxygen"], "a": 1, "d": "E", "topic": "Circuit Breakers", "area": "Sem 3 · Power Systems · Module IV", "exp": "The high arc temperature (up to 5000 K) cracks hydrocarbon oil molecules, generating a gas bubble composed of ~70% hydrogen. Hydrogen has exceptionally high heat diffusion and thermal conductivity, extracting heat from the arc core and facilitating rapid de-ionization at AC zero crossing."},
+  "q-jbg-179": {"q": "A 'Reactance Relay' is a distance protective relay whose tripping operation depends solely on:", "opts": ["Conductor resistance R", "Line reactance X (independent of fault arc resistance R_arc), making it ideal for short transmission lines", "Line admittance Y", "Line capacitance C"], "a": 1, "d": "M", "topic": "Protective Relays", "area": "Sem 3 · Power Systems · Module IV", "exp": "On an R-X diagram, the reactance relay operates as a horizontal line parallel to the R-axis (X = constant). Because its reach is completely unaffected by fault arc resistance (R_arc), it is the standard choice for short transmission lines where arc resistance is a significant fraction of line impedance."},
+  "q-jbg-180": {"q": "In high-voltage transmission line differential carrier protection, 'Phase Comparison Carrier Protection' works by:", "opts": ["Transmitting high-frequency carrier signals over the power conductors to compare the phase angle of currents at both ends of the line", "Measuring absolute voltage magnitude only", "Tripping based on conductor temperature", "Operating on DC pulses through fiber only"], "a": 0, "d": "M", "topic": "Protective Relays", "area": "Sem 3 · Power Systems · Module IV", "exp": "Phase comparison carrier protection converts local current waveforms into carrier-frequency square waves. Under internal faults, currents at both ends enter the line in phase; under through-faults, currents are 180° out of phase. Comparing phase angles over the power line carrier ensures high-speed unit tripping without pilot wires."},
+  "q-jbg-181": {"q": "Which bridge circuit is most suitable for precision measurement of an unknown inductance having a very high Quality factor (Q > 10)?", "opts": ["Maxwell's Inductance-Capacitance Bridge", "Hay's Bridge", "Anderson's Bridge", "De Sauty's Bridge"], "a": 1, "d": "M", "topic": "Bridge Measurements", "area": "Sem 3 · Measurements & Instrumentation · Module I", "exp": "Hay's bridge connects the standard capacitor and resistor in series (rather than parallel as in Maxwell's bridge). This makes the balance equations convenient for high-Q coils (Q > 10) where Maxwell's bridge requires impractically large parallel resistance values."},
+  "q-jbg-182": {"q": "Anderson's Bridge is a 6-branch modification of Maxwell's bridge used for accurate measurement of self-inductance in terms of a standard capacitor because:", "opts": ["It requires no AC excitation source", "It permits independent balance adjustments for resistance and inductance using standard fixed capacitors and variable resistors", "It uses only two resistors", "It eliminates galvanometer sensitivity errors"], "a": 1, "d": "M", "topic": "Bridge Measurements", "area": "Sem 3 · Measurements & Instrumentation · Module I", "exp": "Anderson's bridge allows double balance without sliding balance interactions: a fixed standard capacitor can be used while balance is achieved by varying resistance arms independently, making it practical over a wide range of inductances."},
+  "q-jbg-183": {"q": "In an electrodynamometer instrument used as an ammeter or voltmeter, the operating deflecting torque is proportional to:", "opts": ["Current I", "Current squared (I^2)", "Current cubed (I^3)", "Square root of current (√I)"], "a": 1, "d": "E", "topic": "Electrical Measurements", "area": "Sem 3 · Measurements & Instrumentation · Module I", "exp": "In an electrodynamometer, the magnetic field is produced by fixed coils carrying current I_1, while the moving coil carries current I_2. When used as an ammeter, both coils are in series (I_1 = I_2 = I), giving deflecting torque T_d = I^2 (dM/dθ), resulting in a square-law RMS scale."},
+  "q-jbg-184": {"q": "The 'Latching Current' of an SCR is:", "opts": ["The minimum anode current required to maintain conduction after the gate pulse is removed", "The minimum anode current needed to prevent reverse breakdown", "The maximum allowable forward surge current", "Equal to the holding current"], "a": 0, "d": "E", "topic": "Power Semiconductors", "area": "Sem 5 · Power Electronics · Module I", "exp": "Latching current (I_L) is the minimum anode current that must be attained during turn-on before gate signal removal to ensure the device stays ON. Holding current (I_H) is the minimum anode current below which the SCR turns OFF. Typically, I_L ≈ 2 to 3 times I_H."},
+  "q-jbg-185": {"q": "In a single-phase half-wave diode rectifier with a purely resistive load R fed from V_s = V_m sin(ωt), the average DC output voltage is:", "opts": ["V_dc = V_m / π ≈ 0.318 V_m", "V_dc = 2 V_m / π ≈ 0.637 V_m", "V_dc = V_m / √2", "V_dc = V_m / 2"], "a": 0, "d": "E", "topic": "Rectifiers", "area": "Sem 5 · Power Electronics · Module II", "exp": "Average voltage is V_dc = (1 / 2π) ∫_0^π V_m sin(ωt) d(ωt) = V_m / π ≈ 0.318 V_m."},
+  "q-jbg-186": {"q": "In a single-phase full-wave bridge diode rectifier with resistive load R, the Peak Inverse Voltage (PIV) rating required for each diode is:", "opts": ["PIV = V_m", "PIV = 2 V_m", "PIV = V_m / 2", "PIV = √2 V_m"], "a": 0, "d": "E", "topic": "Rectifiers", "area": "Sem 5 · Power Electronics · Module II", "exp": "In a full-wave bridge rectifier, two non-conducting diodes share reverse blocking across the secondary peak voltage V_m (each diode blocks V_m). In a center-tapped transformer rectifier, each diode must withstand 2 V_m."},
+  "q-jbg-187": {"q": "In a three-phase half-wave controlled converter with resistive load, each thyristor conducts for a maximum duration of:", "opts": ["60°", "120° (2π/3 radians)", "180°", "360°"], "a": 1, "d": "E", "topic": "Rectifiers", "area": "Sem 5 · Power Electronics · Module II", "exp": "A 3-phase half-wave converter has 3 thyristors connected to phases A, B, and C. In each 360° supply cycle, conduction is shared equally, giving maximum conduction angle per thyristor of 360° / 3 = 120°."},
+  "q-jbg-188": {"q": "A single-phase half-bridge inverter requires a 3-wire DC source with neutral tap (±V_dc / 2). The peak output voltage across the load is:", "opts": ["V_dc", "V_dc / 2", "2 V_dc", "V_dc / √2"], "a": 1, "d": "E", "topic": "Inverters", "area": "Sem 5 · Power Electronics · Module III", "exp": "In a half-bridge inverter, switching upper and lower transistors connects the load terminal alternately to +V_dc / 2 and -V_dc / 2 with respect to the split capacitor DC neutral point, producing square waves of amplitude V_dc / 2."},
+  "q-jbg-189": {"q": "In sinusoidal pulse width modulation (SPWM), the Modulation Index m_a is defined as the ratio of:", "opts": ["Carrier wave frequency to reference wave frequency", "Peak amplitude of reference control wave to peak amplitude of triangular carrier wave (A_m / A_c)", "Output voltage to input voltage", "Switching dead time to period"], "a": 1, "d": "E", "topic": "PWM Inverters", "area": "Sem 5 · Power Electronics · Module III", "exp": "Amplitude modulation index is m_a = A_m / A_c (where A_m is reference sine wave amplitude and A_c is carrier triangle amplitude). Linear modulation occurs for 0 ≤ m_a ≤ 1, where fundamental output voltage is directly proportional to m_a."},
+  "q-jbg-190": {"q": "In a self-controlled synchronous motor drive (load-commutated inverter, LCI drive), the inverter thyristors are naturally commutated by:", "opts": ["External forced LC commutating circuits", "The leading power factor induced counter-EMF of the over-excited synchronous motor", "The DC link choke", "The utility supply line"], "a": 1, "d": "M", "topic": "Synchronous Motor Drives", "area": "Sem 6 · Power Semiconductor Drives · Module V", "exp": "Operating the synchronous motor with over-excitation causes it to draw leading current. The motor internal counter-EMF provides natural capacitive commutation to extinguish thyristor currents in the inverter bridge without requiring costly forced commutation circuits."},
+  "q-jbg-191": {"q": "The 'Stability Factor' S of a transistor biasing circuit measures the sensitivity of collector current I_C to changes in:", "opts": ["Base resistance R_B only", "Reverse saturation leakage current I_CBO (S = ∂I_C / ∂I_CBO)", "Supply voltage V_CC", "Ambient air temperature alone"], "a": 1, "d": "M", "topic": "BJT Biasing", "area": "Sem 4 · Solid State Electronic Devices & Circuits · Module III", "exp": "Stability factor is defined as S = dI_C / dI_CBO (with V_BE and β held constant). An ideal temperature-stable biasing circuit (like the voltage divider bias with emitter resistor) has S close to 1, whereas poor fixed-bias circuits have S = 1 + β ≈ 100+."},
+  "q-jbg-192": {"q": "The Common-Mode Rejection Ratio (CMRR) of a differential operational amplifier is defined as:", "opts": ["Differential gain divided by common-mode gain (A_d / A_cm)", "Common-mode gain divided by differential gain", "Product of differential gain and common-mode gain", "Maximum output voltage swing"], "a": 0, "d": "E", "topic": "Operational Amplifiers", "area": "Sem 4 · Solid State Electronic Devices & Circuits · Module V", "exp": "CMRR = |A_d / A_cm| (often expressed in decibels as 20 log_10 |A_d / A_cm|). An ideal op-amp has infinite CMRR, rejecting all common-mode electrical noise and electromagnetic hum present identically on both input terminals."},
+  "q-jbg-193": {"q": "For an ideal op-amp non-inverting amplifier with input applied to non-inverting terminal (+), feedback resistor R_f, and input ground resistor R_1, the voltage gain A_v is:", "opts": ["A_v = 1 + R_f / R_1", "A_v = -R_f / R_1", "A_v = R_1 / (R_1 + R_f)", "A_v = R_f / R_1"], "a": 0, "d": "E", "topic": "Operational Amplifiers", "area": "Sem 4 · Solid State Electronic Devices & Circuits · Module IV", "exp": "Virtual short-circuit between terminals makes inverting terminal voltage V_- = V_in. Voltage divider formed by R_1 and R_f gives V_- = V_o [R_1 / (R_1 + R_f)]. Equating yields V_o / V_in = 1 + R_f / R_1."},
+  "q-jbg-194": {"q": "A major advantage of negative feedback in a closed-loop control system is:", "opts": ["Reduction of system bandwidth", "Reduction of sensitivity to parameter variations and external disturbances, with improved transient tracking", "Increase in open-loop gain to infinity", "Complete elimination of closed-loop poles"], "a": 1, "d": "E", "topic": "Control Systems Fundamentals", "area": "Sem 5 · Control Systems Engineering · Module I", "exp": "Negative feedback desensitizes system performance to component aging, parameter drift, and load disturbances by a factor of 1 + G(s)H(s), while widening system operating bandwidth."},
+  "q-jbg-195": {"q": "The Steady-State Error e_ss of a control system subjected to a unit step input r(t) = u(t) with open-loop transfer function G(s)H(s) is:", "opts": ["e_ss = 1 / (1 + K_p), where position error constant K_p = lim_{s→0} G(s)H(s)", "e_ss = 1 / K_v", "e_ss = 1 / K_a", "e_ss = 0 for all systems"], "a": 0, "d": "E", "topic": "Steady-State Error", "area": "Sem 5 · Control Systems Engineering · Module II", "exp": "By the Final Value Theorem, e_ss = lim_{s→0} s E(s) = lim_{s→0} s [R(s) / (1 + G(s)H(s))]. For a unit step input R(s) = 1/s, e_ss = 1 / [1 + lim_{s→0} G(s)H(s)] = 1 / (1 + K_p)."},
+  "q-jbg-196": {"q": "In 8-bit 2's complement arithmetic, what is the range of signed decimal numbers that can be represented?", "opts": ["0 to +255", "-128 to +127", "-127 to +128", "-256 to +255"], "a": 1, "d": "E", "topic": "Digital Representation", "area": "Sem 3 · Digital Electronics · Module I", "exp": "For an n-bit 2's complement system, the range is -2^(n-1) to +(2^(n-1) - 1). For n = 8 bits, the range is -2^7 to +(2^7 - 1) = -128 to +127."},
+  "q-jbg-197": {"q": "Which digital logic family is characterized by the lowest static power consumption and highest input impedance?", "opts": ["Transistor-Transistor Logic (TTL)", "Emitter-Coupled Logic (ECL)", "Complementary Metal-Oxide-Semiconductor (CMOS)", "Resistor-Transistor Logic (RTL)"], "a": 2, "d": "E", "topic": "Logic Families", "area": "Sem 3 · Digital Electronics · Module I", "exp": "CMOS logic gates use complementary pairs of n-channel and p-channel MOSFETs. In any static state, one transistor is completely OFF, drawing only nano-amperes of leakage current. The insulated MOS gates present virtually infinite DC input impedance."},
+  "q-jbg-198": {"q": "Which digital logic family achieves the fastest switching speed and shortest propagation delay (sub-nanosecond) by operating transistors in the non-saturated active region?", "opts": ["Standard TTL", "CMOS", "Emitter-Coupled Logic (ECL)", "I2L"], "a": 2, "d": "E", "topic": "Logic Families", "area": "Sem 3 · Digital Electronics · Module I", "exp": "Emitter-Coupled Logic (ECL) uses differential pairs operating strictly in the active non-saturated mode. Preventing BJT saturation completely eliminates minority carrier storage time delay, achieving propagation delays under 1 ns."},
+  "q-jbg-199": {"q": "Power factor improvement capacitors should be located as close as possible to the inductive load terminals because:", "opts": ["It reduces line current and I^2R losses in all upstream cables and distribution feeders back to the substation", "It increases supply line voltage to double", "It converts AC power to DC", "It increases generator speed"], "a": 0, "d": "E", "topic": "Power Factor Improvement", "area": "Sem 3 · Power Systems · Module I", "exp": "Placing capacitors at the load terminals supplies reactive VARs at the source of consumption. The reactive current no longer travels through internal factory wiring, switchboards, and distribution cables, reducing upstream I^2R losses and voltage drops throughout the distribution network."},
+  "q-jbg-200": {"q": "Why is silica gel placed inside the breather of an oil-filled electrical transformer?", "opts": ["To filter out mechanical dust particles only", "To absorb moisture from ambient air drawn into the oil conservator tank during temperature cycles, preserving dielectric strength of transformer oil", "To cool the transformer oil during overloads", "To measure oil temperature"], "a": 1, "d": "E", "topic": "Transformer Construction", "area": "EEE From Zero", "exp": "As transformer temperature rises and falls with load, the oil expands and contracts, causing the conservator tank to 'breathe'. The silica gel breather extracts moisture from incoming air; moist air would contaminate transformer oil and slash its dielectric breakdown voltage. Dry silica gel is blue and turns pink when saturated with moisture."}
 };
 
 /* Audit requirement weights: which activity kinds count toward "complete" for a topic */
